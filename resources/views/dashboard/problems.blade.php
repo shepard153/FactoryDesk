@@ -24,6 +24,10 @@
                 {{ session('message') }}
             </div>
         @endif
+        <div class="alert alert-info">
+            <i class="fa-solid fa-circle-info"></i>
+            Obszary oraz działy, które mają być podciągnięte pod dany problem należy rozdzielić przecinkami.
+        </div>
         <table class="table table-striped table-hover responsive table align-middle">
             @if ($problems != null)
                 <thead>               

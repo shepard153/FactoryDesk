@@ -9,7 +9,7 @@
   
  @section('content')
     <div class="col rounded shadow" style="background: white; margin-top: 1vw; padding: 1vw 1vw 0.5vw 1vw;">
-        <input type="button" id="createPosition" class="btn btn-success" style="float:right; margin: 0.7vw 1vw 0vw 0vw;" value="Utwórz nowy obszar"/>
+        <input type="button" id="createPosition" class="btn btn-success" style="float:right; margin: 0.7vw 1vw 0vw 0vw;" value="Utwórz nowe stanowisko"/>
         <p class="fs-4 border-bottom" style="padding: 0.5vw 0vw 0.6vw 1vw;">Zarządzaj stanowiskami</p>
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -24,6 +24,10 @@
                 {{ session('message') }}
             </div>
         @endif
+        <div class="alert alert-info">
+            <i class="fa-solid fa-circle-info"></i>
+            Stanowiska, które mają być zawarte w danym obszarze, należy rozdzielać przecinkami.
+        </div>
         <table class="table table-striped table-hover responsive table align-middle">
             @if ($positions != null)
                 <thead>               

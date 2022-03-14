@@ -45,7 +45,7 @@
                             <span class='badge rounded-pill bg-success'>Nowe</span>
                             @break
                         @case (1)
-                            <span class='badge rounded-pill bg-warning'>Aktywne</span>
+                            <span class='badge rounded-pill bg-warning'>Podjęte</span>
                             @break
                         @case (2)
                             <span class='badge rounded-pill bg-danger'>Zamknięte</span>
