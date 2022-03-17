@@ -15,6 +15,11 @@
             $this->dashboard = $dashboard;
         }
 
+        /**
+         * Render view for dashboard.
+         * 
+         * @return view
+         */
         function loadDashboard()
         {
             $dashboardData = $this->dashboardData();
@@ -23,6 +28,11 @@
             return view("dashboard/dashboard", ['user'=>$user, 'pageTitle'=>$pageTitle, 'dashboard'=>$dashboardData]);
         }
 
+        /**
+         * Get stats data for dashboard view.
+         * 
+         * @return array $data
+         */
         function dashboardData()
         {
             if (Auth::user()->department != "All"){

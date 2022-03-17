@@ -16,9 +16,9 @@
         }
 
         /**
-         * 
          * Get departments for first step when raising new ticket.
          * 
+         * @return view
          */
         function getDepartments()
         {
@@ -28,9 +28,9 @@
         }
 
         /**
-         * 
          * List all departments.
          * 
+         * @return view
          */
         function listDepartments()
         {
@@ -43,9 +43,11 @@
         }
 
         /**
-         * 
          * Create new department. If no image is provided, placeholder will be generated.
          * 
+         * @param Request $request
+         * 
+         * @return string
          */
         function create(Request $request)
         {
@@ -70,9 +72,11 @@
         }
 
         /**
-         * 
          * Update existing department with new data. When no new image is provided, the old one will be kept.
          * 
+         * @param Request $request
+         * @param Department $departmentID
+         * @return string
          */
         function update(Request $request, $departmentID)
         {
@@ -87,9 +91,10 @@
         }
 
         /**
-         * 
          * Delete department.
          * 
+         * @param Request $request
+         * @return string
          */
         function delete(Request $request)
         {
@@ -101,9 +106,9 @@
         }
 
         /**
-         * 
          * Generate view for new department form.
          * 
+         * @return view
          */
         function addDepartment()
         {
@@ -114,9 +119,10 @@
         }
 
         /**
-         * 
          * Generate view for edit department form.
          * 
+         * @param Department $departmentID
+         * @return view
          */
         function editDepartment($departmentID)
         {

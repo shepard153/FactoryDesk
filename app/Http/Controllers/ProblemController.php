@@ -9,6 +9,12 @@
 
     Class ProblemController extends Controller
     {
+
+        /**
+         * List all available problems.
+         * 
+         * @return view
+         */
         public function listProblems()
         {
             $pageTitle = "Edytor formularza";
@@ -21,6 +27,12 @@
             ]);
         }
 
+        /**
+         * Create new problem for given position and department.
+         * 
+         * @param Request $request
+         * @return view
+         */
         public function create(Request $request)
         {
             $request->validate([
@@ -38,6 +50,12 @@
             return back()->with('message', "Problem został utworzony.");
         }
 
+        /**
+         * Update existing problem with new data.
+         * 
+         * @param Request $request
+         * @return view
+         */
         public function update(Request $request)
         {            
             $problem = Problem::find($request->save);
@@ -55,6 +73,11 @@
             return back()->with('message', "Wprowadzone zmiany zostały zapisane.");
         }
 
+        /**
+         * Delete existing problem.
+         * 
+         * @return view
+         */
         public function delete(Request $request)
         {
             $problem = Problem::find($request->confirmDelete);

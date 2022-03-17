@@ -14,7 +14,7 @@
     <a href="{{ url ('tickets/active') }}" class="btn btn-primary">Aktywne</a>
     <div class="col rounded shadow" style="background: white; margin-top: 1vw;">
         @if ($tickets->count() > 0)
-        <table class="table table-striped table-hover">
+        <table class="table table-hover">
             <div id="paging"><p class="lead" style="padding: 0.7vw 0px 0px 1vw;">Wyświetlane {{ $tickets->firstItem() }} - {{ $tickets->lastItem() }} z {{ $tickets->total() }} wyników.</p></div>
             <thead>
                 <tr>
@@ -65,13 +65,6 @@
              </tr>
              @endforeach
         </table>
-        @php
-        if ($order == null){
-            $page = "tickets";
-        }else{
-            $page = 'tickets?sort='.$sort.'&order='.$order;
-        }
-        @endphp
         <nav aria-label="paging" style="padding: 0vw 0vw 0vw 1vw;">
             <ul class="pagination">
                 <li class="page-item">
@@ -100,8 +93,5 @@
                 window.location = $(this).data("href");
             });
         });
-        function navigatePage(){
-            location.href = "http://stackoverflow.com";
-        }
     </script>
 @endsection

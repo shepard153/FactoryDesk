@@ -9,6 +9,11 @@
 
     Class ZoneController extends Controller
     {
+        /**
+         * List all available zones.
+         * 
+         * @return view
+         */
         public function listZones()
         {
             $pageTitle = "Edytor formularza";
@@ -21,6 +26,12 @@
             ]);
         }
 
+        /**
+         * Create new zone for given department.
+         * 
+         * @param Request $request
+         * @return View
+         */
         public function create(Request $request)
         {
             $request->validate(['zone_name' => 'required|unique:Zones']);
@@ -31,6 +42,12 @@
 
         }
 
+        /**
+         * Update existing zone with new data.
+         * 
+         * @param Request @request
+         * @return view
+         */
         public function update(Request $request)
         {
             $request->validate(['zone_name' => 'required|unique:Zones']);
@@ -42,6 +59,12 @@
             return back()->with('message', "Wprowadzone zmiany zostały zapisane.");
         }
 
+        /**
+         * Delete existing zone.
+         * 
+         * @param Request $request
+         * @return view
+         */
         public function delete(Request $request)
         {
             $zone = Zone::find($request->confirmDelete);
