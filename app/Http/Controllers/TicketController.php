@@ -37,7 +37,7 @@
          * Render view for new ticket request. Function finds users IP address and with it, finds the device name and
          * strips it from ".carcgl.com" to prevent long names, eg. PLTR-10-XXX-D, instead of PLTR-10-XXX-D.carcgl.com.
          * After that the department name is taken from the URL and stripped from spaces - %20.
-         * 
+         *
          * @param Zone $zone
          * @param Request $request
          * @return view
@@ -57,13 +57,13 @@
             $url = url()->current();
             $department = explode("/", $url);
             $department = json_decode(str_replace("%20", " ", json_encode(end($department))));
-            
+
             return view("ticket/ticket_step2", ['domain' => $domain, "department" => $department, "zones" => $zones]);
         }
 
         /**
          * Ajax request to get available positions based on chosen zone.
-         * 
+         *
          * @param Position $position
          * @param string $zoneName
          * @return array $positions
@@ -76,7 +76,7 @@
 
         /**
          * Ajax request to get available problem based on chosen position and department.
-         * 
+         *
          * @param Position $position
          * @param string $department
          * @param string $positionName
@@ -91,7 +91,7 @@
         /**
          * Ajax request to get all problems for chosen department. Function is a part of a dashboard ticket
          * details service. If agent changes ticket department, all available problems will be listed.
-         * 
+         *
          * @param Problem $problem
          * @param string $department
          * @return array @problems
@@ -99,19 +99,19 @@
         function ajaxProblemsForStaff(Problem $problem, $department)
         {
             $problems = $problem->getProblemsByDepartment($department);
-            return json_encode($problems);          
+            return json_encode($problems);
         }
 
         /**
          * Send ticket and place data in database while attachment (if provided) is placed in ticket_attachments folder on disk.
          * If operation is successful, the user will be prompted with success message na ticket ID.
-         * 
+         *
          * @param Request $request
          * @return view
          */
         function sendTicket(Request $request)
         {
-            $this->ticket->createTicket($request->name, $request->department, $request->zoneSelect, $request->positionSelect, $request->problemSelect, 
+            $this->ticket->createTicket($request->name, $request->department, $request->zoneSelect, $request->positionSelect, $request->problemSelect,
                                     $request->prioritySelect, $request->message);
 
             $ticketID = $this->ticket->ticketID;
@@ -125,7 +125,7 @@
             }
             else{
                 $filePath = null;
-            }           
+            }
 
             return view("ticket/ticket_sent")->with('ticketID', $ticketID);
         }
@@ -133,14 +133,14 @@
         /**
          * List all tickets for agents. By default pagination is set to 20 tickets per page. Here you can also change the sorting arrows
          * in $arrows array. Default ones are from font awesome package.
-         * 
+         *
          * @param Request $request
          * @return view
          */
-        function ticketList(Request $request) 
+        function ticketList(Request $request)
         {
             $pageTitle = "Zgłoszenia";
-            
+
             if ($request->sort != null){
                 $request->order = $request->order == 'desc' ? 'asc': 'desc';
                 $tickets = $this->ticket->getTickets($request->sort, $request->order);
@@ -161,12 +161,12 @@
         /**
          * Placeholder function to be deleted in future versions. Put status options into original function.
          * Same with builder queries. Use Eloquent instead.
-         * 
+         *
          * @param Request $request
          * @param int $status
          * @return view
          */
-        function ticketListByStatus(Request $request, $status) 
+        function ticketListByStatus(Request $request, $status)
         {
             $pageTitle = "Zgłoszenia";
             switch ($status){
@@ -186,7 +186,7 @@
                 $request->order = $request->order == 'desc' ? 'asc': 'desc';
                 $tickets = $this->ticket->getTicketsByStatus($status, $request->sort, $request->order);
             }else{
-                $tickets = $this->ticket->getTicketsByStatus($status);                
+                $tickets = $this->ticket->getTicketsByStatus($status);
             }
 
             $arrows = str_replace(array('asc','desc'), array('fa-solid fa-arrow-up-wide-short','fa-solid fa-arrow-down-wide-short'), $request->order);
@@ -201,7 +201,7 @@
 
         /**
          * Render ticket details page for given ticket ID.
-         * 
+         *
          * @param Department $department
          * @param Problem $problem
          * @param Note $note
@@ -221,7 +221,7 @@
             $history = TicketHistory::where('ticketID', $id)->get();
             $attachment = TicketAttachment::where('ticketID', $id)->first();
             $staffMembers = Staff::all();
-            
+
             return view("dashboard/ticket", [
                 'pageTitle' => $pageTitle,
                 'ticket' => $ticket,
@@ -230,12 +230,12 @@
                 'notes' => $notes,
                 'history' => $history,
                 'attachment' => $attachment,
-                'staffMembers' => $staffMembers]);   
+                'staffMembers' => $staffMembers]);
         }
 
         /**
          * All available ticket actions (Take/Close/Reopen),
-         * 
+         *
          * @param Request $request
          * @param int @id
          * @return string $message
@@ -255,8 +255,8 @@
                 else if ($request->closeTicket){
                     $ticket->ticket_status = 2;
                     $ticket->date_modified = new \DateTime('NOW');
-                    $ticket->date_closed = new \DateTime('NOW'); 
-                    
+                    $ticket->date_closed = new \DateTime('NOW');
+
                     $message = "Zamknięto zgłoszenie.";
                 }
                 else{
@@ -280,7 +280,7 @@
                 $ticket->problem = $request->problemSelect;
                 $ticket->priority = $request->prioritySelect;
                 $ticket->owner = auth()->user()->name;
-            
+
                 $this->addToHistory($request, $id, $ticket);
 
                 $ticket->save();
@@ -293,7 +293,7 @@
 
         /**
          * Part of modify ticket action. All changes are sent to database and are available in ticket details view.
-         * 
+         *
          * @param Request $request
          * @param int $id
          * @param Ticket $ticket
@@ -322,14 +322,14 @@
                     $history->ticketID = $id;
                     $history->username = auth()->user()->name;
                     $history->contents = $edit;
-                    $history->save();  
+                    $history->save();
                 }
             }
         }
 
         /**
          * Create note action.
-         * 
+         *
          * @param Request $request
          * @param int $id
          * @return string

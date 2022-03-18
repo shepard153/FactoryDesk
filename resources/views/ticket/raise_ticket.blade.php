@@ -1,12 +1,12 @@
 ﻿@extends('ticket/ticket_template')
- 
+
 @section('title', 'RUGDesk')
- 
+
 @section('navbar')
     @parent
- 
+
 @endsection
- 
+
 @section('content')
     <div class="alert alert-danger text-center">
         <h4>System testowy - pomimo wysłanego zgłoszenia poinformuj przełożonego.</h4>
