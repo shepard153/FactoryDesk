@@ -1,48 +1,12 @@
-<!--
-if(isset($_POST['addNote']))
-{
-    $addNote = $conn->prepare("INSERT INTO Notes (ticketID, username, tresc) VALUES (:ticketID, :username, :tresc)");
-    $addNote->bindParam(':ticketID', $ticketID);
-    $addNote->bindParam(':username', $_SESSION['username']);
-    $addNote->bindParam(':tresc', $_POST['notatka']);
-    $addNote->execute();
-    $success[] = "Pomyślnie dodano notatkę.";
-}
-
-if(isset($_POST['changeStatus']))
-{
-    switch ($ticket['status']){
-        case 1:
-            $status = 2;
-            $updateTicket = $conn->prepare("UPDATE TicketList SET status=:status, data_zamkniecia = GETDATE() WHERE ticketID = :ticketID");
-            $modyfikacja = "Zgłoszenie zamknięte";
-            autoHistoryUpdate($conn, $ticketID, $modyfikacja);
-            $success[] = "Zamknięto zgłoszenie.";
-            break;
-        case 2:
-            $status = 1;
-            $updateTicket = $conn->prepare("UPDATE TicketList SET status=:status, data_zamkniecia = NULL WHERE ticketID = :ticketID");
-            $modyfikacja = "Zgłoszenie otwarte ponownie";
-            autoHistoryUpdate($conn, $ticketID, $modyfikacja);
-            $success[] = "Zgłoszenie zostało ponownie otwarte.";
-            break;
-        default:
-            break;
-        }
-    $updateTicket->bindParam(':status', $status);
-    $updateTicket->bindParam(':ticketID', $ticketID);
-    $updateTicket->execute();
-}
--->
 @extends('dashboard/dashboard_template')
- 
+
  @section('title', 'RUGDesk')
-  
+
  @section('sidebar')
      @parent
-  
+
  @endsection
-  
+
  @section('content')
 
  @php
@@ -63,7 +27,7 @@ if(isset($_POST['changeStatus']))
                 <button class="nav-link" id="nav-history-tab" data-bs-toggle="tab" data-bs-target="#nav-history" type="button" role="tab" aria-controls="nav-note" aria-selected="false">Historia zgłoszenia</button>
             </div>
         </nav>
-                
+
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-ticket" role="tabpanel" aria-labelledby="nav-ticket-tab">
                 <form method="post" action="{{ url('modifyTicketAction/'.$ticket->ticketID) }}">
@@ -71,21 +35,21 @@ if(isset($_POST['changeStatus']))
                     <div class="row" style="margin-top:1vw;">
                         <div class="col">
                             <span class="fs-5">Data utworzenia {{ $ticket->date_created }}</span>
-                            <span class="fs-5" style="margin-left: 2vw">Data podjęcia 
+                            <span class="fs-5" style="margin-left: 2vw">Data podjęcia
                                     @if ($ticket->date_opened == null)
                                         --------
                                     @else
                                         {{ $ticket->date_opened }}
                                     @endif
                             </span>
-                            <span class="fs-5" style="margin-left: 2vw">Data zamknięcia 
+                            <span class="fs-5" style="margin-left: 2vw">Data zamknięcia
                                     @if ($ticket->date_closed == null)
                                         --------
                                     @else
                                         {{ $ticket->date_closed }}
                                     @endif
                             </span>
-                            <span class="fs-5" style="margin-left: 4.3vw;">Status 
+                            <span class="fs-5" style="margin-left: 4.3vw;">Status
                                     @if($ticket->ticket_status == 0)
                                         <span class="badge rounded-pill bg-success">Nowe</span>
                                     @elseif($ticket->ticket_status == 1)
@@ -102,6 +66,10 @@ if(isset($_POST['changeStatus']))
                         <div class="col">
                             <label class="form-label">Nazwa</label>
                             <input type="text" class="form-control" value="{{ $ticket->name }}" disabled/>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Zgłaszający</label>
+                            <input type="text" class="form-control" value="{{ $ticket->username }}" disabled/>
                         </div>
                         <div class="col">
                             <label class="form-label">Obszar/dział produkcji</label>
@@ -132,7 +100,7 @@ if(isset($_POST['changeStatus']))
                                     @if ($problem->problem_name == $ticket->problem)
                                         <option value="{{ $problem->problem_name }}" selected>{{ $problem->problem_name }}</option>
                                     @else
-                                        <option value="{{ $problem->problem_name }}">{{ $problem->problem_name }}</option>                                  
+                                        <option value="{{ $problem->problem_name }}">{{ $problem->problem_name }}</option>
                                     @endif
                                 @endforeach
                             </select>
@@ -154,7 +122,7 @@ if(isset($_POST['changeStatus']))
                                     @if ($member->name == $ticket->owner)
                                         <option value="{{ $member->name }}" selected>{{ $member->name }}</option>
                                     @elseif ($member->login != 'root')
-                                        <option value="{{ $member->name }}">{{ $member->name }}</option>                                  
+                                        <option value="{{ $member->name }}">{{ $member->name }}</option>
                                     @endif
                                 @endforeach
                             </select>
@@ -203,7 +171,7 @@ if(isset($_POST['changeStatus']))
                             <textarea class="form-control" name="noteContents" maxlength="250"></textarea><br/>
                             <input name="addNote" class="btn btn-primary" type="Submit" value="Dodaj notatkę"/>
                         </div>
-                    </form> 
+                    </form>
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-history" role="tabpanel" aria-labelledby="nav-history-tab">
@@ -254,10 +222,10 @@ if(isset($_POST['changeStatus']))
                         type: "GET",
                         dataType: "json",
                         success:function(problemData) {
-                                
+
                             $('#problemSelect').empty();
                             $('#problemSelect').removeAttr('disabled', 'disabled');
-                            $.each(problemData, function(key, value) {                                  
+                            $.each(problemData, function(key, value) {
                                 $('#problemSelect').append('<option value="'+ value['problem_name'] +'">'+ value['problem_name'] +'</option>');
                             });
                         }

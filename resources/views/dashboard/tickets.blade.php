@@ -1,12 +1,12 @@
 @extends('dashboard/dashboard_template')
- 
+
  @section('title', 'RUGDesk')
-  
+
  @section('sidebar')
      @parent
-  
+
  @endsection
-  
+
  @section('content')
     <a href="{{ url ('tickets/new') }}" class="btn btn-success">Nowe</a>
     <a href="{{ url ('tickets/taken') }}" class="btn btn-warning">Podjęte</a>
@@ -33,11 +33,11 @@
             </thead>
             @foreach ($tickets as $ticket)
                 @if ($ticket->priority == 4)
-                    <tr class='clickable-row' data-href='ticket/{{ $ticket->ticketID }}' style="background-color: #ff7f7f">
+                    <tr class='clickable-row' data-href="{{ url ('ticket/'.$ticket->ticketID) }}" style="background-color: #ff7f7f">
                 @elseif ($ticket->priority == 0)
-                    <tr class='clickable-row' data-href='ticket/{{ $ticket->ticketID }}' style="background-color: #d4ebf2">         
+                    <tr class='clickable-row' data-href="{{ url ('ticket/'.$ticket->ticketID) }}" style="background-color: #d4ebf2">
                 @else
-                    <tr class='clickable-row' data-href='ticket/{{ $ticket->ticketID }}'>
+                    <tr class='clickable-row' data-href="{{ url ('ticket/'.$ticket->ticketID) }}">
                 @endif
                 <td>
                     @switch ($ticket->ticket_status)
@@ -52,9 +52,9 @@
                             @break
                     @endswitch
                 </td>
-                <td><strong><a href="ticket/{{ $ticket->ticketID }}" class="link-success text-decoration-none">{{ $ticket->zone }}</a></strong></td>
+                <td><strong><a href="{{ url ('ticket/'.$ticket->ticketID) }}" class="link-success text-decoration-none">{{ $ticket->zone }}</a></strong></td>
                 <td>{{ $ticket->position }}</td>
-                <td style="width: 20%"><strong><a href="ticket/{{ $ticket->ticketID }}" class="link-success text-decoration-none">{{ $ticket->problem }}</a></strong></td>
+                <td style="width: 20%"><strong><a href="{{ url ('ticket/'.$ticket->ticketID) }}" class="link-success text-decoration-none">{{ $ticket->problem }}</a></strong></td>
                 <td>{{ $ticket->name }}</td>
                 <td>{{ $ticket->date_created }}</td>
                 @if (strpos(url()->current(), 'closed') == true)

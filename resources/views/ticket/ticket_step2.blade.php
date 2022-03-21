@@ -1,12 +1,12 @@
 ﻿@extends('ticket/ticket_template')
- 
+
 @section('title', 'RUGDesk')
- 
+
 @section('navbar')
     @parent
- 
+
 @endsection
- 
+
 @section('content')
         <div class="row justify-content-end">
             <form class="row" method="post" enctype="multipart/form-data" action="{{ route('sendTicket') }}">
@@ -16,13 +16,17 @@
                     <div class="form-group">
                         <label class="form-label">Nazwa komputera</label>
                         <input type="text" name="name" value="{{ $domain }}" class="form-control" readonly>
-                    </div>	
+                    </div>
+                    <div class="form-group top-margin">
+                        <label class="form-label">Nazwa użytkownika</label>
+                        <input type="text" name="username" value="User" class="form-control" readonly>
+                    </div>
                     <div class="form-group top-margin">
                         <label class="form-label">Obszar/dział produkcji <span style="color:red">*</span></label>
                         <select id="zoneSelect" name="zoneSelect" class="form-select form-select-lg mb-3" required>
                             <option value="">Wybierz obszar produkcji</option>
                             @foreach ($zones as $zone)
-                                <option value="{{ $zone->zone_name }}">{{ $zone->zone_name }}</option> 
+                                <option value="{{ $zone->zone_name }}">{{ $zone->zone_name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -94,11 +98,11 @@
                             type: "GET",
                             dataType: "json",
                             success:function(positionData) {
-                                
+
                                 $('#positionSelect').empty();
                                 $('#positionSelect').removeAttr('disabled', 'disabled');
                                 $('#positionSelect').append('<option>Wybierz stanowisko</option>');
-                                $.each(positionData, function(key, value) {                                  
+                                $.each(positionData, function(key, value) {
                                     $('#positionSelect').append('<option value="'+ value['position_name'] +'">'+ value['position_name'] +'</option>');
                                 });
                             }
@@ -123,11 +127,11 @@
                             type: "GET",
                             dataType: "json",
                             success:function(problemData) {
-                                
+
                                 $('#problemSelect').empty();
                                 $('#problemSelect').removeAttr('disabled', 'disabled');
                                 $('#problemSelect').append('<option value="null">Wybierz problem</option>');
-                                $.each(problemData, function(key, value) {                                
+                                $.each(problemData, function(key, value) {
                                     $('#problemSelect').append('<option value="'+ value['problem_name'] +'">'+ value['problem_name'] +'</option>');
                                 });
                             }
@@ -137,7 +141,7 @@
                         $('#problemSelect').attr('disabled', 'disabled');
                         $('#problemSelect').append('<option value="null">Wybierz problem</option>');
                         $('#submit').prop("disabled", true);
-                    } 
+                    }
                 });
 
                 $('#problemSelect').on('change', function() {
@@ -146,7 +150,7 @@
                         $('#submit').removeAttr('disabled', 'disabled');
                     }else{
                         $('#submit').prop("disabled", true);
-                    } 
+                    }
                 });
             });
         </script>

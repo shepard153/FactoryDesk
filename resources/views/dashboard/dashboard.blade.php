@@ -1,19 +1,19 @@
 @extends('dashboard/dashboard_template')
- 
+
  @section('title', 'RUGDesk')
-  
+
  @section('sidebar')
      @parent
-  
+
  @endsection
-  
+
  @section('content')
   <meta http-equiv="refresh" content="30">
         <div class="row justify-content-center">
           <div class="col rounded shadow" style="background: white; margin: 0vw 1vw 0vw 1vw;">
             <p class="fs-3 border-bottom" style="text-align: center;">Najnowsze zgłoszenia</p>
             <table class="table table-hover">
-              <thead>               
+              <thead>
                 <tr>
                   <td><b>Problem</b></td>
                   <td><b>Obszar</b></td>
@@ -25,13 +25,13 @@
               </thead>
             @if ($dashboard['newest'] != null)
               @foreach($dashboard['newest'] as $newest)
-                @if ($loop->iteration == 6)
+                @if ($loop->iteration > 5)
                   @break
                 @endif
                 @if ($newest->priority == 4)
                   <tr class='clickable-row' data-href='ticket/{{ $newest->ticketID }}' style="background-color: #ff7f7f">
                 @elseif ($newest->priority == 0)
-                  <tr class='clickable-row' data-href='ticket/{{ $newest->ticketID }}' style="background-color: #d4ebf2">         
+                  <tr class='clickable-row' data-href='ticket/{{ $newest->ticketID }}' style="background-color: #d4ebf2">
                 @else
                   <tr class='clickable-row' data-href='ticket/{{ $newest->ticketID }}'>
                 @endif
@@ -59,7 +59,7 @@
                     @endswitch
                   </td>
                   <td>{{ $newest->date_created }}</td>
-                  <td>          
+                  <td>
                       @if ($newest->ticket_status == '0')
                         <span class='badge rounded-pill bg-success'>Nowe</span>
                       @elseif ($newest->ticket_status == '1')

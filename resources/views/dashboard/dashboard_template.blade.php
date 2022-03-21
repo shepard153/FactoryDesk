@@ -122,7 +122,10 @@
     <div class="dropdown">
       <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
         <img src="{{ asset('public/img/agent.png') }}" alt="" class="rounded-circle me-2" style="width: 48px; height: 48px; margin-top: 0.1vw">
-        <strong>{{ auth()->user()->name }}</strong>
+        @php
+            $username = wordwrap(auth()->user()->name, 20, "<br />\n");
+            echo "<strong>$username</strong>"
+        @endphp
       </a>
       <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1" style="">
         <li><a class="dropdown-item" href="{{ url('profile/staff') }}"><svg class="bi me-2" width="16" height="16"><use xlink:href="#gear-fill"></use></svg>Ustawienia</a></li>
@@ -140,9 +143,9 @@
         <p class="fs-2 border-bottom" style="background:white; margin: 0 -0.6vw 1vw -0.6vw; padding: 0.5vw 4vw 0.6vw 0vw; text-align: right">{{ $pageTitle }}</p>
         @yield('content')
       </div>
-    </div>     
+    </div>
   </div>
-  
+
 </main>
 </body>
 <script src="{{ asset('public/js/bootstrap.bundle.min.js') }}" async="async"></script>

@@ -5,37 +5,32 @@
     use App\Models\Department;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Storage;
-    
+
     Class DepartmentController
     {
         protected $department;
 
-        function __construct(Department $department)
-        {
-            $this->department = $department;
-        }
-
         /**
          * Get departments for first step when raising new ticket.
-         * 
+         *
          * @return view
          */
         function getDepartments()
         {
-            $departments = $this->department::all();
+            $departments = Department::all();
 
             return view ('ticket/raise_ticket')->with('departments', $departments);
         }
 
         /**
          * List all departments.
-         * 
+         *
          * @return view
          */
         function listDepartments()
         {
             $pageTitle = "Edytor formularza";
-            $departments = $this->department::all();
+            $departments = Department::all();
 
             return view('dashboard/departments', [
                 'pageTitle' => $pageTitle,
@@ -43,10 +38,10 @@
         }
 
         /**
-         * Create new department. If no image is provided, placeholder will be generated.
-         * 
+         * Create new department. If no image is provided, placeholder will be inserted as alt <img> atribute.
+         *
          * @param Request $request
-         * 
+         *
          * @return string
          */
         function create(Request $request)
@@ -61,7 +56,7 @@
             }
             else{
                 $filePath = null;
-            }       
+            }
 
             Department::create([
                 'department_name' => $request->department_name,
@@ -73,18 +68,25 @@
 
         /**
          * Update existing department with new data. When no new image is provided, the old one will be kept.
-         * 
+         *
          * @param Request $request
          * @param Department $departmentID
          * @return string
          */
         function update(Request $request, $departmentID)
         {
-            $request->validate(['department_name' => 'required|unique:Departments']);
-
             $this->department = Department::find($departmentID);
             $this->department->department_name = $request->department_name;
-            $this->department->image_path = $request->image;
+
+            $this->department->isDirty('department_name') ? $request->validate(['department_name' => 'required|unique:Departments']) : null;
+
+            if ($request->hasFile('image')){
+                $file = $request->file('image');
+                $fileName = str_replace(" ", "-",$request->department_name);
+                $this->department->image_path = $file->storeAs('departments_img', "department-$fileName.". $file->getClientOriginalExtension());
+                $this->department->image_path = "departments_img/department-$fileName." . $file->getClientOriginalExtension();
+            }
+
             $this->department->save();
 
             return back()->with('message', "Wprowadzone zmiany zostały zapisane.");
@@ -92,7 +94,7 @@
 
         /**
          * Delete department.
-         * 
+         *
          * @param Request $request
          * @return string
          */
@@ -102,12 +104,12 @@
             $departmentName = $this->department->department_name;
             $this->department->delete();
 
-            return back()->with('message', "Konto użytkownika $departmentName zostało usunięte.");
+            return back()->with('message', "Dział $departmentName został usunięty.");
         }
 
         /**
          * Generate view for new department form.
-         * 
+         *
          * @return view
          */
         function addDepartment()
@@ -120,7 +122,7 @@
 
         /**
          * Generate view for edit department form.
-         * 
+         *
          * @param Department $departmentID
          * @return view
          */
@@ -128,11 +130,10 @@
         {
             $pageTitle = "Edytor formularza";
 
-            $this->department = $this->department::find($departmentID);
+            $this->department = Department::find($departmentID);
 
             return view('dashboard/edit_department', [
                 'pageTitle' => $pageTitle,
                 'department' => $this->department]);
         }
     }
-    

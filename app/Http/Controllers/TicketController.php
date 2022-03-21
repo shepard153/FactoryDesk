@@ -28,11 +28,6 @@
          */
         protected $attachment;
 
-        function __construct(Ticket $ticket)
-        {
-            $this->ticket = $ticket;
-        }
-
         /**
          * Render view for new ticket request. Function finds users IP address and with it, finds the device name and
          * strips it from ".carcgl.com" to prevent long names, eg. PLTR-10-XXX-D, instead of PLTR-10-XXX-D.carcgl.com.
@@ -68,9 +63,9 @@
          * @param string $zoneName
          * @return array $positions
          */
-        function ajaxPositionsRequest(Position $position, $zoneName)
+        function ajaxPositionsRequest($zoneName)
         {
-            $positions = $position->getPositionsByZone($zoneName);
+            $positions = Position::where('zones_list', 'LIKE', "%$zoneName%")->get();
             return json_encode($positions);
         }
 
@@ -82,9 +77,9 @@
          * @param string $positionName
          * @return array $problems
          */
-        function ajaxProblemsRequest(Problem $problem, $department, $positionName)
+        function ajaxProblemsRequest($department, $positionName)
         {
-            $problems = $problem->getProblemsByPosition($positionName, $department);
+            $problems = Problem::where('departments_list', 'LIKE', "%$department%")->where('positions_list', 'LIKE', "%$positionName%")->orderBy('lp', 'asc')->get();
             return json_encode($problems);
         }
 
@@ -96,9 +91,9 @@
          * @param string $department
          * @return array @problems
          */
-        function ajaxProblemsForStaff(Problem $problem, $department)
+        function ajaxProblemsForStaff($department)
         {
-            $problems = $problem->getProblemsByDepartment($department);
+            $problems = Problem::where('departments_list', 'LIKE', "%$department%")->orderBy('lp', 'asc')->get();
             return json_encode($problems);
         }
 
@@ -111,17 +106,23 @@
          */
         function sendTicket(Request $request)
         {
-            $this->ticket->createTicket($request->name, $request->department, $request->zoneSelect, $request->positionSelect, $request->problemSelect,
-                                    $request->prioritySelect, $request->message);
+            $this->ticket = Ticket::create(['name' => $request->name,
+                'department' => $request->department,
+                'zone' => $request->zoneSelect,
+                'position' => $request->positionSelect,
+                'problem' => $request->problemSelect,
+                'ticket_message' => $request->message,
+                'priority' => $request->prioritySelect,
+                'username' => $request->username]);
 
             $ticketID = $this->ticket->ticketID;
 
-            if ($request->file('attachment') != null){
+            if ($request->hasFile('attachment')){
                 $file = $request->file('attachment');
                 $filePath = $file->storeAs('ticket_attachments', "ticket-$ticketID-attachment.". $file->getClientOriginalExtension());
-                $filePath = "ticket_attachments/";
                 $fileName = "ticket-" . $ticketID . "-attachment." . $file->getClientOriginalExtension();
-                $this->attachment->insertAttachmentData($ticketID, $fileName, $filePath);
+                $filePath = "ticket_attachments/";
+                TicketAttachment::create(['ticketID' => $ticketID, 'file_name' => $fileName, 'file_path'=>$filePath]);
             }
             else{
                 $filePath = null;
@@ -143,16 +144,16 @@
 
             if ($request->sort != null){
                 $request->order = $request->order == 'desc' ? 'asc': 'desc';
-                $tickets = $this->ticket->getTickets($request->sort, $request->order);
+                $tickets = Ticket::orderBy($request->sort, $request->order)->paginate(20)->withQueryString();
             }else{
-                $tickets = $this->ticket->getTickets();
+                $tickets = Ticket::orderBy('date_modified', 'desc')->paginate(20)->withQueryString();
             }
 
             $arrows = str_replace(array('asc','desc'), array('fa-solid fa-arrow-up-wide-short','fa-solid fa-arrow-down-wide-short'), $request->order);
 
             return view("dashboard/tickets", [
                 'pageTitle' => $pageTitle,
-                'tickets' => $tickets->paginate(20)->withQueryString(),
+                'tickets' => $tickets,
                 'sort' => $request->sort,
                 'order' => $request->order,
                 'arrows' => $arrows]);
@@ -169,6 +170,7 @@
         function ticketListByStatus(Request $request, $status)
         {
             $pageTitle = "Zgłoszenia";
+
             switch ($status){
                 case "new":
                     $status = 0;
@@ -182,18 +184,19 @@
                 default:
                     $status = 'active';
             }
+
             if ($request->sort != null){
                 $request->order = $request->order == 'desc' ? 'asc': 'desc';
-                $tickets = $this->ticket->getTicketsByStatus($status, $request->sort, $request->order);
+                $tickets = Ticket::where('ticket_status', '=', $status)->orderBy($request->sort, $request->order)->paginate(20)->withQueryString();
             }else{
-                $tickets = $this->ticket->getTicketsByStatus($status);
+                $tickets = Ticket::where('ticket_status', '=', $status)->orderBy('date_modified', 'desc')->paginate(20)->withQueryString();
             }
 
             $arrows = str_replace(array('asc','desc'), array('fa-solid fa-arrow-up-wide-short','fa-solid fa-arrow-down-wide-short'), $request->order);
 
             return view("dashboard/tickets", [
                 'pageTitle' => $pageTitle,
-                'tickets' => $tickets->paginate(20)->withQueryString(),
+                'tickets' => $tickets,
                 'sort' => $request->sort,
                 'order' => $request->order,
                 'arrows' => $arrows]);
@@ -202,21 +205,15 @@
         /**
          * Render ticket details page for given ticket ID.
          *
-         * @param Department $department
-         * @param Problem $problem
-         * @param Note $note
-         * @param TicketHistory $history
-         * @param TicketAttachment $attachment
-         * @param Staff $staff
          * @param int $id
          * @return view
          */
-        function ticketDetails(Department $departments, Problem $problem, Note $notes, TicketHistory $history, TicketAttachment $attachment, Staff $staff, $id)
+        function ticketDetails($id)
         {
             $pageTitle = "Zgłoszenia";
-            $ticket = $this->ticket::where('ticketID', $id)->first();
+            $ticket = Ticket::where('ticketID', $id)->first();
             $departments = Department::all();
-            $problems = $problem->getProblemsByDepartment($ticket->department);
+            $problems = Problem::where('departments_list', 'LIKE', "%$ticket->department%")->get();
             $notes = Note::where('ticketID', $id)->get();
             $history = TicketHistory::where('ticketID', $id)->get();
             $attachment = TicketAttachment::where('ticketID', $id)->first();
@@ -249,6 +246,7 @@
                     $ticket->ticket_status = 1;
                     $ticket->date_modified = new \DateTime('NOW');
                     $ticket->date_opened = new \DateTime('NOW');
+                    $ticket->owner = auth()->user()->name;
 
                     $message = "Podjęto zgłoszenie.";
                 }
@@ -267,8 +265,6 @@
                     $message = "Ponownie otwarto zgłoszenie.";
                 }
 
-                $ticket->owner = auth()->user()->name;
-
                 $this->addToHistory($request, $id);
 
                 $ticket->save();
@@ -279,7 +275,7 @@
                 $ticket->department = $request->departmentSelect;
                 $ticket->problem = $request->problemSelect;
                 $ticket->priority = $request->prioritySelect;
-                $ticket->owner = auth()->user()->name;
+                $ticket->owner = $request->ownerSelect;
 
                 $this->addToHistory($request, $id, $ticket);
 
@@ -336,12 +332,9 @@
          */
         function addNote(Request $request, $id)
         {
-            $note = new Note;
-            $note->ticketID = $id;
-            $note->username = auth()->user()->name;
-            $note->contents = $request->noteContents;
-            $note->created_at = new \DateTime('NOW');
-            $note->save();
+            Note::create(['ticketID' => $id,
+                'username' => auth()->user()->name,
+                'contents' => $request->noteContents]);
 
             $ticket = Ticket::find($id);
             $ticket->date_modified = new \DateTime('NOW');

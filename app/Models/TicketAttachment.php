@@ -1,5 +1,5 @@
 <?php
-    
+
     namespace App\Models;
 
     use Illuminate\Support\Facades\DB;
@@ -25,9 +25,14 @@
 
         public $timestamps = null;
 
-        function insertAttachmentData($ticketID, $fileName, $filePath)
-        {
-            DB::table('Ticket_attachments')->insert(['ticketID' => $ticketID, 'file_name' => $fileName, 'file_path' => $filePath]);
-        }
-
+        /**
+         * The attributes that are mass assignable.
+         *
+         * @var array<int, string>
+         */
+        protected $fillable = [
+            'ticketID',
+            'file_name',
+            'file_path'
+        ];
     }

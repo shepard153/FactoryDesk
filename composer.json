@@ -10,7 +10,10 @@
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.0",
         "laravel/sanctum": "^2.14",
-        "laravel/tinker": "^2.7"
+        "laravel/tinker": "^2.7",
+        "league/flysystem-ftp": "3.0",
+        "symfony/http-client": "^6.0",
+        "symfony/postmark-mailer": "^6.0"
     },
     "require-dev": {
         "spatie/laravel-ignition": "^1.0",
