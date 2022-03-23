@@ -64,7 +64,7 @@
                     </div>
                     <div class="row" style="margin-top:1vw;">
                         <div class="col">
-                            <label class="form-label">Nazwa</label>
+                            <label class="form-label">Nazwa komputera</label>
                             <input type="text" class="form-control" value="{{ $ticket->name }}" disabled/>
                         </div>
                         <div class="col">
@@ -72,7 +72,7 @@
                             <input type="text" class="form-control" value="{{ $ticket->username }}" disabled/>
                         </div>
                         <div class="col">
-                            <label class="form-label">Obszar/dział produkcji</label>
+                            <label class="form-label">Obszar produkcji</label>
                             <input type="text" class="form-control" value="{{ $ticket->zone }}" disabled/>
                         </div>
                         <div class="col">
@@ -82,7 +82,7 @@
                     </div>
                     <div class="row" style="margin-top:1vw;">
                         <div class="col">
-                            <label class="form-label">Dział</label>
+                            <label class="form-label">Dział obsługi</label>
                             <select id="departmentSelect" name="departmentSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                                 @foreach ($departments as $department)
                                     @if ($department->department_name == $ticket->department)
@@ -114,19 +114,36 @@
                             </select>
                         </div>
                     </div>
+                    <hr>
                     <div class="row" style="margin-top:1vw;">
-                        <div class="col-4">
-                            <label class="form-label">Osoba odpowiedzialna</label>
-                            <select id="ownerSelect" name="ownerSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
-                                @foreach ($staffMembers as $member)
-                                    @if ($member->name == $ticket->owner)
-                                        <option value="{{ $member->name }}" selected>{{ $member->name }}</option>
-                                    @elseif ($member->login != 'root')
-                                        <option value="{{ $member->name }}">{{ $member->name }}</option>
-                                    @endif
-                                @endforeach
-                            </select>
-                        </div>
+                        @if ($ticket->ticket_status != 0)
+                            <div class="col-4">
+                                <label class="form-label">Osoba odpowiedzialna</label>
+                                <select id="ownerSelect" name="ownerSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
+                                    @foreach ($staffMembers as $member)
+                                        @if ($member->name == $ticket->owner)
+                                            <option value="{{ $member->name }}" selected>{{ $member->name }}</option>
+                                        @elseif ($member->login != 'root')
+                                            <option value="{{ $member->name }}">{{ $member->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Zgłoszenie zewnętrzne</label>
+                                @if ($ticket->external_ticketID != null)
+                                    <input type="checkbox" id="isExternal" class="form-check-input" checked>
+                                    <input type="text" id="external_ticketID" name="external_ticketID" class="form-control" value="{{ $ticket->external_ticketID }}"/>
+                                @else
+                                    <input type="checkbox" id="isExternal" class="form-check-input">
+                                    <input type="text" id="external_ticketID" name="external_ticketID" class="form-control" value="" disabled/>
+                                @endif
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Czas obsługi zlecenia</label>
+                                <input type="text" class="form-control" value="{{ date('H:i', strtotime($ticket->time_spent)) }}" disabled/>
+                            </div>
+                        @endif
                     </div>
                     <div class="row" style="margin-top:1vw;">
                         <div class="col">
@@ -135,6 +152,11 @@
                             @elseif ($ticket->ticket_status == 1)
                                 <input name="editTicket" class="btn btn-success" type="Submit" value="Zapisz zmiany"/>
                                 <input name="closeTicket" class="btn btn-danger" style="margin-left:1%" type="Submit" value="Zamknij zgłoszenie"/>
+                                <span class="btn-group" style="float: right">
+                                    <button name="timerAction" class="btn-sm btn-primary" style="margin-left:1%" type="Submit" value="15">+ 15 minut</button>
+                                    <button name="timerAction" class="btn-sm btn-secondary" style="margin-left:1%" type="Submit" value="30">+ 30 minut</button>
+                                    <button name="timerAction" class="btn-sm btn-dark" style="margin-left:1%" type="Submit" value="60">+ 60 minut</button>
+                                </span>
                             @elseif ($date_now < $date_closed)
                                 <input name="reopenTicket" class="btn btn-primary" style="margin-left:1%" type="Submit" value="Otwórz ponownie zgłoszenie {{ $countdown->format('%H:%I:%S') }}"/>
                             @endif
@@ -233,5 +255,15 @@
                 }
             });
         });
+
+        $('#isExternal').click(function() {
+            if ($('#isExternal').is(':checked')){
+                $('#external_ticketID').removeAttr('disabled', 'disabled');
+            }
+            else if (!$('#isExternal').is(':checked')){
+                $('#external_ticketID').prop('disabled', 'disabled');
+
+            }
+        })
     </script>
 @endsection

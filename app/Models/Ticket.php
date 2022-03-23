@@ -37,7 +37,9 @@
             'problem',
             'ticket_message',
             'priority',
-            'username'
+            'username',
+            'time_spent',
+            'external_ticketID'
         ];
 
         /**

@@ -81,7 +81,7 @@
               <table class="table table-sm table-borderless">
                 <thead>
                   <tr class="border-bottom">
-                    <td><img src="{{ asset('public/img/dashboard-icon.png') }}" class="rounded"></td>
+                    <td class="removable"><img src="{{ asset('public/img/dashboard-icon.png') }}" class="rounded"></td>
                     <td style="vertical-align: center"><p class="fs-2" style="margin-bottom: 1.5vw">Statystyki</p></td>
                   </tr>
                   <tr>

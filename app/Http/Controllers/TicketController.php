@@ -239,9 +239,9 @@
          */
         function modifyTicketAction(Request $request, $id)
         {
-            if ($request->takeTicket != null || $request->closeTicket != null || $request->reopenTicket != null){
-                $ticket = Ticket::find($id);
+            $ticket = Ticket::find($id);
 
+            if ($request->takeTicket != null || $request->closeTicket != null || $request->reopenTicket != null){
                 if ($request->takeTicket){
                     $ticket->ticket_status = 1;
                     $ticket->date_modified = new \DateTime('NOW');
@@ -269,15 +269,34 @@
 
                 $ticket->save();
             }
-            else if ($request->editTicket != null){
+            else if ($request->editTicket){
                 $ticket = Ticket::find($id);
 
                 $ticket->department = $request->departmentSelect;
                 $ticket->problem = $request->problemSelect;
                 $ticket->priority = $request->prioritySelect;
                 $ticket->owner = $request->ownerSelect;
+                $ticket->external_ticketID = $request->SNOWID;
 
                 $this->addToHistory($request, $id, $ticket);
+
+                $ticket->save();
+
+                $message = "Zmiany zostały zapisane";
+            }
+            else if ($request->timerAction){
+                $ticket->time_spent == null ? $ticket->time_spent = \DateTime::createFromFormat('H:i', '00:00') : $ticket->time_spent = new \DateTime($ticket->time_spent);
+                switch ($request->timerAction){
+                    case ('15'):
+                        $ticket->time_spent->add(new \DateInterval('PT15M'));
+                        break;
+                    case ('30'):
+                        $ticket->time_spent->add(new \DateInterval('PT30M'));
+                        break;
+                    case ('60'):
+                        $ticket->time_spent->add(new \DateInterval('PT60M'));
+                        break;
+                }
 
                 $ticket->save();
 

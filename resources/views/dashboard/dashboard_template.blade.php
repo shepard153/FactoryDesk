@@ -18,6 +18,11 @@
           h2{
             float:right;
           }
+          @media only screen and (max-width: 1320px) {
+                .removable {
+                    display: none;
+                }
+            }
         </style>
     </head>
 <body>
