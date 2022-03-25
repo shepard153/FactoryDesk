@@ -21,9 +21,8 @@ class Note extends Model
      */
     protected $primaryKey = 'noteID';
 
-    public $timestamps = null;
-
     const CREATED_AT = 'created_at';
+    const UPDATED_AT = null;
 
     /**
      * The attributes that are mass assignable.

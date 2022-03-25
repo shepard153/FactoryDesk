@@ -22,7 +22,7 @@
                     <td><b><a href="{{ url(url()->current()).'?sort=zone&order='.$order }}"><i class="{{ $sort == 'zone' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Obszar</b></td>
                     <td><b><a href="{{ url(url()->current()).'?sort=position&order='.$order }}"><i class="{{ $sort == 'position' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Stanowisko</b></td>
                     <td><b><a href="{{ url(url()->current()).'?sort=problem&order='.$order }}"><i class="{{ $sort == 'problem' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Problem</b></td>
-                    <td><b><a href="{{ url(url()->current()).'?sort=name&order='.$order }}"><i class="{{ $sort == 'name' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Komputer</b</td>
+                    <td><b><a href="{{ url(url()->current()).'?sort=device_name&order='.$order }}"><i class="{{ $sort == 'device_name' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Komputer</b</td>
                     <td><b><a href="{{ url(url()->current()).'?sort=date_created&order='.$order }}"><i class="{{ $sort == 'date_created' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Data zgłoszenia</b></td>
                     @if (strpos(url()->current(), 'closed') == true)
                         <td><b><a href="{{ url(url()->current()).'?sort=date_closed&order='.$order }}"><i class="{{ $sort == 'date_closed' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Data zamknięcia</b></td>
@@ -55,7 +55,7 @@
                 <td><strong><a href="{{ url ('ticket/'.$ticket->ticketID) }}" class="link-success text-decoration-none">{{ $ticket->zone }}</a></strong></td>
                 <td>{{ $ticket->position }}</td>
                 <td style="width: 20%"><strong><a href="{{ url ('ticket/'.$ticket->ticketID) }}" class="link-success text-decoration-none">{{ $ticket->problem }}</a></strong></td>
-                <td>{{ $ticket->name }}</td>
+                <td>{{ $ticket->device_name }}</td>
                 <td>{{ $ticket->date_created }}</td>
                 @if (strpos(url()->current(), 'closed') == true)
                     <td>{{ $ticket->date_closed }}</td>

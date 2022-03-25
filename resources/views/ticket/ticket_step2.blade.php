@@ -15,7 +15,7 @@
                     <input type="hidden" name="department" id="department" value="{{ $department }}"/>
                     <div class="form-group">
                         <label class="form-label">Nazwa komputera</label>
-                        <input type="text" name="name" value="{{ $domain }}" class="form-control" readonly>
+                        <input type="text" name="device_name" value="{{ $domain }}" class="form-control" readonly>
                     </div>
                     <div class="form-group top-margin">
                         <label class="form-label">Nazwa użytkownika</label>
@@ -49,8 +49,8 @@
                         <textarea class="form-control" name="message" maxlength="500"></textarea>
                     </div>
                     <div class="form-group top-margin">
-                        <label class="form-label">Załącznik (pliki *.jpg, *.png) (opcjonalnie)</label><br/>
-                        <input type="file" class="form-control" id="attachment" name="attachment" accept="image/png, image/jpeg" aria-label="Upload">
+                        <label class="form-label">Załącznik (max 5MB) (opcjonalnie)</label><br/>
+                        <input type="file" class="form-control" id="attachment" name="attachment" aria-label="Upload">
                     </div>
                     <div class="form-group top-margin">
                         <input id="submit" name="submit" class="btn btn-lg btn-primary" type="Submit" disabled/>

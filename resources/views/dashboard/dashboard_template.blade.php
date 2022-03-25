@@ -78,7 +78,7 @@
         </a>
       </li>
       <li>
-        <a href="{{ url('tickets') }}" class="nav-link text-white">
+        <a href="{{ url('tickets/active') }}" class="nav-link text-white">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
           Zgłoszenia
         </a>

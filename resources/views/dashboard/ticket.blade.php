@@ -65,7 +65,7 @@
                     <div class="row" style="margin-top:1vw;">
                         <div class="col">
                             <label class="form-label">Nazwa komputera</label>
-                            <input type="text" class="form-control" value="{{ $ticket->name }}" disabled/>
+                            <input type="text" class="form-control" value="{{ $ticket->device_name }}" disabled/>
                         </div>
                         <div class="col">
                             <label class="form-label">Zgłaszający</label>
@@ -114,9 +114,9 @@
                             </select>
                         </div>
                     </div>
-                    <hr>
                     <div class="row" style="margin-top:1vw;">
                         @if ($ticket->ticket_status != 0)
+                            <hr>
                             <div class="col-4">
                                 <label class="form-label">Osoba odpowiedzialna</label>
                                 <select id="ownerSelect" name="ownerSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
@@ -153,9 +153,9 @@
                                 <input name="editTicket" class="btn btn-success" type="Submit" value="Zapisz zmiany"/>
                                 <input name="closeTicket" class="btn btn-danger" style="margin-left:1%" type="Submit" value="Zamknij zgłoszenie"/>
                                 <span class="btn-group" style="float: right">
-                                    <button name="timerAction" class="btn-sm btn-primary" style="margin-left:1%" type="Submit" value="15">+ 15 minut</button>
-                                    <button name="timerAction" class="btn-sm btn-secondary" style="margin-left:1%" type="Submit" value="30">+ 30 minut</button>
-                                    <button name="timerAction" class="btn-sm btn-dark" style="margin-left:1%" type="Submit" value="60">+ 60 minut</button>
+                                    <button name="timerAction" class="btn-sm btn-light-outline" style="margin-left:1%" type="Submit" value="5">+ 5 minut</button>
+                                    <button name="timerAction" class="btn-sm btn-secondary" style="margin-left:1%" type="Submit" value="15">+ 15 minut</button>
+                                    <button name="timerAction" class="btn-sm btn-dark" style="margin-left:1%" type="Submit" value="30">+ 30 minut</button>
                                 </span>
                             @elseif ($date_now < $date_closed)
                                 <input name="reopenTicket" class="btn btn-primary" style="margin-left:1%" type="Submit" value="Otwórz ponownie zgłoszenie {{ $countdown->format('%H:%I:%S') }}"/>
@@ -166,7 +166,38 @@
                 <div class="col">
                     <p class="fs-4 border-bottom">Załącznik</p>
                         @if ($attachment != null)
-                            <img src="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" id="attachment" style="width:350px; height:250px;"/>
+                            @switch ($attachmentDisplay)
+                                @case ('image')
+                                    <img src="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" id="attachment" style="width:350px; height:250px;"/>
+                                    @break
+                                @case ('document')
+                                    {{ file_get_contents('public/storage/'.$attachment->file_path.$attachment->file_name) }}
+                                    @php
+                                        $content = '';
+                                        $source = 'public/storage/'.$attachment->file_path.$attachment->file_name;
+                                        $phpWord = \PhpOffice\PhpWord\IOFactory::load($source);
+                                        foreach($phpWord->getSections() as $section) {
+                                            foreach($section->getElements() as $element) {
+                                                if (method_exists($element, 'getElements')) {
+                                                    foreach($element->getElements() as $childElement) {
+                                                        if (method_exists($childElement, 'getText')) {
+                                                            $content .= $childElement->getText() . ' ';
+                                                        }
+                                                        else if (method_exists($childElement, 'getContent')) {
+                                                            $content .= $childElement->getContent() . ' ';
+                                                        }
+                                                    }
+                                                }
+                                                else if (method_exists($element, 'getText')) {
+                                                    $content .= $element->getText() . ' ';
+                                                }
+                                            }
+                                        }
+
+                                        echo $content;
+                                    @endphp
+                                    @break
+                            @endswitch
                         @else
                             Brak załącznika
                         @endif

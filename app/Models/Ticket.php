@@ -30,7 +30,7 @@
          * @var array<int, string>
          */
         protected $fillable = [
-            'name',
+            'device_name',
             'department',
             'zone',
             'position',
@@ -50,4 +50,5 @@
         protected $attributes = [
             'ticket_status' => 0,
         ];
+
     }

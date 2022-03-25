@@ -5,6 +5,7 @@
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Storage;
     use App\Http\Controllers\Controller;
+    use App\Http\Controllers\TicketAttachmentController as AttachmentController;
     use App\Models\Ticket;
     use App\Models\TicketAttachment;
     use App\Models\TicketHistory;
@@ -106,7 +107,7 @@
          */
         function sendTicket(Request $request)
         {
-            $this->ticket = Ticket::create(['name' => $request->name,
+            $this->ticket = Ticket::create(['device_name' => $request->device_name,
                 'department' => $request->department,
                 'zone' => $request->zoneSelect,
                 'position' => $request->positionSelect,
@@ -119,6 +120,9 @@
 
             if ($request->hasFile('attachment')){
                 $file = $request->file('attachment');
+
+                $request->validate(['attachment' => 'max:5120']);
+
                 $filePath = $file->storeAs('ticket_attachments', "ticket-$ticketID-attachment.". $file->getClientOriginalExtension());
                 $fileName = "ticket-" . $ticketID . "-attachment." . $file->getClientOriginalExtension();
                 $filePath = "ticket_attachments/";
@@ -161,7 +165,6 @@
 
         /**
          * Placeholder function to be deleted in future versions. Put status options into original function.
-         * Same with builder queries. Use Eloquent instead.
          *
          * @param Request $request
          * @param int $status
@@ -187,9 +190,19 @@
 
             if ($request->sort != null){
                 $request->order = $request->order == 'desc' ? 'asc': 'desc';
-                $tickets = Ticket::where('ticket_status', '=', $status)->orderBy($request->sort, $request->order)->paginate(20)->withQueryString();
+                if ($status == 'active'){
+                    $tickets = Ticket::where('ticket_status', '=', 0)->orWhere('ticket_status', '=', 1)->orderBy($request->sort, $request->order)->paginate(20)->withQueryString();
+                }
+                else{
+                    $tickets = Ticket::where('ticket_status', '=', $status)->orderBy($request->sort, $request->order)->paginate(20)->withQueryString();
+                }
             }else{
-                $tickets = Ticket::where('ticket_status', '=', $status)->orderBy('date_modified', 'desc')->paginate(20)->withQueryString();
+                if ($status == 'active'){
+                    $tickets = Ticket::where('ticket_status', '=', 0)->orWhere('ticket_status', '=', 1)->orderBy('date_modified', 'desc')->paginate(20)->withQueryString();
+                }
+                else{
+                    $tickets = Ticket::where('ticket_status', '=', $status)->orderBy('date_modified', 'desc')->paginate(20)->withQueryString();
+                }
             }
 
             $arrows = str_replace(array('asc','desc'), array('fa-solid fa-arrow-up-wide-short','fa-solid fa-arrow-down-wide-short'), $request->order);
@@ -217,6 +230,7 @@
             $notes = Note::where('ticketID', $id)->get();
             $history = TicketHistory::where('ticketID', $id)->get();
             $attachment = TicketAttachment::where('ticketID', $id)->first();
+            $attachmentDisplay = AttachmentController::attachmentDisplay($attachment);
             $staffMembers = Staff::all();
 
             return view("dashboard/ticket", [
@@ -227,6 +241,7 @@
                 'notes' => $notes,
                 'history' => $history,
                 'attachment' => $attachment,
+                'attachmentDisplay' => $attachmentDisplay,
                 'staffMembers' => $staffMembers]);
         }
 
@@ -246,6 +261,7 @@
                     $ticket->ticket_status = 1;
                     $ticket->date_modified = new \DateTime('NOW');
                     $ticket->date_opened = new \DateTime('NOW');
+                    $ticket->time_spent = \DateTime::createFromFormat('H:i', '00:00');
                     $ticket->owner = auth()->user()->name;
 
                     $message = "Podjęto zgłoszenie.";
@@ -276,7 +292,7 @@
                 $ticket->problem = $request->problemSelect;
                 $ticket->priority = $request->prioritySelect;
                 $ticket->owner = $request->ownerSelect;
-                $ticket->external_ticketID = $request->SNOWID;
+                $ticket->external_ticketID = $request->external_ticketID;
 
                 $this->addToHistory($request, $id, $ticket);
 
@@ -287,14 +303,14 @@
             else if ($request->timerAction){
                 $ticket->time_spent == null ? $ticket->time_spent = \DateTime::createFromFormat('H:i', '00:00') : $ticket->time_spent = new \DateTime($ticket->time_spent);
                 switch ($request->timerAction){
+                    case ('5'):
+                        $ticket->time_spent->add(new \DateInterval('PT5M'));
+                        break;
                     case ('15'):
                         $ticket->time_spent->add(new \DateInterval('PT15M'));
                         break;
                     case ('30'):
                         $ticket->time_spent->add(new \DateInterval('PT30M'));
-                        break;
-                    case ('60'):
-                        $ticket->time_spent->add(new \DateInterval('PT60M'));
                         break;
                 }
 
@@ -311,7 +327,7 @@
          *
          * @param Request $request
          * @param int $id
-         * @param Ticket $ticket
+         * @param Ticket $ticket = null
          * @return null
          */
         function addToHistory(Request $request, $id, $ticket = null)

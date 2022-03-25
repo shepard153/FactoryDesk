@@ -12,14 +12,14 @@
 
         /**
          * List all available problems.
-         * 
+         *
          * @return view
          */
         public function listProblems()
         {
             $pageTitle = "Edytor formularza";
 
-            $problems = Problem::all();
+            $problems = Problem::orderBy('lp', 'asc')->get();
 
             return view('dashboard.problems', [
                 'pageTitle' => $pageTitle,
@@ -29,7 +29,7 @@
 
         /**
          * Create new problem for given position and department.
-         * 
+         *
          * @param Request $request
          * @return view
          */
@@ -52,12 +52,12 @@
 
         /**
          * Update existing problem with new data.
-         * 
+         *
          * @param Request $request
          * @return view
          */
         public function update(Request $request)
-        {            
+        {
             $problem = Problem::find($request->save);
             $problem->problem_name = $request->problem_name;
             $problem->lp = $request->lp;
@@ -67,7 +67,7 @@
 
             $problem->positions_list = $request->positions_list;
             $problem->departments_list = $request->departments_list;
-            
+
             $problem->save();
 
             return back()->with('message', "Wprowadzone zmiany zostały zapisane.");
@@ -75,7 +75,7 @@
 
         /**
          * Delete existing problem.
-         * 
+         *
          * @return view
          */
         public function delete(Request $request)
@@ -87,4 +87,3 @@
             return back()->with('message', "Problem $problemName został usunięty.");
         }
     }
-    
