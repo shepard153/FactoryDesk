@@ -63,7 +63,7 @@ Route::middleware('auth')->group(function () {
     Route::get('tickets', [TicketController::class, 'ticketList']);
     Route::get('tickets/{status}', [TicketController::class, 'ticketListByStatus']);
     Route::get('ticket/{id}', [TicketController::class, 'ticketDetails']);
-    Route::get('ticket/ajax/{department}', [TicketController::class, 'ajaxProblemsForStaff']);
+    Route::get('ticket/ajax/{department}', [TicketController::class, 'ajaxForTicketDetails']);
     Route::get('staff', [StaffController::class, 'loadStaffList']);
     Route::get('addMember', [StaffController::class, 'addMember']);
     Route::get('profile/staff', [StaffController::class, 'profileSettings']);

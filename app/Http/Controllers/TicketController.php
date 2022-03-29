@@ -87,15 +87,17 @@
         /**
          * Ajax request to get all problems for chosen department. Function is a part of a dashboard ticket
          * details service. If agent changes ticket department, all available problems will be listed.
+         * Same goes for ticket owner list.
          *
          * @param Problem $problem
          * @param string $department
          * @return array @problems
          */
-        function ajaxProblemsForStaff($department)
+        function ajaxForTicketDetails($department)
         {
             $problems = Problem::where('departments_list', 'LIKE', "%$department%")->orderBy('lp', 'asc')->get();
-            return json_encode($problems);
+            $members = Staff::where('department', '=', $department)->orderBy('name', 'asc')->get();
+            return json_encode(['problems' => $problems, 'members' => $members]);
         }
 
         /**
@@ -230,8 +232,8 @@
             $notes = Note::where('ticketID', $id)->get();
             $history = TicketHistory::where('ticketID', $id)->get();
             $attachment = TicketAttachment::where('ticketID', $id)->first();
-            $attachmentDisplay = AttachmentController::attachmentDisplay($attachment);
-            $staffMembers = Staff::all();
+            $attachmentDisplay = $attachment != null ? AttachmentController::attachmentDisplay($attachment) : null;
+            $staffMembers = Staff::where('department', '=', $ticket->department)->get();
 
             return view("dashboard/ticket", [
                 'pageTitle' => $pageTitle,

@@ -165,42 +165,23 @@
                 </form>
                 <div class="col">
                     <p class="fs-4 border-bottom">Załącznik</p>
-                        @if ($attachment != null)
-                            @switch ($attachmentDisplay)
-                                @case ('image')
-                                    <img src="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" id="attachment" style="width:350px; height:250px;"/>
-                                    @break
-                                @case ('document')
-                                    {{ file_get_contents('public/storage/'.$attachment->file_path.$attachment->file_name) }}
-                                    @php
-                                        $content = '';
-                                        $source = 'public/storage/'.$attachment->file_path.$attachment->file_name;
-                                        $phpWord = \PhpOffice\PhpWord\IOFactory::load($source);
-                                        foreach($phpWord->getSections() as $section) {
-                                            foreach($section->getElements() as $element) {
-                                                if (method_exists($element, 'getElements')) {
-                                                    foreach($element->getElements() as $childElement) {
-                                                        if (method_exists($childElement, 'getText')) {
-                                                            $content .= $childElement->getText() . ' ';
-                                                        }
-                                                        else if (method_exists($childElement, 'getContent')) {
-                                                            $content .= $childElement->getContent() . ' ';
-                                                        }
-                                                    }
-                                                }
-                                                else if (method_exists($element, 'getText')) {
-                                                    $content .= $element->getText() . ' ';
-                                                }
-                                            }
-                                        }
-
-                                        echo $content;
-                                    @endphp
-                                    @break
-                            @endswitch
-                        @else
-                            Brak załącznika
-                        @endif
+                    @if ($attachment != null)
+                        @switch ($attachmentDisplay)
+                            @case ('image')
+                                <img src="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" id="attachment" style="width:350px; height:250px;"/>
+                                @break
+                            @case ('download')
+                                <label for="download" class="form-label">Plik: {{ $attachment->file_name }}</label><br/>
+                                <a href="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" download="{{ $attachment->file_name}}">
+                                    <button class="btn btn-primary" name="download"><i class="fa fa-download"></i> Pobierz załącznik</button>
+                                </a>
+                                @break
+                            @default
+                                @break
+                        @endswitch
+                    @else
+                        Brak załącznika
+                    @endif
                 </div>
                 <div class="row" style="margin-top:1vw;">
                     <div class="col">
@@ -266,6 +247,9 @@
             }
         });
 
+        /**
+         * Get problem list and staff members for chosen department.
+         */
         $(document).ready(function() {
             $('#departmentSelect').on('change', function() {
                 var department = $(this).val();
@@ -274,13 +258,17 @@
                         url: 'ajax/'+department,
                         type: "GET",
                         dataType: "json",
-                        success:function(problemData) {
+                        success:function(ajaxData) {
 
                             $('#problemSelect').empty();
-                            $('#problemSelect').removeAttr('disabled', 'disabled');
-                            $.each(problemData, function(key, value) {
-                                $('#problemSelect').append('<option value="'+ value['problem_name'] +'">'+ value['problem_name'] +'</option>');
-                            });
+                            $('#ownerSelect').empty();
+
+                            for(var i in ajaxData['problems']){
+                                    $('#problemSelect').append('<option value="'+ ajaxData['problems'][i]['problem_name'] +'">'+ ajaxData['problems'][i]['problem_name'] +'</option>');
+                            }
+                            for(var i in ajaxData['members']){
+                                    $('#ownerSelect').append('<option value="'+ ajaxData['members'][i]['name'] +'">'+ ajaxData['members'][i]['name'] +'</option>');
+                            }
                         }
                     });
                 }
