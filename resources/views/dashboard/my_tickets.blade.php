@@ -10,9 +10,10 @@
  @section('content')
     <a href="{{ url ('my_tickets/') }}" class="btn btn-warning">Podjęte</a>
     <a href="{{ url ('my_tickets/closed') }}" class="btn btn-danger">Zamknięte</a>
-    <div class="row rounded shadow" style="background: white; margin: 1vw 0vw 0.5vw 0vw">
+    <div class="row rounded shadow" style="background: white; margin: 1vw 0vw 0vw 0vw">
         <div class="col-4">
             <div class="row">
+            <p class="fs-3 border-bottom text-center" style="margin: 0.6vw 0vw 0.5vw 0.3vw">Moje statystyki</p>
                 <div class="col">
                     <p class="fs-5 text-center">Ilość zamkniętych zgłoszeń</p>
                     <canvas id="closedCanvas" style="margin-left: auto;margin-right: auto;display: block;" width="200" height="200"></canvas>
@@ -30,7 +31,7 @@
             </div>
         </div>
         <div class="col-8">
-        @if ($tickets->count() > 0)
+        @if ($latestTickets->count() > 0)
         <table class="table table-hover">
             <caption class="fs-3 border-bottom" style="caption-side: top; text-align: center;">Ostatnio {{ str_contains(url()->current(), 'closed') ? 'zamknięte' : 'podjęte' }} zgłoszenia</caption>
             <thead>
@@ -48,19 +49,19 @@
                     @endif
                 </tr>
             </thead>
-            @foreach ($tickets as $ticket)
-                @if ($loop->iteration > 8)
+            @foreach ($latestTickets as $latest)
+                @if ($loop->iteration > 10)
                     @break
                 @endif
-                @if ($ticket->priority == 4)
-                    <tr class='clickable-row' data-href="{{ url ('ticket/'.$ticket->ticketID) }}" style="background-color: #ff7f7f">
-                @elseif ($ticket->priority == 0)
-                    <tr class='clickable-row' data-href="{{ url ('ticket/'.$ticket->ticketID) }}" style="background-color: #d4ebf2">
+                @if ($latest->priority == 4)
+                    <tr class='clickable-row' data-href="{{ url ('ticket/'.$latest->ticketID) }}" style="background-color: #ff7f7f">
+                @elseif ($latest->priority == 0)
+                    <tr class='clickable-row' data-href="{{ url ('ticket/'.$latest->ticketID) }}" style="background-color: #d4ebf2">
                 @else
-                    <tr class='clickable-row' data-href="{{ url ('ticket/'.$ticket->ticketID) }}">
+                    <tr class='clickable-row' data-href="{{ url ('ticket/'.$latest->ticketID) }}">
                 @endif
                 <td>
-                    @switch ($ticket->ticket_status)
+                    @switch ($latest->ticket_status)
                         @case (0)
                             <span class='badge rounded-pill bg-success'>Nowe</span>
                             @break
@@ -72,15 +73,15 @@
                             @break
                     @endswitch
                 </td>
-                <td><strong><a href="{{ url ('ticket/'.$ticket->ticketID) }}" class="link-success text-decoration-none">{{ $ticket->zone }}</a></strong></td>
-                <td>{{ $ticket->position }}</td>
-                <td style="width: 20%"><strong><a href="{{ url ('ticket/'.$ticket->ticketID) }}" class="link-success text-decoration-none">{{ $ticket->problem }}</a></strong></td>
-                <td>{{ $ticket->device_name }}</td>
-                <td>{{ date('d-m-Y', strtotime($ticket->date_created)) }}</td>
+                <td><strong><a href="{{ url ('ticket/'.$latest->ticketID) }}" class="link-success text-decoration-none">{{ $latest->zone }}</a></strong></td>
+                <td>{{ $latest->position }}</td>
+                <td style="width: 20%"><strong><a href="{{ url ('ticket/'.$latest->ticketID) }}" class="link-success text-decoration-none">{{ $latest->problem }}</a></strong></td>
+                <td>{{ $latest->device_name }}</td>
+                <td>{{ date('d-m-Y', strtotime($latest->date_created)) }}</td>
                 @if (strpos(url()->current(), 'closed') == true)
-                    <td>{{ date('d-m-Y', strtotime($ticket->date_closed)) }}</td>
+                    <td>{{ date('d-m-Y', strtotime($latest->date_closed)) }}</td>
                 @else
-                    <td>{{ date('d-m-Y', strtotime($ticket->date_modified)) }}</td>
+                    <td>{{ date('d-m-Y', strtotime($latest->date_modified)) }}</td>
                 @endif
              </tr>
              @endforeach
@@ -144,7 +145,7 @@
              </tr>
              @endforeach
         </table>
-        <nav aria-label="paging" style="padding: 0vw 0vw 0vw 1vw;">
+        <nav aria-label="paging" style="padding-left: 1vw; margin-bottom: -1vw">
             <ul class="pagination">
                 <li class="page-item">
                     <a class="page-link" href="{{ $tickets->previousPageUrl() }}">&laquo;</a>
@@ -181,9 +182,10 @@
 						colors: ['#4CAF50'],
 						isStrokePie: {
 							stroke: 20,
+                            overlayStroke: true,
 							strokeStartEndPoints: 'Yes',
 							strokeAnimation: true,
-							strokeAnimationSpeed: 20,
+							strokeAnimationSpeed: 15,
 							fontSize: '40px',
 							textAlignement: 'center',
 							fontFamily: 'Arial',

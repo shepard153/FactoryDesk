@@ -6,9 +6,11 @@
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('public/img/favicon-32x32.png') }}">
         <link rel="stylesheet" href="{{ asset('public/css/bootstrap.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/css/sidebars.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('public/css/lightbox.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/fontawesome6/css/all.css') }}">
         <title>RUGDesk - Panel Admina</title>
         <script src="{{ asset('public/js/jquery-3.6.0.min.js') }}"></script>
+        <script src="{{ asset('public/js/lightbox.js') }}"></script>
         <style>
           img {
             margin-top: 0.9vw;

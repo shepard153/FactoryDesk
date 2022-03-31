@@ -67,7 +67,7 @@
              </tr>
              @endforeach
         </table>
-        <nav aria-label="paging" style="padding: 0vw 0vw 0vw 1vw;">
+        <nav aria-label="paging" style="padding-left: 1vw; margin-bottom: -1.5vw">
             <ul class="pagination">
                 <li class="page-item">
                     <a class="page-link" href="{{ $tickets->previousPageUrl() }}">&laquo;</a>

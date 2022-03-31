@@ -168,7 +168,9 @@
                     @if ($attachment != null)
                         @switch ($attachmentDisplay)
                             @case ('image')
-                                <img src="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" id="attachment" style="width:350px; height:250px;"/>
+                                <a href="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" data-lightbox="image" data-title="{{ $attachment->file_name }}">
+                                    <img src="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" id="attachment" style="width:350px; height:250px;"/>
+                                </a>
                                 @break
                             @case ('download')
                                 <label for="download" class="form-label">Plik: {{ $attachment->file_name }}</label><br/>
@@ -232,20 +234,7 @@
 
     <script>
         $('#prioritySelect').val({{ $ticket->priority }});
-        var imgBig = false;
-        $('#attachment').click(function() {
-            if (imgBig == false){
-                $(this).height(400);
-                $(this).width(600);
-                document.getElementById('attachment').scrollIntoView({ behavior: 'smooth' });
-                imgBig = true;
-            }
-            else{
-                $(this).height(250);
-                $(this).width(350);
-                imgBig = false;
-            }
-        });
+
 
         /**
          * Get problem list and staff members for chosen department.

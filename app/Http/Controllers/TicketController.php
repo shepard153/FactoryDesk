@@ -138,7 +138,7 @@
         }
 
         /**
-         *List of tickets owned by currently logged in staff member.
+         * List of tickets owned by currently logged in staff member (both opened and closed) with some additional stats information.
          *
          * @return view
          */
@@ -147,9 +147,11 @@
             $pageTitle = "Moje zgłoszenia";
 
             if ($status == 'taken'){
+                $latestTickets = Ticket::where('ticket_status', '=', 1)->where('owner', '=', auth()->user()->name)->orderBy('date_modified', 'desc')->get();
                 $tickets = Ticket::where('ticket_status', '=', 1)->where('owner', '=', auth()->user()->name)->orderBy('date_modified', 'desc')->paginate(10)->withQueryString();
             }
             else{
+                $latestTickets = Ticket::where('ticket_status', '=', 2)->where('owner', '=', auth()->user()->name)->orderBy('date_closed', 'desc')->get();
                 $tickets = Ticket::where('ticket_status', '=', 2)->where('owner', '=', auth()->user()->name)->orderBy('date_closed', 'desc')->paginate(10)->withQueryString();
             }
 
@@ -159,6 +161,7 @@
             $percentageSolved = $ticketsClosed * 100 / ($ticketsClosed + $ticketsOpen) ;
 
             return view("dashboard/my_tickets", ['pageTitle' => $pageTitle,
+                'latestTickets' => $latestTickets,
                 'tickets' => $tickets,
                 'ticketsOpen' => $ticketsOpen,
                 'ticketsClosed' => $ticketsClosed,
@@ -261,7 +264,7 @@
             $notes = Note::where('ticketID', $id)->get();
             $history = TicketHistory::where('ticketID', $id)->get();
             $attachment = TicketAttachment::where('ticketID', $id)->first();
-            $attachmentDisplay = $attachment != null ? AttachmentController::attachmentDisplay($attachment) : null;
+            $attachmentDisplay = $attachment != null && $attachment->file_name != null ? AttachmentController::attachmentDisplay($attachment) : null;
             $staffMembers = Staff::where('department', '=', $ticket->department)->get();
 
             return view("dashboard/ticket", [
