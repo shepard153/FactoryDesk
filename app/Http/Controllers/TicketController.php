@@ -138,6 +138,35 @@
         }
 
         /**
+         *List of tickets owned by currently logged in staff member.
+         *
+         * @return view
+         */
+        public function memberTickets($status = 'taken')
+        {
+            $pageTitle = "Moje zgłoszenia";
+
+            if ($status == 'taken'){
+                $tickets = Ticket::where('ticket_status', '=', 1)->where('owner', '=', auth()->user()->name)->orderBy('date_modified', 'desc')->paginate(10)->withQueryString();
+            }
+            else{
+                $tickets = Ticket::where('ticket_status', '=', 2)->where('owner', '=', auth()->user()->name)->orderBy('date_closed', 'desc')->paginate(10)->withQueryString();
+            }
+
+            $ticketsOpen = Ticket::where('ticket_status', '=', 1)->where('owner', '=', auth()->user()->name)->get()->count();
+            $ticketsClosed = Ticket::where('ticket_status', '=', 2)->where('owner', '=', auth()->user()->name)->get()->count();
+
+            $percentageSolved = $ticketsClosed * 100 / ($ticketsClosed + $ticketsOpen) ;
+
+            return view("dashboard/my_tickets", ['pageTitle' => $pageTitle,
+                'tickets' => $tickets,
+                'ticketsOpen' => $ticketsOpen,
+                'ticketsClosed' => $ticketsClosed,
+                'percentageSolved' => $percentageSolved,
+            ]);
+        }
+
+        /**
          * List all tickets for agents. By default pagination is set to 20 tickets per page. Here you can also change the sorting arrows
          * in $arrows array. Default ones are from font awesome package.
          *

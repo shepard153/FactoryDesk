@@ -60,6 +60,8 @@ Route::middleware('auth')->group(function () {
       * Views
       */
     Route::get('dashboard', [DashboardController::class, 'loadDashboard']);
+    Route::get('my_tickets', [TicketController::class, 'memberTickets']);
+    Route::get('my_tickets/{status}', [TicketController::class, 'memberTickets']);
     Route::get('tickets', [TicketController::class, 'ticketList']);
     Route::get('tickets/{status}', [TicketController::class, 'ticketListByStatus']);
     Route::get('ticket/{id}', [TicketController::class, 'ticketDetails']);
