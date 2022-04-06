@@ -92,7 +92,7 @@
         </div>
     </div>
 
-    <div class="col rounded shadow" style="background: white; margin: 1vw 0vw 0.5vw 0vw">
+    <div class="col rounded shadow" style="background: white; margin: 1vw 0vw 0.5vw 0vw; padding: 0vw 0.5vw 0vw 0.5vw">
         @if ($tickets->count() > 0)
         <table class="table table-hover">
             <caption class="fs-3 border-bottom" style="caption-side: top; text-align: center;">Wszystkie {{ str_contains(url()->current(), 'closed') ? 'zamknięte' : 'podjęte' }} zgłoszenia</caption>

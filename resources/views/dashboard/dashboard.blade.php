@@ -13,6 +13,7 @@
           <div class="col rounded shadow" style="background: white; margin: 0vw 1vw 0vw 1vw;">
             <p class="fs-3 border-bottom" style="text-align: center;">Najnowsze zgłoszenia</p>
             <table class="table table-hover">
+			 @if (count($dashboard['newest']) > 0)
               <thead>
                 <tr>
                   <td><b>Problem</b></td>
@@ -23,11 +24,7 @@
                   <td><b>Status</b></td>
                 </tr>
               </thead>
-            @if ($dashboard['newest'] != null)
               @foreach($dashboard['newest'] as $newest)
-                @if ($loop->iteration > 5)
-                  @break
-                @endif
                 @if ($newest->priority == 4)
                   <tr class='clickable-row' data-href='ticket/{{ $newest->ticketID }}' style="background-color: #ff7f7f">
                 @elseif ($newest->priority == 0)
@@ -71,7 +68,7 @@
                 </tr>
               @endforeach
             @else
-              <p class="fs-2 text-center" style="padding: 0.2vw 0px 0px 1vw;">Nie znaleziono wyników.</p>
+              <p class="fs-2 text-center" style="padding: 0.2vw 0px 0px 1vw;">Brak nowych zgłoszeń.</p>
             @endif
             </table>
           </div>
@@ -111,9 +108,6 @@
                   <td style="text-align: left"><h5>{{ $mostProblematic->zone }}</h5></td>
                   <td class="text-end"><h4>{{ $mostProblematic->problematic }}</h4></td>
                 </tr>
-                @if ($loop->iteration == 5)
-                  @break
-                @endif
               @endforeach
             </table>
           </div>
@@ -125,9 +119,6 @@
                   <td style="text-align: left"><h5>{{ $topProblems->problem }}</h5></td>
                   <td class="text-end"><h4>{{ $topProblems->occurence }}</h4></td>
                 </tr>
-                @if ($loop->iteration == 5)
-                  @break
-                @endif
               @endforeach
             </table>
           </div>

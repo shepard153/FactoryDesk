@@ -132,10 +132,10 @@
                             <div class="col-4">
                                 <label class="form-label">Zgłoszenie zewnętrzne</label>
                                 @if ($ticket->external_ticketID != null)
-                                    <input type="checkbox" id="isExternal" class="form-check-input" checked>
+                                    <input type="checkbox" id="isExternal" class="form-check-input" checked {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                                     <input type="text" id="external_ticketID" name="external_ticketID" class="form-control" value="{{ $ticket->external_ticketID }}"/>
                                 @else
-                                    <input type="checkbox" id="isExternal" class="form-check-input">
+                                    <input type="checkbox" id="isExternal" class="form-check-input" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                                     <input type="text" id="external_ticketID" name="external_ticketID" class="form-control" value="" disabled/>
                                 @endif
                             </div>
@@ -169,7 +169,7 @@
                         @switch ($attachmentDisplay)
                             @case ('image')
                                 <a href="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" data-lightbox="image" data-title="{{ $attachment->file_name }}">
-                                    <img src="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" id="attachment" style="width:350px; height:250px;"/>
+                                    <img src="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" id="attachment" style="width:400px; height:250px;"/>
                                 </a>
                                 @break
                             @case ('download')

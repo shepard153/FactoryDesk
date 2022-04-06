@@ -51,4 +51,8 @@
             'ticket_status' => 0,
         ];
 
+        public function topProblems(){
+            return $this->hasMany(Ticket::class);
+        }
+
     }

@@ -17,6 +17,21 @@
     use App\Models\Department;
     use App\Models\Priority;
 
+    use \jamesiarmes\PhpEws\Client;
+    use \jamesiarmes\PhpEws\Request\FindItemType;
+
+    use \jamesiarmes\PhpEws\ArrayType\NonEmptyArrayOfBaseFolderIdsType;
+
+    use \jamesiarmes\PhpEws\Enumeration\DefaultShapeNamesType;
+    use \jamesiarmes\PhpEws\Enumeration\DistinguishedFolderIdNameType;
+    use \jamesiarmes\PhpEws\Enumeration\IndexBasePointType;
+    use \jamesiarmes\PhpEws\Enumeration\ItemQueryTraversalType;
+    use \jamesiarmes\PhpEws\Enumeration\ResponseClassType;
+
+    use \jamesiarmes\PhpEws\Type\DistinguishedFolderIdType;
+    use \jamesiarmes\PhpEws\Type\IndexedPageViewType;
+    use \jamesiarmes\PhpEws\Type\ItemResponseShapeType;
+
     Class TicketController extends Controller
     {
         /**

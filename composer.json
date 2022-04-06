@@ -14,7 +14,7 @@
         "league/flysystem-ftp": "3.0",
         "symfony/http-client": "^6.0",
         "symfony/postmark-mailer": "^6.0",
-        "phpoffice/phpword": "v0.18.*"
+        "php-ews/php-ews": "~1.0"
     },
     "require-dev": {
         "spatie/laravel-ignition": "^1.0",
