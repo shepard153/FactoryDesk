@@ -8,7 +8,7 @@
  @endsection
 
  @section('content')
-  <meta http-equiv="refresh" content="30">
+    <meta http-equiv="refresh" content="30">
         <div class="row justify-content-center">
           <div class="col rounded shadow" style="background: white; margin: 0vw 1vw 0vw 1vw;">
             <p class="fs-3 border-bottom" style="text-align: center;">Najnowsze zgłoszenia</p>

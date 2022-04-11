@@ -17,21 +17,6 @@
     use App\Models\Department;
     use App\Models\Priority;
 
-    use \jamesiarmes\PhpEws\Client;
-    use \jamesiarmes\PhpEws\Request\FindItemType;
-
-    use \jamesiarmes\PhpEws\ArrayType\NonEmptyArrayOfBaseFolderIdsType;
-
-    use \jamesiarmes\PhpEws\Enumeration\DefaultShapeNamesType;
-    use \jamesiarmes\PhpEws\Enumeration\DistinguishedFolderIdNameType;
-    use \jamesiarmes\PhpEws\Enumeration\IndexBasePointType;
-    use \jamesiarmes\PhpEws\Enumeration\ItemQueryTraversalType;
-    use \jamesiarmes\PhpEws\Enumeration\ResponseClassType;
-
-    use \jamesiarmes\PhpEws\Type\DistinguishedFolderIdType;
-    use \jamesiarmes\PhpEws\Type\IndexedPageViewType;
-    use \jamesiarmes\PhpEws\Type\ItemResponseShapeType;
-
     Class TicketController extends Controller
     {
         /**
@@ -191,35 +176,7 @@
          * @param Request $request
          * @return view
          */
-        function ticketList(Request $request)
-        {
-            $pageTitle = "Zgłoszenia";
-
-            if ($request->sort != null){
-                $request->order = $request->order == 'desc' ? 'asc': 'desc';
-                $tickets = Ticket::orderBy($request->sort, $request->order)->paginate(20)->withQueryString();
-            }else{
-                $tickets = Ticket::orderBy('date_modified', 'desc')->paginate(20)->withQueryString();
-            }
-
-            $arrows = str_replace(array('asc','desc'), array('fa-solid fa-arrow-up-wide-short','fa-solid fa-arrow-down-wide-short'), $request->order);
-
-            return view("dashboard/tickets", [
-                'pageTitle' => $pageTitle,
-                'tickets' => $tickets,
-                'sort' => $request->sort,
-                'order' => $request->order,
-                'arrows' => $arrows]);
-        }
-
-        /**
-         * Placeholder function to be deleted in future versions. Put status options into original function.
-         *
-         * @param Request $request
-         * @param int $status
-         * @return view
-         */
-        function ticketListByStatus(Request $request, $status)
+        function ticketList(Request $request, $status = 'active')
         {
             $pageTitle = "Zgłoszenia";
 
@@ -233,8 +190,6 @@
                 case "closed":
                     $status = 2;
                     break;
-                default:
-                    $status = 'active';
             }
 
             if ($request->sort != null){
