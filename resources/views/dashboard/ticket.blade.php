@@ -50,15 +50,17 @@
                                     @endif
                             </span>
                             <span class="fs-5" style="margin-left: 4.3vw;">Status
-                                    @if($ticket->ticket_status == 0)
-                                        <span class="badge rounded-pill bg-success">Nowe</span>
-                                    @elseif($ticket->ticket_status == 1)
-                                        <span class="badge rounded-pill bg-warning">Podjęte</span>
-                                    @elseif($date_now > $date_closed)
-                                        <span class="badge rounded-pill bg-danger">Zamknięte permamentnie</span>
-                                    @else
-                                        <span class="badge rounded-pill bg-danger">Zamknięte</span>
-                                    @endif
+                                @if ($ticket->ticket_status == -1)
+                                    <span class="badge rounded-pill bg-primary">Oczekujące</span>
+                                @elseif($ticket->ticket_status == 0)
+                                    <span class="badge rounded-pill bg-success">Nowe</span>
+                                @elseif($ticket->ticket_status == 1)
+                                    <span class="badge rounded-pill bg-warning">Podjęte</span>
+                                @elseif($date_now > $date_closed)
+                                    <span class="badge rounded-pill bg-danger">Zamknięte permamentnie</span>
+                                @else
+                                    <span class="badge rounded-pill bg-danger">Zamknięte</span>
+                                @endif
                             </span>
                         </div>
                     </div>
@@ -85,7 +87,9 @@
                             <label class="form-label">Dział obsługi</label>
                             <select id="departmentSelect" name="departmentSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                                 @foreach ($departments as $department)
-                                    @if ($department->department_name == $ticket->department)
+                                    @if (isset($ticket->target_department))
+                                        <option value="{{ $ticket->target_department }}" selected>{{ $ticket->target_department }}</option>
+                                    @elseif ($department->department_name == $ticket->department)
                                         <option value="{{ $department->department_name }}" selected>{{ $department->department_name }}</option>
                                     @else
                                         <option value="{{ $department->department_name }}">{{ $department->department_name }}</option>
@@ -97,7 +101,9 @@
                             <label class="form-label">Problem</label>
                             <select id="problemSelect" name="problemSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                                 @foreach ($problems as $problem)
-                                    @if ($problem->problem_name == $ticket->problem)
+                                    @if (isset($ticket->target_department))
+                                        <option value="{{ $ticket->problem }}" selected>{{ $ticket->problem }}</option>
+                                    @elseif ($problem->problem_name == $ticket->problem)
                                         <option value="{{ $problem->problem_name }}" selected>{{ $problem->problem_name }}</option>
                                     @else
                                         <option value="{{ $problem->problem_name }}">{{ $problem->problem_name }}</option>
@@ -147,7 +153,9 @@
                     </div>
                     <div class="row" style="margin-top:1vw;">
                         <div class="col">
-                            @if ($ticket->ticket_status == 0)
+                            @if ($ticket->ticket_status == -1)
+                                <input name="acceptTicket" class="btn btn-success" type="Submit" value="Zatwierdź zgłoszenie"/>
+                            @elseif ($ticket->ticket_status == 0)
                                 <input name="takeTicket" class="btn btn-warning" type="Submit" value="Podejmij zgłoszenie"/>
                             @elseif ($ticket->ticket_status == 1)
                                 <input name="editTicket" class="btn btn-success" type="Submit" value="Zapisz zmiany"/>
@@ -157,7 +165,7 @@
                                     <button name="timerAction" class="btn-sm btn-secondary" style="margin-left:1%" type="Submit" value="15">+ 15 minut</button>
                                     <button name="timerAction" class="btn-sm btn-dark" style="margin-left:1%" type="Submit" value="30">+ 30 minut</button>
                                 </span>
-                            @elseif ($date_now < $date_closed)
+                            @elseif ($date_now < $date_closed && $ticket->target_department == null)
                                 <input name="reopenTicket" class="btn btn-primary" style="margin-left:1%" type="Submit" value="Otwórz ponownie zgłoszenie {{ $countdown->format('%H:%I:%S') }}"/>
                             @endif
                         </div>

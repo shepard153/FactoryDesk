@@ -15,16 +15,6 @@
         protected $table = 'Departments';
 
         /**
-         * The attributes that are mass assignable.
-         *
-         * @var array<int, string>
-         */
-        protected $fillable = [
-            'department_name',
-            'image_path',
-        ];
-
-        /**
          * The primary key associated with the table.
          *
          * @var string
@@ -33,4 +23,16 @@
 
         public $timestamps = null;
 
+        /**
+         * The attributes that are mass assignable.
+         *
+         * @var array<int, string>
+         */
+        protected $fillable = [
+            'department_name',
+            'image_path',
+            'department_prefix',
+            'acceptance_from',
+            'isHidden'
+        ];
     }

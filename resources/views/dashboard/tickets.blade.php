@@ -8,10 +8,11 @@
  @endsection
 
  @section('content')
+    <a href="{{ url ('tickets/awaiting') }}" class="btn btn-primary">Do zatwierdzenia</a>
     <a href="{{ url ('tickets/new') }}" class="btn btn-success">Nowe</a>
     <a href="{{ url ('tickets/taken') }}" class="btn btn-warning">Podjęte</a>
     <a href="{{ url ('tickets/closed') }}" class="btn btn-danger">Zamknięte</a>
-    <a href="{{ url ('tickets/active') }}" class="btn btn-primary">Aktywne</a>
+    <a href="{{ url ('tickets/active') }}" class="btn btn-secondary">Aktywne</a>
     <div class="col rounded shadow" style="background: white; margin-top: 1vw;">
         @if ($tickets->count() > 0)
         <table class="table table-hover">
@@ -42,6 +43,9 @@
                 @endif
                 <td>
                     @switch ($ticket->ticket_status)
+                        @case (-1)
+                            <span class='badge rounded-pill bg-primary'>Oczekujące</span>
+                            @break
                         @case (0)
                             <span class='badge rounded-pill bg-success'>Nowe</span>
                             @break

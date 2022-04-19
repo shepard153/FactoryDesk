@@ -123,7 +123,7 @@
         });
 
         $("#createProblem").click(function() {
-            $('#newProblemForm').show();
+            $('#newProblemForm').toggle(300);
         });
     </script>
 @endsection

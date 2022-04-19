@@ -19,7 +19,7 @@
         {
             $departments = Department::all();
 
-            return view ('ticket/raise_ticket')->with('departments', $departments);
+            return view('ticket/raise_ticket')->with('departments', $departments);
         }
 
         /**
@@ -50,17 +50,47 @@
 
             if ($request->file('image') != null){
                 $file = $request->file('image');
-                $fileName = str_replace(" ", "-",$request->department_name);
-                $filePath = $file->storeAs('departments_img', "department-$fileName.". $file->getClientOriginalExtension());
+                $fileName = str_replace(" ", "-", $request->department_name);
+                $filePath = $file->storeAs('departments_img', "department-$fileName." . $file->getClientOriginalExtension());
                 $filePath = "departments_img/department-$fileName." . $file->getClientOriginalExtension();
             }
             else{
                 $filePath = null;
             }
 
+            $prefix = "";
+
+            str_word_count($request->department_name) > 1 ? $words = explode(" ", $request->department_name) : $prefix = strtoupper(substr($request->department_name, 0, 1));
+
+            if (isset($words)){
+                foreach ($words as $word){
+                    $prefix .= strtoupper(substr($word, 0, 1));
+                }
+            }
+
+            $tokensArray = ['d', 'c', 'f', 'p', 'u', 'n'];
+
+            $department = Department::where('department_prefix', '=', $prefix)->first();
+            $departments = Department::all();
+            $department != null ? $prefix .= $tokensArray[array_rand($tokensArray)] : null;
+
+            foreach ($departments as $department){
+                if ($department->department_prefix == $prefix){
+                    $tokensArray = array_values(array_filter($tokensArray, fn ($m) => $m != $prefix));
+                    $prefix .= $tokensArray[array_rand($tokensArray)];
+                }
+            }
+
+            $acceptance_from = $request->acceptance != null ? $request->acceptance_from : null;
+
+            $isHidden = $request->isHidden != null ? true : false;
+
             Department::create([
                 'department_name' => $request->department_name,
-                'image_path' => $filePath
+                'image_path' => $filePath,
+                'department_prefix' => $prefix,
+                'acceptance_from' => $acceptance_from,
+                'isHidden' => $isHidden
             ]);
 
             return back()->with('message', "Dział został utworzony.");
@@ -86,6 +116,9 @@
                 $this->department->image_path = $file->storeAs('departments_img', "department-$fileName.". $file->getClientOriginalExtension());
                 $this->department->image_path = "departments_img/department-$fileName." . $file->getClientOriginalExtension();
             }
+
+            $this->department->acceptance_from = $request->acceptance != null ? $request->acceptance_from : null;
+            $this->department->isHidden = $request->isHidden != null ? true : false;
 
             $this->department->save();
 
@@ -116,8 +149,12 @@
         {
             $pageTitle = "Edytor formularza";
 
+            $departments = Department::all();
+
             return view('dashboard/add_department', [
-                'pageTitle' => $pageTitle,]);
+                'pageTitle' => $pageTitle,
+                'departments' => $departments
+            ]);
         }
 
         /**
@@ -132,8 +169,12 @@
 
             $this->department = Department::find($departmentID);
 
+            $departments = Department::all();
+
             return view('dashboard/edit_department', [
                 'pageTitle' => $pageTitle,
-                'department' => $this->department]);
+                'department' => $this->department,
+                'departments' => $departments
+            ]);
         }
     }

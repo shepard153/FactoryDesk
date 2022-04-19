@@ -48,11 +48,9 @@
                 $domain = str_replace(".carcgl.com", "", $domain);
             }
 
-            $zones = Zone::all();
+            $department = $request->department;
 
-            $url = url()->current();
-            $department = explode("/", $url);
-            $department = json_decode(str_replace("%20", " ", json_encode(end($department))));
+            $zones = Zone::all();
 
             return view("ticket/ticket_step2", ['domain' => $domain, "department" => $department, "zones" => $zones]);
         }
@@ -109,16 +107,47 @@
          */
         function sendTicket(Request $request)
         {
+            $acceptanceCheck = Department::where('department_name', $request->department)->first();
+
+            if ($acceptanceCheck->acceptance_from != null){
+                $department = $acceptanceCheck->acceptance_from;
+                $targetDepartment = $request->department;
+            }
+            else{
+                $department = $request->department;
+                $targetDepartment = null;
+            }
+
+            $newest = Ticket::where('department', $department)->orderBy('ticketID', 'desc')->first();
+            dd($newest);
+            if ($newest != null && $newest->department_ticketID != null){
+                $newest = $newest->department_ticketID;
+                preg_match_all('/([a-zA-Z]+)(\d+)/', $newest, $matches);
+                $updatedID = $matches[1][0] . $matches[2][0] + 1;
+            }
+            else{
+                $updatedID = Department::where('department_name', $department)->first();
+                $updatedID = $updatedID->department_prefix . 1;
+            }
+
+
+
             $this->ticket = Ticket::create(['device_name' => $request->device_name,
-                'department' => $request->department,
+                'department' => $department,
                 'zone' => $request->zoneSelect,
                 'position' => $request->positionSelect,
                 'problem' => $request->problemSelect,
                 'ticket_message' => $request->message,
                 'priority' => $request->prioritySelect,
-                'username' => $request->username]);
+                'username' => $request->username,
+                'department_ticketID' => $updatedID,
+                'target_department' => $targetDepartment
+            ]);
 
-            $ticketID = $this->ticket->ticketID;
+            $acceptanceCheck->acceptance_from != null ? $this->ticket->ticket_status = -1 : null;
+            $this->ticket->save();
+
+            $ticketID = $this->ticket->department_ticketID;
 
             if ($request->hasFile('attachment')){
                 $file = $request->file('attachment');
@@ -134,7 +163,7 @@
                 $filePath = null;
             }
 
-            return view("ticket/ticket_sent")->with('ticketID', $ticketID);
+            return view("ticket/ticket_sent", ['ticketID' => $ticketID]);
         }
 
         /**
@@ -158,7 +187,12 @@
             $ticketsOpen = Ticket::where('ticket_status', '=', 1)->where('owner', '=', auth()->user()->name)->get()->count();
             $ticketsClosed = Ticket::where('ticket_status', '=', 2)->where('owner', '=', auth()->user()->name)->get()->count();
 
-            $percentageSolved = $ticketsClosed * 100 / ($ticketsClosed + $ticketsOpen) ;
+            if ($ticketsClosed > 0 || $ticketsOpen > 0){
+                $percentageSolved = $ticketsClosed * 100 / ($ticketsClosed + $ticketsOpen);
+            }
+            else{
+                $percentageSolved = 0;
+            }
 
             return view("dashboard/my_tickets", ['pageTitle' => $pageTitle,
                 'latestTickets' => $latestTickets,
@@ -181,6 +215,9 @@
             $pageTitle = "Zgłoszenia";
 
             switch ($status){
+                case 'awaiting':
+                    $status = -1;
+                    break;
                 case "new":
                     $status = 0;
                     break;
@@ -195,17 +232,41 @@
             if ($request->sort != null){
                 $request->order = $request->order == 'desc' ? 'asc': 'desc';
                 if ($status == 'active'){
-                    $tickets = Ticket::where('ticket_status', '=', 0)->orWhere('ticket_status', '=', 1)->orderBy($request->sort, $request->order)->paginate(20)->withQueryString();
+                    $tickets = Ticket::where('department', '=', auth()->user()->department)
+                        ->where(function($query) {
+                            return $query
+                                ->where('ticket_status', '=', 0)
+                                ->orWhere('ticket_status', '=', 1);
+                             })
+                        ->orderBy($request->sort, $request->order)
+                        ->paginate(20)
+                        ->withQueryString();
                 }
                 else{
-                    $tickets = Ticket::where('ticket_status', '=', $status)->orderBy($request->sort, $request->order)->paginate(20)->withQueryString();
+                    $tickets = Ticket::where('department', '=', auth()->user()->department)
+                        ->where('ticket_status', '=', $status)
+                        ->orderBy($request->sort, $request->order)
+                        ->paginate(20)
+                        ->withQueryString();
                 }
             }else{
                 if ($status == 'active'){
-                    $tickets = Ticket::where('ticket_status', '=', 0)->orWhere('ticket_status', '=', 1)->orderBy('date_modified', 'desc')->paginate(20)->withQueryString();
+                    $tickets = Ticket::where('department', '=', auth()->user()->department)
+                        ->where(function($query) {
+                            return $query
+                                ->where('ticket_status', '=', 0)
+                                ->orWhere('ticket_status', '=', 1);
+                         })
+                        ->orderBy('date_modified', 'desc')
+                        ->paginate(20)
+                        ->withQueryString();
                 }
                 else{
-                    $tickets = Ticket::where('ticket_status', '=', $status)->orderBy('date_modified', 'desc')->paginate(20)->withQueryString();
+                    $tickets = Ticket::where('department', '=', auth()->user()->department)
+                    ->where('ticket_status', '=', $status)
+                    ->orderBy('date_modified', 'desc')
+                    ->paginate(20)
+                    ->withQueryString();
                 }
             }
 
@@ -259,11 +320,11 @@
         function modifyTicketAction(Request $request, $id)
         {
             $ticket = Ticket::find($id);
+            $ticket->date_modified = new \DateTime('NOW');
 
-            if ($request->takeTicket != null || $request->closeTicket != null || $request->reopenTicket != null){
+            if ($request->takeTicket != null || $request->closeTicket != null || $request->reopenTicket != null || $request->acceptTicket != null){
                 if ($request->takeTicket){
                     $ticket->ticket_status = 1;
-                    $ticket->date_modified = new \DateTime('NOW');
                     $ticket->date_opened = new \DateTime('NOW');
                     $ticket->time_spent = \DateTime::createFromFormat('H:i', '00:00');
                     $ticket->owner = auth()->user()->name;
@@ -272,10 +333,37 @@
                 }
                 else if ($request->closeTicket){
                     $ticket->ticket_status = 2;
-                    $ticket->date_modified = new \DateTime('NOW');
                     $ticket->date_closed = new \DateTime('NOW');
 
                     $message = "Zamknięto zgłoszenie.";
+                }
+                else if ($request->acceptTicket){
+                    $ticket->ticket_status = 2;
+                    $ticket->date_closed = new \DateTime('NOW');
+                    $ticket->owner = auth()->user()->name;
+                    $ticket->time_spent = \DateTime::createFromFormat('H:i', '00:00');
+
+                    $newTicket = $ticket->replicate();
+                    $newTicket->department = $ticket->target_department;
+                    $newTicket->target_department = null;
+                    $newTicket->ticket_status = 0;
+
+                    $department = Department::where('department_name', $newTicket->department)->first();
+                    $newest = Ticket::where('department', $newTicket->department)->orderBy('ticketID', 'desc')->first();
+                    if ($newest != null && $newest->department_ticketID != null){
+                        $newest = $newest->department_ticketID;
+                        preg_match_all('/([a-zA-Z]+)(\d+)/', $newest, $matches);
+                        $updatedID = $department->department_prefix . $matches[2][0] + 1;
+                    }
+                    else{
+                        $updatedID = $department->department_prefix . 1;
+                    }
+
+                    $newTicket->department_ticketID = $updatedID;
+
+                    $newTicket->save();
+
+                    $message = "Zatwierdzono zgłoszenie.";
                 }
                 else{
                     $ticket->ticket_status = 1;
@@ -290,8 +378,6 @@
                 $ticket->save();
             }
             else if ($request->editTicket){
-                $ticket = Ticket::find($id);
-
                 $ticket->department = $request->departmentSelect;
                 $ticket->problem = $request->problemSelect;
                 $ticket->priority = $request->prioritySelect;
@@ -305,7 +391,9 @@
                 $message = "Zmiany zostały zapisane";
             }
             else if ($request->timerAction){
-                $ticket->time_spent == null ? $ticket->time_spent = \DateTime::createFromFormat('H:i', '00:00') : $ticket->time_spent = new \DateTime($ticket->time_spent);
+                $ticket->time_spent == null ? $ticket->time_spent = \DateTime::createFromFormat('H:i', '00:00') :
+                                                $ticket->time_spent = new \DateTime($ticket->time_spent);
+
                 switch ($request->timerAction){
                     case ('5'):
                         $ticket->time_spent->add(new \DateInterval('PT5M'));
@@ -336,16 +424,17 @@
          */
         function addToHistory(Request $request, $id, $ticket = null)
         {
-            if ($request->takeTicket != null || $request->closeTicket != null || $request->reopenTicket != null){
+            if ($request->takeTicket || $request->closeTicket || $request->reopenTicket || $request->acceptTicket){
                 $history = new TicketHistory;
                 $history->ticketID = $id;
                 $history->username = auth()->user()->name;
                 $request->takeTicket != null ? $history->contents = "Zgłoszenie podjęte przez ". auth()->user()->name : null;
                 $request->closeTicket != null ? $history->contents = "Zgłoszenie zamknięte przez ". auth()->user()->name : null;
                 $request->reopenTicket != null ? $history->contents = "Zgłoszenie ponownie otwarte przez ". auth()->user()->name : null;
+                $request->acceptTicket != null ? $history->contents = "Zgłoszenie zatwierdzone przez " . auth()->user()->name : null;
                 $history->save();
             }
-            else if ($request->editTicket != null){
+            else if ($request->editTicket){
                 $dirtyArray = array();
                 $ticket->isDirty('department') == true ? array_push($dirtyArray, "Zmieniono dział z ".$ticket->getOriginal('department')." na $request->departmentSelect") : null;
                 $ticket->isDirty('problem') == true ? array_push($dirtyArray, "Zmieniono problem z ".$ticket->getOriginal('problem')." na $request->problemSelect") : null;

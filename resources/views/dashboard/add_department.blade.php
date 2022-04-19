@@ -1,12 +1,12 @@
 @extends('dashboard/dashboard_template')
- 
+
  @section('title', 'RUGDesk')
-  
+
  @section('sidebar')
      @parent
-  
+
  @endsection
-  
+
  @section('content')
     <div class="col rounded shadow" style="background: white; padding: 1vw 1vw 0.5vw 1vw;">
         <p class="fs-4 border-bottom" style="padding: 0vw 0vw 0.6vw 0vw;">Utwórz dział</p>
@@ -34,8 +34,33 @@
                 <input type="file" class="form-control" id="image" name="image" accept="image/png, image/jpeg" aria-label="Upload">
             </div>
             <div class="mb-3">
+                <input class="form-check-input" type="checkbox" name="isHidden" id="isHidden">
+                <label class="form-check-label" for="isHidden">Dział ukryty</label>
+            </div>
+            <div class="alert alert-info">
+                Zaznacz pole poniżej jeśli chcesz, aby zgłoszenia zanim trafią do tego działu zostały zatwierdzone przez inny.
+            </div>
+            <div class="mb-3">
+                <input class="form-check-input" type="checkbox" id="acceptance" name="acceptance">
+                <label class="form-check-label" for="acceptance">Zatwierdzanie zgłoszeń przez inny dział</label>
+            </div>
+            <div class="mb-3" id="acceptanceDiv" style="display: none;">
+                <label class="form-label">Dział zatwierdzający</label>
+                <select id="acceptance_from" name="acceptance_from" class="form-select">
+                    @foreach ($departments as $departmet)
+                        <option value="{{ $departmet->department_name }}">{{ $departmet->department_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="mb-3">
                 <input name="submit" class="btn btn-primary" type="Submit"/>
             </div>
         </form>
     </div>
+
+    <script>
+        $('#acceptance').click(function() {
+            $("#acceptanceDiv").toggle(300);
+        });
+    </script>
 @endsection

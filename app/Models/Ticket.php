@@ -39,7 +39,9 @@
             'priority',
             'username',
             'time_spent',
-            'external_ticketID'
+            'external_ticketID',
+            'department_ticketID',
+            'target_department'
         ];
 
         /**
@@ -50,9 +52,4 @@
         protected $attributes = [
             'ticket_status' => 0,
         ];
-
-        public function topProblems(){
-            return $this->hasMany(Ticket::class);
-        }
-
     }
