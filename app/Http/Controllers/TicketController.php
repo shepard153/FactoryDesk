@@ -30,9 +30,7 @@
         protected $attachment;
 
         /**
-         * Render view for new ticket request. Function finds users IP address and with it, finds the device name and
-         * strips it from ".carcgl.com" to prevent long names, eg. PLTR-10-XXX-D, instead of PLTR-10-XXX-D.carcgl.com.
-         * After that the department name is taken from the URL and stripped from spaces - %20.
+         * Render view for new ticket request. Function also finds the device name.
          *
          * @param Zone $zone
          * @param Request $request
@@ -40,13 +38,7 @@
          */
         function ticketRequest(Zone $zone, Request $request)
         {
-            $ipaddress = $request->ip();
-            $domain = gethostbyaddr($ipaddress);
-
-            if (strpos($domain, ".carcgl.com"))
-            {
-                $domain = str_replace(".carcgl.com", "", $domain);
-            }
+            $domain = gethostname();
 
             $department = $request->department;
 
@@ -119,7 +111,6 @@
             }
 
             $newest = Ticket::where('department', $department)->orderBy('ticketID', 'desc')->first();
-            dd($newest);
             if ($newest != null && $newest->department_ticketID != null){
                 $newest = $newest->department_ticketID;
                 preg_match_all('/([a-zA-Z]+)(\d+)/', $newest, $matches);
@@ -130,8 +121,6 @@
                 $updatedID = $updatedID->department_prefix . 1;
             }
 
-
-
             $this->ticket = Ticket::create(['device_name' => $request->device_name,
                 'department' => $department,
                 'zone' => $request->zoneSelect,
@@ -141,11 +130,14 @@
                 'priority' => $request->prioritySelect,
                 'username' => $request->username,
                 'department_ticketID' => $updatedID,
-                'target_department' => $targetDepartment
+                'target_department' => $targetDepartment,
+                'time_spent' => \DateTime::createFromFormat('H:i', '00:00')
             ]);
 
-            $acceptanceCheck->acceptance_from != null ? $this->ticket->ticket_status = -1 : null;
-            $this->ticket->save();
+            if ($acceptanceCheck->acceptance_from != null){
+                $this->ticket->ticket_status = -1;
+                $this->ticket->save();
+            }
 
             $ticketID = $this->ticket->department_ticketID;
 
@@ -322,26 +314,26 @@
             $ticket = Ticket::find($id);
             $ticket->date_modified = new \DateTime('NOW');
 
-            if ($request->takeTicket != null || $request->closeTicket != null || $request->reopenTicket != null || $request->acceptTicket != null){
+            if ($request->takeTicket || $request->closeTicket || $request->reopenTicket || $request->acceptTicket || $request->rejectTicket){
                 if ($request->takeTicket){
                     $ticket->ticket_status = 1;
                     $ticket->date_opened = new \DateTime('NOW');
-                    $ticket->time_spent = \DateTime::createFromFormat('H:i', '00:00');
                     $ticket->owner = auth()->user()->name;
+                    $ticket->department = auth()->user()->department;
+                    $ticket->target_department = null;
 
                     $message = "Podjęto zgłoszenie.";
                 }
-                else if ($request->closeTicket){
+                else if ($request->closeTicket || $request->rejectTicket){
                     $ticket->ticket_status = 2;
                     $ticket->date_closed = new \DateTime('NOW');
 
-                    $message = "Zamknięto zgłoszenie.";
+                    $message = $request->closeTicket ? "Zamknięto zgłoszenie." : "Odrzucono zgłoszenie";
                 }
                 else if ($request->acceptTicket){
                     $ticket->ticket_status = 2;
                     $ticket->date_closed = new \DateTime('NOW');
                     $ticket->owner = auth()->user()->name;
-                    $ticket->time_spent = \DateTime::createFromFormat('H:i', '00:00');
 
                     $newTicket = $ticket->replicate();
                     $newTicket->department = $ticket->target_department;
@@ -391,8 +383,7 @@
                 $message = "Zmiany zostały zapisane";
             }
             else if ($request->timerAction){
-                $ticket->time_spent == null ? $ticket->time_spent = \DateTime::createFromFormat('H:i', '00:00') :
-                                                $ticket->time_spent = new \DateTime($ticket->time_spent);
+                $ticket->time_spent = new \DateTime($ticket->time_spent);
 
                 switch ($request->timerAction){
                     case ('5'):

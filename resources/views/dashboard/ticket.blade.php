@@ -20,6 +20,13 @@
         @if (session('message'))
             <div class="alert alert-success">{{ session('message') }}</div>
         @endif
+        @if ($ticket->ticket_status == -1)
+            <div class="alert alert-info">
+                - Zgłoszenie oczekuje na zatwierdzenie. Zweryfikuj zasadność zgłoszenia i zatwierdź je lub odrzuć, zależnie od podjętej decyzji. <br/>
+                - Zatwierdzone zgłoszenie trafi do docelowego działu podanego w polu <b>Dział obsługi</b>. </br>
+                - W wypadku, gdy zgłoszenie możesz rozwiązać sam, kliknij przycisk <b>Podejmij zgłoszenie</b>.
+            </div>
+        @endif
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                 <button class="nav-link active" id="nav-ticket-tab" data-bs-toggle="tab" data-bs-target="#nav-ticket" type="button" role="tab" aria-controls="nav-ticket" aria-selected="true">Zgłoszenie</button>
@@ -27,6 +34,8 @@
                 <button class="nav-link" id="nav-history-tab" data-bs-toggle="tab" data-bs-target="#nav-history" type="button" role="tab" aria-controls="nav-note" aria-selected="false">Historia zgłoszenia</button>
             </div>
         </nav>
+
+<!-- Notatka po zamknięciu/odrzuceniu -->
 
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-ticket" role="tabpanel" aria-labelledby="nav-ticket-tab">
@@ -87,13 +96,7 @@
                             <label class="form-label">Dział obsługi</label>
                             <select id="departmentSelect" name="departmentSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                                 @foreach ($departments as $department)
-                                    @if (isset($ticket->target_department))
-                                        <option value="{{ $ticket->target_department }}" selected>{{ $ticket->target_department }}</option>
-                                    @elseif ($department->department_name == $ticket->department)
-                                        <option value="{{ $department->department_name }}" selected>{{ $department->department_name }}</option>
-                                    @else
-                                        <option value="{{ $department->department_name }}">{{ $department->department_name }}</option>
-                                    @endif
+                                    <option value="{{ $department->department_name }}">{{ $department->department_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -101,13 +104,7 @@
                             <label class="form-label">Problem</label>
                             <select id="problemSelect" name="problemSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                                 @foreach ($problems as $problem)
-                                    @if (isset($ticket->target_department))
-                                        <option value="{{ $ticket->problem }}" selected>{{ $ticket->problem }}</option>
-                                    @elseif ($problem->problem_name == $ticket->problem)
-                                        <option value="{{ $problem->problem_name }}" selected>{{ $problem->problem_name }}</option>
-                                    @else
-                                        <option value="{{ $problem->problem_name }}">{{ $problem->problem_name }}</option>
-                                    @endif
+                                    <option value="{{ $problem->problem_name }}">{{ $problem->problem_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -151,15 +148,21 @@
                             </div>
                         @endif
                     </div>
+
+                    <!-- Button group -->
                     <div class="row" style="margin-top:1vw;">
                         <div class="col">
                             @if ($ticket->ticket_status == -1)
                                 <input name="acceptTicket" class="btn btn-success" type="Submit" value="Zatwierdź zgłoszenie"/>
+                                <!-- <input name="rejectTicket" class="btn btn-danger" type="Submit" value="Odrzuć zgłoszenie"/> -->
+                                <input type="button" class="btn btn-danger" id="close" data-bs-toggle="modal" data-bs-target="#modal" value="Odrzuć" data-id="rejectTicket"/>
+                                <input name="takeTicket" class="btn btn-warning" type="Submit" value="Podejmij zgłoszenie"/>
                             @elseif ($ticket->ticket_status == 0)
                                 <input name="takeTicket" class="btn btn-warning" type="Submit" value="Podejmij zgłoszenie"/>
                             @elseif ($ticket->ticket_status == 1)
                                 <input name="editTicket" class="btn btn-success" type="Submit" value="Zapisz zmiany"/>
-                                <input name="closeTicket" class="btn btn-danger" style="margin-left:1%" type="Submit" value="Zamknij zgłoszenie"/>
+                                <!-- <input name="closeTicket" class="btn btn-danger" style="margin-left:1%" type="Submit" value="Zamknij zgłoszenie"/> -->
+                                <input type="button" class="btn btn-danger" id="close" data-bs-toggle="modal" data-bs-target="#modal" value="Odrzuć" data-id="closeTicket"/>
                                 <span class="btn-group" style="float: right">
                                     <button name="timerAction" class="btn-sm btn-light-outline" style="margin-left:1%" type="Submit" value="5">+ 5 minut</button>
                                     <button name="timerAction" class="btn-sm btn-secondary" style="margin-left:1%" type="Submit" value="15">+ 15 minut</button>
@@ -170,6 +173,29 @@
                             @endif
                         </div>
                     </div>
+
+                    <!-- Confirmation window -->
+                    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Usuń użytkownika</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Przed zamknięciem dodaj krótką notatkę (max 250 znaków).</p>
+                                        <textarea class="form-control" id="closingNotes" name="closingNotes" maxlength="250"></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                                        <button type="Submit" id="confirmClose" name="" class="btn btn-danger">Potwierdź</button>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+
+
+
                 </form>
                 <div class="col">
                     <p class="fs-4 border-bottom">Załącznik</p>
@@ -243,6 +269,14 @@
     <script>
         $('#prioritySelect').val({{ $ticket->priority }});
 
+        var targetDepartment = '{{ $ticket->target_department }}';
+
+        if (targetDepartment != '' && targetDepartment != null && targetDepartment != undefined) {
+            $('#departmentSelect').val('{{ $ticket->target_department }}');
+        }
+        else{
+            $('#departmentSelect').val('{{ $ticket->department }}');
+        }
 
         /**
          * Get problem list and staff members for chosen department.
@@ -269,7 +303,7 @@
                         }
                     });
                 }
-            });
+            }).change();
         });
 
         $('#isExternal').click(function() {
@@ -280,6 +314,19 @@
                 $('#external_ticketID').prop('disabled', 'disabled');
 
             }
-        })
+        });
+
+        $("#close").click(function() {
+            var type = $(this).attr('data-id');
+            switch (type) {
+                case 'rejectTicket':
+                    $('#confirmClose').attr('name', 'rejectTicket');
+                    break;
+                case 'closeTicket':
+                    $('#confirmClose').attr('name', 'closeTicket');
+                    break;
+            }
+            $("#closingNotes").prop('required', true);
+        });
     </script>
 @endsection
