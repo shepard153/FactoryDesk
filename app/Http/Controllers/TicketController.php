@@ -401,6 +401,7 @@
             }
             else if ($request->timerAction){
                 $ticket->time_spent = new \DateTime($ticket->time_spent);
+                $est = '';
 
                 switch ($request->timerAction){
                     case ('5'):
