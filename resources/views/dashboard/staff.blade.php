@@ -75,7 +75,6 @@
             var staffID = $(this).attr('data-id');
             $('#text').text("Czy na pewno chcesz skasować konto " + buttonDelete + " o numerze ID " + staffID + "?");
             document.getElementById("confirmDelete").value = staffID;
-            console.log(staffID);
         });
     </script>
 @endsection

@@ -25,7 +25,7 @@
                 'password' => 'required|min:8',
             ]);
         }
-        
+
         /**
          * Create a new user instance after a valid registration.
          *
@@ -52,13 +52,13 @@
                 'isAdmin' => $isAdmin,
             ]);
 
-            return back()->with('message', 'Konto użytkownika zostało utworzone.');     
+            return back()->with('message', 'Konto użytkownika zostało utworzone.');
         }
 
         /**
-         * 
+         *
          * Update existing member with new data.
-         * 
+         *
          * @param Request $request
          * @param int $staffID
          * @return string
@@ -72,24 +72,25 @@
 
             $isAdmin = $request->isAdmin == null ? 0 : 1;
 
-            $ticket = Staff::find($staffID);
-            $ticket->email = $request->email;
-            $ticket->name = $request->username;
+            $member = Staff::find($staffID);
+            $member->email = $request->email;
+            $member->name = $request->username;
+            $member->department = $request->departmentSelect;
 
             if ($request->password != null){
                 $request->validate(['password' => 'min:8']);
-                $ticket->password = bcrypt($request->password);        
+                $member->password = bcrypt($request->password);
             }
-            $ticket->isAdmin = $isAdmin;
-            $ticket->save();
+            $member->isAdmin = $isAdmin;
+            $member->save();
 
-            return back()->with('message', 'Konto użytkownika zostało zaktualizowane.');  
+            return back()->with('message', 'Konto użytkownika zostało zaktualizowane.');
         }
 
         /**
-         * 
+         *
          * Delete member account.
-         * 
+         *
          * @param Request $request
          * @param Staff @staff
          * @return string $memberName
@@ -104,9 +105,9 @@
         }
 
         /**
-         * 
+         *
          * Update authenticated member accout with new data.
-         * 
+         *
          * @param Request $request
          * @return string
          */
@@ -129,11 +130,11 @@
 
             return back()->with('message', "Wprowadzone zmiany zostały zapisane.");
         }
-        
+
         /**
-         * 
+         *
          * Render view with all staff members.
-         * 
+         *
          * @param Staff $staff
          * @return view
          */
@@ -149,9 +150,9 @@
         }
 
         /**
-         * 
+         *
          * Render view for member creation form.
-         * 
+         *
          * @param Department $departments
          * @return view
          */
@@ -167,9 +168,9 @@
         }
 
         /**
-         * 
+         *
          * Render view for edit member form.
-         * 
+         *
          * @param Staff $request
          * @param Department $departments
          * @param int $staffID
@@ -189,9 +190,9 @@
         }
 
         /**
-         * 
+         *
          * Render view for profile settings.
-         * 
+         *
          * @return view
          */
         function profileSettings()

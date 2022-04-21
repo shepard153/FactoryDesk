@@ -1,12 +1,12 @@
 @extends('dashboard/dashboard_template')
- 
+
  @section('title', 'RUGDesk')
-  
+
  @section('sidebar')
      @parent
-  
+
  @endsection
-  
+
  @section('content')
     <div class="col rounded shadow" style="background: white; padding: 1vw 1vw 0.5vw 1vw;">
         <p class="fs-4 border-bottom" style="padding: 0vw 0vw 0.6vw 0vw;">Edytuj użytkownika</p>
@@ -45,14 +45,18 @@
                 <label class="form-label">Dział</label>
                 <select id="departmentSelect" name="departmentSelect" class="form-select">
                     @foreach ($departments as $department)
-                        <option value="{{ $department->department_name }}">{{ $department->department_name }}</option>
+                        @if ($department->department_name == $member->department)
+                            <option value="{{ $department->department_name }}" selected>{{ $department->department_name }}</option>
+                        @else
+                            <option value="{{ $department->department_name }}">{{ $department->department_name }}</option>
+                        @endif
                     @endforeach
                 </select>
             </div>
             <div class="mb-3">
                 @if ($member->isAdmin == 1)
                     <input class="form-check-input" type="checkbox" name="isAdmin" id="isAdmin" checked>
-                @else           
+                @else
                     <input class="form-check-input" type="checkbox" name="isAdmin" id="isAdmin">
                 @endif
                 <label class="form-check-label" for="isAdmin">Konto administratora</label>

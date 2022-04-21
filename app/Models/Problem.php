@@ -43,14 +43,4 @@ class Problem extends Model
 
     public $timestamps = null;
 
-    public function getProblemsByDepartment($departmentName)
-    {
-        return DB::table('Problems')->select()->where('departments_list', 'LIKE', "%$departmentName%")->orderBy('lp', 'asc')->get();
-    }
-
-    public function getProblemsByPosition($positionName, $departmentName)
-    {
-        return DB::table('Problems')->select()->where('departments_list', 'LIKE', "%$departmentName%")->where('positions_list', 'LIKE', "%$positionName%")->orderBy('lp', 'asc')->get();
-    }
 }
-    

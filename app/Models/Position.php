@@ -32,10 +32,4 @@
         ];
 
         public $timestamps = null;
-
-        public function getPositionsByZone($zoneName)
-        {
-            return DB::table('Positions')->select()->where('zones_list', 'LIKE', "%$zoneName%")->get();
-        }
     }
-    

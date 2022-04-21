@@ -1,12 +1,12 @@
 @extends('dashboard/dashboard_template')
- 
+
  @section('title', 'RUGDesk')
-  
+
  @section('sidebar')
      @parent
-  
+
  @endsection
-  
+
  @section('content')
     <div class="col rounded shadow" style="background: white; margin-top: 1vw; padding: 1vw 1vw 0.5vw 1vw;">
         <input type="button" id="createPosition" class="btn btn-success" style="float:right; margin: 0.7vw 1vw 0vw 0vw;" value="Utwórz nowe stanowisko"/>
@@ -30,7 +30,7 @@
         </div>
         <table class="table table-striped table-hover responsive table align-middle">
             @if ($positions != null)
-                <thead>               
+                <thead>
                     <tr>
                         <td><b>Nazwa stanowiska</b></td>
                         <td><b>Obszary zawierające dane stanowiska</b></td>
@@ -113,7 +113,7 @@
         });
 
         $("#createPosition").click(function() {
-            $('#newPositionForm').show();
+            $('#newPositionForm').toggle(300);
         });
     </script>
 @endsection

@@ -1,19 +1,20 @@
 @extends('dashboard/dashboard_template')
- 
+
  @section('title', 'RUGDesk')
-  
+
  @section('sidebar')
      @parent
-  
+
  @endsection
-  
+
  @section('content')
-  <meta http-equiv="refresh" content="30">
+    <meta http-equiv="refresh" content="30">
         <div class="row justify-content-center">
           <div class="col rounded shadow" style="background: white; margin: 0vw 1vw 0vw 1vw;">
             <p class="fs-3 border-bottom" style="text-align: center;">Najnowsze zgłoszenia</p>
             <table class="table table-hover">
-              <thead>               
+			 @if (count($dashboard['newest']) > 0)
+              <thead>
                 <tr>
                   <td><b>Problem</b></td>
                   <td><b>Obszar</b></td>
@@ -23,15 +24,11 @@
                   <td><b>Status</b></td>
                 </tr>
               </thead>
-            @if ($dashboard['newest'] != null)
               @foreach($dashboard['newest'] as $newest)
-                @if ($loop->iteration == 6)
-                  @break
-                @endif
                 @if ($newest->priority == 4)
                   <tr class='clickable-row' data-href='ticket/{{ $newest->ticketID }}' style="background-color: #ff7f7f">
                 @elseif ($newest->priority == 0)
-                  <tr class='clickable-row' data-href='ticket/{{ $newest->ticketID }}' style="background-color: #d4ebf2">         
+                  <tr class='clickable-row' data-href='ticket/{{ $newest->ticketID }}' style="background-color: #d4ebf2">
                 @else
                   <tr class='clickable-row' data-href='ticket/{{ $newest->ticketID }}'>
                 @endif
@@ -59,7 +56,7 @@
                     @endswitch
                   </td>
                   <td>{{ $newest->date_created }}</td>
-                  <td>          
+                  <td>
                       @if ($newest->ticket_status == '0')
                         <span class='badge rounded-pill bg-success'>Nowe</span>
                       @elseif ($newest->ticket_status == '1')
@@ -71,7 +68,7 @@
                 </tr>
               @endforeach
             @else
-              <p class="fs-2 text-center" style="padding: 0.2vw 0px 0px 1vw;">Nie znaleziono wyników.</p>
+              <p class="fs-2 text-center" style="padding: 0.2vw 0px 0px 1vw;">Brak nowych zgłoszeń.</p>
             @endif
             </table>
           </div>
@@ -81,7 +78,7 @@
               <table class="table table-sm table-borderless">
                 <thead>
                   <tr class="border-bottom">
-                    <td><img src="{{ asset('public/img/dashboard-icon.png') }}" class="rounded"></td>
+                    <td class="removable"><img src="{{ asset('public/img/dashboard-icon.png') }}" class="rounded"></td>
                     <td style="vertical-align: center"><p class="fs-2" style="margin-bottom: 1.5vw">Statystyki</p></td>
                   </tr>
                   <tr>
@@ -111,9 +108,6 @@
                   <td style="text-align: left"><h5>{{ $mostProblematic->zone }}</h5></td>
                   <td class="text-end"><h4>{{ $mostProblematic->problematic }}</h4></td>
                 </tr>
-                @if ($loop->iteration == 5)
-                  @break
-                @endif
               @endforeach
             </table>
           </div>
@@ -125,9 +119,6 @@
                   <td style="text-align: left"><h5>{{ $topProblems->problem }}</h5></td>
                   <td class="text-end"><h4>{{ $topProblems->occurence }}</h4></td>
                 </tr>
-                @if ($loop->iteration == 5)
-                  @break
-                @endif
               @endforeach
             </table>
           </div>

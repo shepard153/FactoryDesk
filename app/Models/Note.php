@@ -1,5 +1,5 @@
 <?php
-    
+
 namespace app\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,5 +21,17 @@ class Note extends Model
      */
     protected $primaryKey = 'noteID';
 
-    public $timestamps = null;
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = null;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'ticketID',
+        'username',
+        'contents'
+    ];
 }

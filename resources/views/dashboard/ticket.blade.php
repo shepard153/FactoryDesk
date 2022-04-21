@@ -1,48 +1,12 @@
-<!--
-if(isset($_POST['addNote']))
-{
-    $addNote = $conn->prepare("INSERT INTO Notes (ticketID, username, tresc) VALUES (:ticketID, :username, :tresc)");
-    $addNote->bindParam(':ticketID', $ticketID);
-    $addNote->bindParam(':username', $_SESSION['username']);
-    $addNote->bindParam(':tresc', $_POST['notatka']);
-    $addNote->execute();
-    $success[] = "Pomyślnie dodano notatkę.";
-}
-
-if(isset($_POST['changeStatus']))
-{
-    switch ($ticket['status']){
-        case 1:
-            $status = 2;
-            $updateTicket = $conn->prepare("UPDATE TicketList SET status=:status, data_zamkniecia = GETDATE() WHERE ticketID = :ticketID");
-            $modyfikacja = "Zgłoszenie zamknięte";
-            autoHistoryUpdate($conn, $ticketID, $modyfikacja);
-            $success[] = "Zamknięto zgłoszenie.";
-            break;
-        case 2:
-            $status = 1;
-            $updateTicket = $conn->prepare("UPDATE TicketList SET status=:status, data_zamkniecia = NULL WHERE ticketID = :ticketID");
-            $modyfikacja = "Zgłoszenie otwarte ponownie";
-            autoHistoryUpdate($conn, $ticketID, $modyfikacja);
-            $success[] = "Zgłoszenie zostało ponownie otwarte.";
-            break;
-        default:
-            break;
-        }
-    $updateTicket->bindParam(':status', $status);
-    $updateTicket->bindParam(':ticketID', $ticketID);
-    $updateTicket->execute();
-}
--->
 @extends('dashboard/dashboard_template')
- 
+
  @section('title', 'RUGDesk')
-  
+
  @section('sidebar')
      @parent
-  
+
  @endsection
-  
+
  @section('content')
 
  @php
@@ -56,6 +20,13 @@ if(isset($_POST['changeStatus']))
         @if (session('message'))
             <div class="alert alert-success">{{ session('message') }}</div>
         @endif
+        @if ($ticket->ticket_status == -1)
+            <div class="alert alert-info">
+                - Zgłoszenie oczekuje na zatwierdzenie. Zweryfikuj zasadność zgłoszenia i zatwierdź je lub odrzuć, zależnie od podjętej decyzji. <br/>
+                - Zatwierdzone zgłoszenie trafi do docelowego działu podanego w polu <b>Dział obsługi</b>. </br>
+                - W wypadku, gdy zgłoszenie możesz rozwiązać sam, kliknij przycisk <b>Podejmij zgłoszenie</b>.
+            </div>
+        @endif
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                 <button class="nav-link active" id="nav-ticket-tab" data-bs-toggle="tab" data-bs-target="#nav-ticket" type="button" role="tab" aria-controls="nav-ticket" aria-selected="true">Zgłoszenie</button>
@@ -63,7 +34,7 @@ if(isset($_POST['changeStatus']))
                 <button class="nav-link" id="nav-history-tab" data-bs-toggle="tab" data-bs-target="#nav-history" type="button" role="tab" aria-controls="nav-note" aria-selected="false">Historia zgłoszenia</button>
             </div>
         </nav>
-                
+
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-ticket" role="tabpanel" aria-labelledby="nav-ticket-tab">
                 <form method="post" action="{{ url('modifyTicketAction/'.$ticket->ticketID) }}">
@@ -71,40 +42,46 @@ if(isset($_POST['changeStatus']))
                     <div class="row" style="margin-top:1vw;">
                         <div class="col">
                             <span class="fs-5">Data utworzenia {{ $ticket->date_created }}</span>
-                            <span class="fs-5" style="margin-left: 2vw">Data podjęcia 
+                            <span class="fs-5" style="margin-left: 2vw">Data podjęcia
                                     @if ($ticket->date_opened == null)
                                         --------
                                     @else
                                         {{ $ticket->date_opened }}
                                     @endif
                             </span>
-                            <span class="fs-5" style="margin-left: 2vw">Data zamknięcia 
+                            <span class="fs-5" style="margin-left: 2vw">Data zamknięcia
                                     @if ($ticket->date_closed == null)
                                         --------
                                     @else
                                         {{ $ticket->date_closed }}
                                     @endif
                             </span>
-                            <span class="fs-5" style="margin-left: 4.3vw;">Status 
-                                    @if($ticket->ticket_status == 0)
-                                        <span class="badge rounded-pill bg-success">Nowe</span>
-                                    @elseif($ticket->ticket_status == 1)
-                                        <span class="badge rounded-pill bg-warning">Podjęte</span>
-                                    @elseif($date_now > $date_closed)
-                                        <span class="badge rounded-pill bg-danger">Zamknięte permamentnie</span>
-                                    @else
-                                        <span class="badge rounded-pill bg-danger">Zamknięte</span>
-                                    @endif
+                            <span class="fs-5" style="margin-left: 4.3vw;">Status
+                                @if ($ticket->ticket_status == -1)
+                                    <span class="badge rounded-pill bg-primary">Oczekujące</span>
+                                @elseif($ticket->ticket_status == 0)
+                                    <span class="badge rounded-pill bg-success">Nowe</span>
+                                @elseif($ticket->ticket_status == 1)
+                                    <span class="badge rounded-pill bg-warning">Podjęte</span>
+                                @elseif($date_now > $date_closed)
+                                    <span class="badge rounded-pill bg-danger">Zamknięte permamentnie</span>
+                                @else
+                                    <span class="badge rounded-pill bg-danger">Zamknięte</span>
+                                @endif
                             </span>
                         </div>
                     </div>
                     <div class="row" style="margin-top:1vw;">
                         <div class="col">
-                            <label class="form-label">Nazwa</label>
-                            <input type="text" class="form-control" value="{{ $ticket->name }}" disabled/>
+                            <label class="form-label">Nazwa komputera</label>
+                            <input type="text" class="form-control" value="{{ $ticket->device_name }}" disabled/>
                         </div>
                         <div class="col">
-                            <label class="form-label">Obszar/dział produkcji</label>
+                            <label class="form-label">Zgłaszający</label>
+                            <input type="text" class="form-control" value="{{ $ticket->username }}" disabled/>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Obszar produkcji</label>
                             <input type="text" class="form-control" value="{{ $ticket->zone }}" disabled/>
                         </div>
                         <div class="col">
@@ -114,14 +91,10 @@ if(isset($_POST['changeStatus']))
                     </div>
                     <div class="row" style="margin-top:1vw;">
                         <div class="col">
-                            <label class="form-label">Dział</label>
+                            <label class="form-label">Dział obsługi</label>
                             <select id="departmentSelect" name="departmentSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                                 @foreach ($departments as $department)
-                                    @if ($department->department_name == $ticket->department)
-                                        <option value="{{ $department->department_name }}" selected>{{ $department->department_name }}</option>
-                                    @else
-                                        <option value="{{ $department->department_name }}">{{ $department->department_name }}</option>
-                                    @endif
+                                    <option value="{{ $department->department_name }}">{{ $department->department_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -129,11 +102,7 @@ if(isset($_POST['changeStatus']))
                             <label class="form-label">Problem</label>
                             <select id="problemSelect" name="problemSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                                 @foreach ($problems as $problem)
-                                    @if ($problem->problem_name == $ticket->problem)
-                                        <option value="{{ $problem->problem_name }}" selected>{{ $problem->problem_name }}</option>
-                                    @else
-                                        <option value="{{ $problem->problem_name }}">{{ $problem->problem_name }}</option>                                  
-                                    @endif
+                                    <option value="{{ $problem->problem_name }}">{{ $problem->problem_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -147,39 +116,102 @@ if(isset($_POST['changeStatus']))
                         </div>
                     </div>
                     <div class="row" style="margin-top:1vw;">
-                        <div class="col-4">
-                            <label class="form-label">Osoba odpowiedzialna</label>
-                            <select id="ownerSelect" name="ownerSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
-                                @foreach ($staffMembers as $member)
-                                    @if ($member->name == $ticket->owner)
-                                        <option value="{{ $member->name }}" selected>{{ $member->name }}</option>
-                                    @elseif ($member->login != 'root')
-                                        <option value="{{ $member->name }}">{{ $member->name }}</option>                                  
-                                    @endif
-                                @endforeach
-                            </select>
-                        </div>
+                        @if ($ticket->ticket_status != 0 && $ticket->ticket_status != -1)
+                            <hr>
+                            <div class="col-4">
+                                <label class="form-label">Osoba odpowiedzialna</label>
+                                <select id="ownerSelect" name="ownerSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
+                                    @foreach ($staffMembers as $member)
+                                        @if ($member->name == $ticket->owner)
+                                            <option value="{{ $member->name }}" selected>{{ $member->name }}</option>
+                                        @elseif ($member->login != 'root')
+                                            <option value="{{ $member->name }}">{{ $member->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Zgłoszenie zewnętrzne</label>
+                                @if ($ticket->external_ticketID != null)
+                                    <input type="checkbox" id="isExternal" class="form-check-input" checked {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
+                                    <input type="text" id="external_ticketID" name="external_ticketID" class="form-control" value="{{ $ticket->external_ticketID }}"/>
+                                @else
+                                    <input type="checkbox" id="isExternal" class="form-check-input" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
+                                    <input type="text" id="external_ticketID" name="external_ticketID" class="form-control" value="" disabled/>
+                                @endif
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Czas obsługi zlecenia</label>
+                                <input type="text" class="form-control" value="{{ date('H:i', strtotime($ticket->time_spent)) }}" disabled/>
+                            </div>
+                        @endif
                     </div>
+
+                    <!-- Button group -->
                     <div class="row" style="margin-top:1vw;">
                         <div class="col">
-                            @if ($ticket->ticket_status == 0)
+                            @if ($ticket->ticket_status == -1)
+                                <input type="button" class="btn btn-success" id="accept" data-bs-toggle="modal" data-bs-target="#modal" value="Zatwierdź zgłoszenie" data-id="acceptTicket"/>
+                                <input type="button" class="btn btn-danger" id="close" data-bs-toggle="modal" data-bs-target="#modal" value="Odrzuć" data-id="rejectTicket"/>
+                                <input name="takeTicket" class="btn btn-warning" type="Submit" value="Podejmij zgłoszenie"/>
+                            @elseif ($ticket->ticket_status == 0)
                                 <input name="takeTicket" class="btn btn-warning" type="Submit" value="Podejmij zgłoszenie"/>
                             @elseif ($ticket->ticket_status == 1)
                                 <input name="editTicket" class="btn btn-success" type="Submit" value="Zapisz zmiany"/>
-                                <input name="closeTicket" class="btn btn-danger" style="margin-left:1%" type="Submit" value="Zamknij zgłoszenie"/>
-                            @elseif ($date_now < $date_closed)
+                                <input type="button" class="btn btn-danger" id="close" data-bs-toggle="modal" data-bs-target="#modal" value="Zamknij zgłoszenie" data-id="closeTicket"/>
+                                <span class="btn-group" style="float: right">
+                                    <button name="timerAction" class="btn-sm btn-light-outline" style="margin-left:1%" type="Submit" value="5">+ 5 minut</button>
+                                    <button name="timerAction" class="btn-sm btn-secondary" style="margin-left:1%" type="Submit" value="15">+ 15 minut</button>
+                                    <button name="timerAction" class="btn-sm btn-dark" style="margin-left:1%" type="Submit" value="30">+ 30 minut</button>
+                                </span>
+                            @elseif ($date_now < $date_closed && $ticket->target_department == null)
                                 <input name="reopenTicket" class="btn btn-primary" style="margin-left:1%" type="Submit" value="Otwórz ponownie zgłoszenie {{ $countdown->format('%H:%I:%S') }}"/>
                             @endif
                         </div>
                     </div>
+
+                    <!-- Confirmation window -->
+                    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Usuń użytkownika</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Przed zamknięciem dodaj krótką notatkę (max 250 znaków).</p>
+                                    <textarea class="form-control" id="closingNotes" name="closingNotes" maxlength="250"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                                    <input type="Submit" id="confirmClose" name="" value="Potwierdź" class="btn btn-danger"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </form>
                 <div class="col">
                     <p class="fs-4 border-bottom">Załącznik</p>
-                        @if ($attachment != null)
-                            <img src="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" id="attachment" style="width:350px; height:250px;"/>
-                        @else
-                            Brak załącznika
-                        @endif
+                    @if ($attachment != null)
+                        @switch ($attachmentDisplay)
+                            @case ('image')
+                                <a href="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" data-lightbox="image" data-title="{{ $attachment->file_name }}">
+                                    <img src="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" id="attachment" style="width:400px; height:250px;"/>
+                                </a>
+                                @break
+                            @case ('download')
+                                <label for="download" class="form-label">Plik: {{ $attachment->file_name }}</label><br/>
+                                <a href="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" download="{{ $attachment->file_name}}">
+                                    <button class="btn btn-primary" name="download"><i class="fa fa-download"></i> Pobierz załącznik</button>
+                                </a>
+                                @break
+                            @default
+                                @break
+                        @endswitch
+                    @else
+                        Brak załącznika
+                    @endif
                 </div>
                 <div class="row" style="margin-top:1vw;">
                     <div class="col">
@@ -203,7 +235,7 @@ if(isset($_POST['changeStatus']))
                             <textarea class="form-control" name="noteContents" maxlength="250"></textarea><br/>
                             <input name="addNote" class="btn btn-primary" type="Submit" value="Dodaj notatkę"/>
                         </div>
-                    </form> 
+                    </form>
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-history" role="tabpanel" aria-labelledby="nav-history-tab">
@@ -230,21 +262,21 @@ if(isset($_POST['changeStatus']))
 
     <script>
         $('#prioritySelect').val({{ $ticket->priority }});
-        var imgBig = false;
-        $('#attachment').click(function() {
-            if (imgBig == false){
-                $(this).height(400);
-                $(this).width(600);
-                document.getElementById('attachment').scrollIntoView({ behavior: 'smooth' });
-                imgBig = true;
-            }
-            else{
-                $(this).height(250);
-                $(this).width(350);
-                imgBig = false;
-            }
-        });
+        $('#problemSelect').val('{{ $ticket->problem }}');
+        $('#ownerSelect').val('{{ $ticket->owner }}');
 
+        var targetDepartment = '{{ $ticket->target_department }}';
+
+        if (targetDepartment != '' && targetDepartment != null && targetDepartment != undefined) {
+            $('#departmentSelect').val('{{ $ticket->target_department }}');
+        }
+        else{
+            $('#departmentSelect').val('{{ $ticket->department }}');
+        }
+
+        /**
+         * Get problem list and staff members for chosen department.
+         */
         $(document).ready(function() {
             $('#departmentSelect').on('change', function() {
                 var department = $(this).val();
@@ -253,17 +285,48 @@ if(isset($_POST['changeStatus']))
                         url: 'ajax/'+department,
                         type: "GET",
                         dataType: "json",
-                        success:function(problemData) {
-                                
+                        success:function(ajaxData) {
+
                             $('#problemSelect').empty();
-                            $('#problemSelect').removeAttr('disabled', 'disabled');
-                            $.each(problemData, function(key, value) {                                  
-                                $('#problemSelect').append('<option value="'+ value['problem_name'] +'">'+ value['problem_name'] +'</option>');
-                            });
+                            $('#ownerSelect').empty();
+
+                            for(var i in ajaxData['problems']){
+                                $('#problemSelect').append('<option value="'+ ajaxData['problems'][i]['problem_name'] +'">'+ ajaxData['problems'][i]['problem_name'] +'</option>');
+                            }
+                            for(var i in ajaxData['members']){
+                                $('#ownerSelect').append('<option value="'+ ajaxData['members'][i]['name'] +'">'+ ajaxData['members'][i]['name'] +'</option>');
+                            }
+
                         }
                     });
                 }
             });
+        });
+
+        $('#isExternal').click(function() {
+            if ($('#isExternal').is(':checked')){
+                $('#external_ticketID').removeAttr('disabled', 'disabled');
+            }
+            else if (!$('#isExternal').is(':checked')){
+                $('#external_ticketID').prop('disabled', 'disabled');
+
+            }
+        });
+
+        $("#close, #accept").click(function() {
+            var type = $(this).attr('data-id');
+            switch (type) {
+                case 'rejectTicket':
+                    $('#confirmClose').attr('name', 'rejectTicket');
+                    break;
+                case 'closeTicket':
+                    $('#confirmClose').attr('name', 'closeTicket');
+                    break;
+                case 'acceptTicket':
+                    $('#confirmClose').attr('name', 'acceptTicket');
+                    break;
+            }
+            $("#closingNotes").prop('required', true);
         });
     </script>
 @endsection

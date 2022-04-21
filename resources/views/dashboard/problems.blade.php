@@ -1,12 +1,12 @@
 @extends('dashboard/dashboard_template')
- 
+
  @section('title', 'RUGDesk')
-  
+
  @section('sidebar')
      @parent
-  
+
  @endsection
-  
+
  @section('content')
     <div class="col rounded shadow" style="background: white; margin-top: 1vw; padding: 1vw 1vw 0.5vw 1vw;">
         <input type="button" id="createProblem" class="btn btn-success" style="float:right; margin: 0.7vw 1vw 0vw 0vw;" value="Utwórz nowy problem"/>
@@ -26,15 +26,15 @@
         @endif
         <div class="alert alert-info">
             <i class="fa-solid fa-circle-info"></i>
-            Obszary oraz działy, które mają być podciągnięte pod dany problem należy rozdzielić przecinkami.
+            Stanowiska oraz działy, które mają być podciągnięte pod dany problem należy rozdzielić przecinkami.
         </div>
         <table class="table table-striped table-hover responsive table align-middle">
             @if ($problems != null)
-                <thead>               
+                <thead>
                     <tr>
                         <td><b>Kolejność wyświetlania</b></td>
                         <td><b>Nazwa problemu</b></td>
-                        <td><b>Obszary zawierające dany problem</b></td>
+                        <td><b>Stanowiska zawierające dany problem</b></td>
                         <td><b>Działy zawierające dany problem</b></td>
                         <td><b>Operacje</b></td>
                     </tr>
@@ -123,7 +123,7 @@
         });
 
         $("#createProblem").click(function() {
-            $('#newProblemForm').show();
+            $('#newProblemForm').toggle(300);
         });
     </script>
 @endsection

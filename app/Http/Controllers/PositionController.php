@@ -16,6 +16,11 @@
             $this->department = $department;
         }
 
+        /**
+         * List all available positions.
+         * 
+         * @return view
+         */
         public function listPositions()
         {
             $pageTitle = "Edytor formularza";
@@ -28,6 +33,12 @@
             ]);
         }
 
+        /**
+         * Create new position for the given zone.
+         * 
+         * @param Request $request
+         * @return View
+         */
         public function create(Request $request)
         {
             $request->validate(['position_name' => 'required|unique:Positions']);
@@ -41,6 +52,12 @@
 
         }
 
+        /**
+         * Update existing position with new data.
+         * 
+         * @param Request $request
+         * @return view
+         */
         public function update(Request $request)
         {            
             $position = Position::find($request->save);
@@ -55,6 +72,12 @@
             return back()->with('message', "Wprowadzone zmiany zostały zapisane.");
         }
 
+        /**
+         * Delete existing position.
+         * 
+         * @param Request $request
+         * @return view
+         */
         public function delete(Request $request)
         {
             $position = Position::find($request->confirmDelete);
