@@ -300,7 +300,30 @@
                         }
                     });
                 }
-            });
+            }).change();
+        });
+
+        $('#isExternal').click(function() {
+            if ($('#isExternal').is(':checked')){
+                $('#external_ticketID').removeAttr('disabled', 'disabled');
+            }
+            else if (!$('#isExternal').is(':checked')){
+                $('#external_ticketID').prop('disabled', 'disabled');
+
+            }
+        });
+
+        $("#close").click(function() {
+            var type = $(this).attr('data-id');
+            switch (type) {
+                case 'rejectTicket':
+                    $('#confirmClose').attr('name', 'rejectTicket');
+                    break;
+                case 'closeTicket':
+                    $('#confirmClose').attr('name', 'closeTicket');
+                    break;
+            }
+            $("#closingNotes").prop('required', true);
         });
 
         $('#isExternal').click(function() {
