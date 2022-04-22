@@ -15,6 +15,7 @@
     $date_now = new DateTime('NOW');
     $countdown = $date_now->diff($date_closed, true);
 @endphp
+
     <div class="col rounded shadow" style="background: white; padding: 1vw 1vw 0.5vw 1vw;">
         <p class="fs-4 border-bottom" style="padding: 0vw 0vw 0.6vw 0vw;">Szczegóły zgłoszenia</p>
         @if (session('message'))
@@ -22,9 +23,10 @@
         @endif
         @if ($ticket->ticket_status == -1)
             <div class="alert alert-info">
-                - Zgłoszenie oczekuje na zatwierdzenie. Zweryfikuj zasadność zgłoszenia i zatwierdź je lub odrzuć, zależnie od podjętej decyzji. <br/>
-                - Zatwierdzone zgłoszenie trafi do docelowego działu podanego w polu <b>Dział obsługi</b>. </br>
-                - W wypadku, gdy zgłoszenie możesz rozwiązać sam, kliknij przycisk <b>Podejmij zgłoszenie</b>.
+                <h4>Zgłoszenie oczekuje na zatwierdzenie.</h4>
+                - <b>Zatwierdź zgłoszenie</b> - zgłoszenie trafi do docelowego działu podanego w polu <b>Dział obsługi</b>. </br>
+                - <b>Odrzuć</b> - zgłoszenie zostanie zamknięte. </br>
+                - <b>Podejmij zgłoszenie</b> - w wypadku, gdy zgłoszenie możesz rozwiązać sam.
             </div>
         @endif
         <nav>
@@ -169,15 +171,15 @@
                     </div>
 
                     <!-- Confirmation window -->
-                    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Usuń użytkownika</h5>
+                                    <h5 class="modal-title" id="modalLabel"></h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Przed zamknięciem dodaj krótką notatkę (max 250 znaków).</p>
+                                    <p id="modalContent"></p>
                                     <textarea class="form-control" id="closingNotes" name="closingNotes" maxlength="250"></textarea>
                                 </div>
                                 <div class="modal-footer">
@@ -324,12 +326,18 @@
             switch (type) {
                 case 'rejectTicket':
                     $('#confirmClose').attr('name', 'rejectTicket');
+                    $('#modalLabel').text('Odrzuć zgłoszenie');
+                    $('#modalContent').text('Przed zamknięciem dodaj krótką notatkę (max 250 znaków).');
                     break;
                 case 'closeTicket':
                     $('#confirmClose').attr('name', 'closeTicket');
+                    $('#modalLabel').text('Zamknij zgłoszenie');
+                    $('#modalContent').text('Przed zamknięciem dodaj krótką notatkę (max 250 znaków).');
                     break;
                 case 'acceptTicket':
                     $('#confirmClose').attr('name', 'acceptTicket');
+                    $('#modalLabel').text('Zatwierdź zgłoszenie');
+                    $('#modalContent').text('Przed zatwierdzeniem dodaj krótką notatkę (max 250 znaków).');
                     break;
             }
             $("#closingNotes").prop('required', true);

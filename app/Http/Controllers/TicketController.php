@@ -179,7 +179,8 @@
 
             if ($ticket->target_department != null){
                 $message .= "<br/> Przekazanie tego zgłoszenia do działu <strong>$ticket->target_department</strong>
-                    odbędzie się po weryfikacji i akceptacji pracownika działu <strong>$ticket->department</strong>.";
+                    odbędzie się po weryfikacji i akceptacji pracownika działu <strong>$ticket->department</strong>.<br/>
+                    Poinformuj przełożonego o swoim zgłoszeniu.";
             }
 
             return view("ticket/ticket_sent", ['message' => $message]);

@@ -71,6 +71,10 @@
     <path d="M13.5 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h11zm-11-1a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2h-11z"/>
     <path d="M6.5 3a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1V3zm-4 0a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1V3zm8 0a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1V3z"/>
   </symbol>
+  <symbol id="check2-circle" width="16" height="16" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
+  <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z"/>
+  <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"/>
+</symbol>
 </svg>
 @section('sidebar')
 <main>
@@ -88,15 +92,21 @@
         </a>
       </li>
       <li>
-        <a href="{{ url('my_tickets') }}" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#card-checklist"></use></svg>
-          Moje zgłoszenia
+        <a href="{{ url('tickets/awaiting') }}" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#check2-circle"></use></svg>
+          Do akceptacji
         </a>
       </li>
       <li>
         <a href="{{ url('tickets/active') }}" class="nav-link text-white">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#list-columns"></use></svg>
           Zgłoszenia
+        </a>
+      </li>
+      <li>
+        <a href="{{ url('my_tickets') }}" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#card-checklist"></use></svg>
+          Moje zgłoszenia
         </a>
       </li>
       @if (auth()->user()->isAdmin == 1)
