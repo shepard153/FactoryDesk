@@ -122,9 +122,7 @@
                                 <label class="form-label">Osoba odpowiedzialna</label>
                                 <select id="ownerSelect" name="ownerSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                                     @foreach ($staffMembers as $member)
-                                        @if ($member->name == $ticket->owner)
-                                            <option value="{{ $member->name }}" selected>{{ $member->name }}</option>
-                                        @elseif ($member->login != 'root')
+                                        @if ($member->login != 'root')
                                             <option value="{{ $member->name }}">{{ $member->name }}</option>
                                         @endif
                                     @endforeach
@@ -262,8 +260,8 @@
 
     <script>
         $('#prioritySelect').val({{ $ticket->priority }});
-        $('#problemSelect').val('{{ $ticket->problem }}');
-        $('#ownerSelect').val('{{ $ticket->owner }}');
+        $('#problemSelect').val($('<div />').html('{{ $ticket->problem }}').text());
+		$('#ownerSelect').val($('<div />').html('{{ $ticket->owner }}').text());
 
         var targetDepartment = '{{ $ticket->target_department }}';
 
@@ -302,6 +300,14 @@
                 }
             });
         });
+
+        if ($('#ownerSelect').val() == null){
+            $('#ownerSelect').append('<option value="'+ '{{ $ticket->owner }}' +'">'+ '{{ $ticket->owner }}' +'</option>');
+            $('#ownerSelect').val($('<div />').html('{{ $ticket->owner }}').text());
+        }
+        else{
+            $('#ownerSelect').val($('<div />').html('{{ $ticket->owner }}').text());
+        }
 
         $('#isExternal').click(function() {
             if ($('#isExternal').is(':checked')){

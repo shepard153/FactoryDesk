@@ -57,7 +57,9 @@
                   </td>
                   <td>{{ $newest->date_created }}</td>
                   <td>
-                      @if ($newest->ticket_status == '0')
+                      @if ($newest->ticket_status == '-1')
+                        <span class='badge rounded-pill bg-primary'>Do zatwierdzenia</span>
+                      @elseif ($newest->ticket_status == '0')
                         <span class='badge rounded-pill bg-success'>Nowe</span>
                       @elseif ($newest->ticket_status == '1')
                         <span class='badge rounded-pill bg-warning'>Aktywne</span>

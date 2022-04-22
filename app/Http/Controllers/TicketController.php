@@ -146,7 +146,7 @@
                 $this->ticket->save();
             }
 
-            $ticketID = $this->ticket->department_ticketID;
+            $ticketID = $this->ticket->ticketID;
 
             if ($request->hasFile('attachment')){
                 $file = $request->file('attachment');
@@ -162,7 +162,27 @@
                 $filePath = null;
             }
 
-            return view("ticket/ticket_sent", ['ticketID' => $ticketID]);
+            return redirect()->route('ticketSent', ['id' => $ticketID]);;
+        }
+
+        /**
+         * Render view for ticket sent confirmation message.
+         *
+         * @param int $id
+         * @return view
+         */
+        function ticketSent($id)
+        {
+            $ticket = Ticket::find($id);
+
+            $message = "Pomyślnie dodano zgłoszenie o numerze <strong><u>$ticket->department_ticketID</u></strong>. <br/>";
+
+            if ($ticket->target_department != null){
+                $message .= "<br/> Przekazanie tego zgłoszenia do działu <strong>$ticket->target_department</strong>
+                    odbędzie się po weryfikacji i akceptacji pracownika działu <strong>$ticket->department</strong>.";
+            }
+
+            return view("ticket/ticket_sent", ['message' => $message]);
         }
 
         /**
@@ -290,9 +310,7 @@
             $pageTitle = "Zgłoszenia";
             $ticket = Ticket::where('ticketID', $id)->first();
 
-            if ($ticket->target_department != null){
-                $ticket->department = $ticket->target_department;
-            }
+            $ticket->target_department != null ? $ticket->department = $ticket->target_department : null;
 
             $departments = Department::all();
             $problems = Problem::where('departments_list', 'LIKE', "%$ticket->department%")->get();
@@ -349,11 +367,12 @@
                 $message = $request->closeTicket ? "Zamknięto zgłoszenie." : "Odrzucono zgłoszenie";
             }
             else if ($request->acceptTicket){
+                $newTicket = $ticket->replicate();
+
                 $ticket->ticket_status = 2;
                 $ticket->date_closed = new \DateTime('NOW');
                 $ticket->owner = auth()->user()->name;
 
-                $newTicket = $ticket->replicate();
                 $newTicket->department = $ticket->target_department;
                 $newTicket->target_department = null;
                 $newTicket->ticket_status = 0;

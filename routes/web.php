@@ -28,6 +28,7 @@ Route::get('ticket_step2/{department}', [TicketController::class, 'ticketRequest
 Route::get('ticket_step2/ajax/zone/{id}', [TicketController::class, 'ajaxPositionsRequest']);
 Route::get('ticket_step2/{department}/ajax/position/{id}', [TicketController::class, 'ajaxProblemsRequest']);
 Route::post('sendTicket', [TicketController::class, 'sendTicket'])->name('sendTicket');
+Route::get('ticket_sent/{id}', [TicketController::class, 'ticketSent'])->name('ticketSent');
 
 Route::get('login', [LoginController::class, 'index'])->name('login');
 Route::post('loginAction', [LoginController::class, 'loginAction'])->name('loginAction');

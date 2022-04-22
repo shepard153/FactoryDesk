@@ -8,5 +8,10 @@
 @endsection
 
 @section('content')
-        <div class="alert alert-success text-center"><h4>Pomyślnie dodano zgłoszenie o numerze <strong>{{ $ticketID }}</strong>.</h4> <h2><a href="{{ url('/') }}" onClick="window.close();">Zamknij okno</a></h2></div>
+        <div class="alert alert-success text-center">
+            <h4>{!! $message !!}</h4><br/>
+            <a href="{{ url('/') }}" onClick="window.close();">
+                <button type="button" class="btn btn-danger btn-lg">Zamknij okno</button>
+            </a>
+        </div>
 @endsection

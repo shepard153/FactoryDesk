@@ -32,7 +32,14 @@
             $department = Auth::user()->department;
 
             if ($department != "All"){
-                $newest = Ticket::where('ticket_status', '=', 0)->where("department", '=', "$department")->orderBy('date_created', 'desc')->limit(5)->get();
+                $newest = Ticket::where("department", '=', "$department")
+                    ->where(function ($query){
+                        $query->where('ticket_status', '=', -1)
+                            ->orWhere('ticket_status', '=', 0);
+                    })
+                    ->orderBy('date_created', 'desc')
+                    ->limit(5)
+                    ->get();
 
                 $topProblems = Ticket::select('problem')
                     ->where("department", '=', "$department")
