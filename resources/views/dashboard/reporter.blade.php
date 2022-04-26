@@ -49,10 +49,12 @@
                 </div>
                 <div class="col-2">
                     <input type="checkbox" name="isID" value="department_ticketID" class="form-check-input" checked disabled>
+                    <input type="hidden" name="isID" value="department_ticketID" />
                     <label class="form-label">Identyfikator</label>
                 </div>
                 <div class="col-2">
                     <input type="checkbox" name="isDepartment" value="department" class="form-check-input" checked disabled>
+                    <input type="hidden" name="isDepartment" value="department" />
                     <label class="form-label">Dział</label>
                 </div>
                 <div class="col-2">
