@@ -14,23 +14,39 @@
             <div class="alert alert-success">{{ session('message') }}</div>
         @endif
 
-        <div class="alert alert-info">Test</div>
-
         <form method="post" action="{{ url('getReport') }}">
             @csrf
             <div class="row" style="margin-top:1vw;">
                 <h4>Format pliku</h4>
                 <div class="col-2">
-                    <input type="radio" name="fileFormat" class="form-check-input" value="csv" required>
+                    <input type="radio" name="fileFormat" class="form-check-input" value="csv" checked required>
                     <label class="form-label">CSV (Excel)</label>
                 </div>
                 <div class="col-3">
                     <input type="radio" name="fileFormat" class="form-check-input" value="pdf" required disabled>
-                    <label class="form-label">PDF (nie działa / w fazie testów)</label>
+                    <label class="form-label">PDF</label>
+                </div>
+            </div>
+            <div class="row" style="margin-top:1vw;">
+                <h4>Zakres wyszukiwania</h4>
+                <div class="alert alert-warning">
+                    Pod uwagę brana jest data utworzenia zgłoszenia!
+                </div>
+                <div class="col-2">
+                    <label class="form-label">Data początkowa</label>
+                    <input type="date" name="startDate" class="form-control" required>
+                </div>
+                <div class="col-2">
+                    <label class="form-label">Data końcowa</label>
+                    <input type="date" name="endDate" class="form-control" required>
                 </div>
             </div>
             <div class="row" style="margin-top:1vw;">
                 <h4>Kolumny do exportu</h4>
+                <div class="alert alert-info">
+                    Wybierz kolumny, które mają pojawić się w pliku wyjściowym i kliknij <b>Generuj raport</b>, aby otrzymać raport.<br/>
+                    Domyślnie zaznaczone są wszystkie opcje.
+                </div>
                 <div class="col-2">
                     <input type="checkbox" name="isID" value="department_ticketID" class="form-check-input" checked disabled>
                     <label class="form-label">Identyfikator</label>
@@ -61,7 +77,7 @@
                     <input type="checkbox" name="isProblem" value="problem" class="form-check-input" checked>
                     <label class="form-label">Problem</label>
                 </div>
-                <div class="col-3">
+                <div class="col">
                     <input type="checkbox" name="isExternal" value="external_ticketID" class="form-check-input" checked>
                     <label class="form-label">Zgłoszenie zewnętrzne/Kod kotła</label>
                 </div>
@@ -72,16 +88,16 @@
                     <label class="form-label">Priorytet</label>
                 </div>
                 <div class="col-2">
-                    <input type="checkbox" name="isOwner" value="owner" class="form-check-input" checked>
-                    <label class="form-label">Osoba odpowiedzialna</label>
-                </div>
-                <div class="col-2">
                     <input type="checkbox" name="isTime" value="time_spent" class="form-check-input" checked>
                     <label class="form-label">Czas obsługi</label>
                 </div>
                 <div class="col-2">
                     <input type="checkbox" name="isMessage" value="ticket_message" class="form-check-input" checked>
                     <label class="form-label">Wiadomość</label>
+                </div>
+                <div class="col-3">
+                    <input type="checkbox" name="isOwner" value="owner" class="form-check-input" checked>
+                    <label class="form-label">Osoba odpowiedzialna</label>
                 </div>
             </div>
             <div class="row" style="margin-top:1vw;">
