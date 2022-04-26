@@ -10,7 +10,7 @@ use App\Http\Controllers\StaffController;
 use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProblemController;
-
+use App\Http\Controllers\ReporterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::post('addProblemAction', [ProblemController::class, 'create'])->name('addProblemAction');
     Route::post('editProblemAction', [ProblemController::class, 'update'])->name('editProblemAction');
     Route::post('deleteProblemAction', [ProblemController::class, 'delete'])->name('deleteProblemAction');
+    Route::post('getReport', [ReporterController::class, 'getReport'])->name('getReport');
 
      /**
       * Views
@@ -77,4 +78,5 @@ Route::middleware('auth')->group(function () {
     Route::get('zones', [ZoneController::class, 'listZones']);
     Route::get('positions', [PositionController::class, 'listPositions']);
     Route::get('problems', [ProblemController::class, 'listProblems']);
+    Route::get('reporter', [ReporterController::class, 'reporter']);
 });

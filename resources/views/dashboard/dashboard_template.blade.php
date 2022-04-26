@@ -109,6 +109,12 @@
           Moje zgłoszenia
         </a>
       </li>
+      <li>
+        <a href="{{ url('reporter') }}" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#card-checklist"></use></svg>
+          Raportowanie
+        </a>
+      </li>
       @if (auth()->user()->isAdmin == 1)
         <li>
           <a href=" {{ url('staff') }}" class="nav-link text-white">
