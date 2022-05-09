@@ -51,6 +51,11 @@
                     <div class="form-group top-margin">
                         <label class="form-label">Załącznik (max 5MB) (opcjonalnie)</label><br/>
                         <input type="file" class="form-control" id="attachment" name="attachment" aria-label="Upload">
+<!--
+                        <div class="dropzone" id="myDropzone">
+                            <div class="dz-message" data-dz-message><span>Kliknij lub upuść plik tutaj.</span></div>
+                        </div>
+-->
                     </div>
                     <div class="form-group top-margin">
                         <input id="submit" name="submit" class="btn btn-lg btn-primary" type="Submit" disabled/>
@@ -153,5 +158,80 @@
                     }
                 });
             });
+
+/*
+//Paste file to dropzone box
+
+var input = document.querySelector("#text");
+input.addEventListener("paste",function(event){
+    var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+    for (index in items) {
+        var item = items[index];
+        if (item.kind === 'file') {
+            var blob = item.getAsFile();
+            var reader = new FileReader();
+            reader.onload = function(event){
+                let img = document.createElement('img')
+                img.src = event.target.result
+                document.getElementById('gallery').appendChild(img);
+            };
+            reader.readAsDataURL(blob);
+        }
+    }
+});
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#image_upload_preview').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+var deleteImageBtn = $('#delete-image');
+deleteImageBtn.click(function(){
+    var image = $('#gallery').children().first().remove();
+    $('.uploadIcon').css('display','block');
+    dropArea.style.height = '300px';
+});
+
+function dataURLtoFile(dataurl, filename) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type:mime});
+}
+*/
+
+/*
+Dropzone.options.myDropzone= {
+    url: 'ajax/upload',
+    autoProcessQueue: true,
+    uploadMultiple: false,
+    parallelUploads: 1,
+    maxFiles: 1,
+    maxFilesize: 5,
+    dictDefaultMessage: "Drop files here to upd",
+    //acceptedFiles: 'image/*',
+    addRemoveLinks: true,
+    headers: {
+        'X-CSRF-TOKEN': $('input[name="_token"]').attr('value')
+    },
+    init: function() {
+        dzClosure = this; // Makes sure that 'this' is understood inside the functions below.
+
+        // for Dropzone to process the queue (instead of default form behavior):
+        document.getElementById("submit").addEventListener("click", function(e) {
+            // Make sure that the form isn't actually being sent.
+            e.preventDefault();
+            e.stopPropagation();
+            dzClosure.processQueue();
+        });
+    }
+}*/
         </script>
 @endsection

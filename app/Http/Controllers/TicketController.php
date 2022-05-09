@@ -36,7 +36,7 @@
          * @param Request $request
          * @return view
          */
-        function ticketRequest(Zone $zone, Request $request)
+        public function ticketRequest(Zone $zone, Request $request)
         {
 			$domain = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
@@ -59,7 +59,7 @@
          * @param string $zoneName
          * @return array $positions
          */
-        function ajaxPositionsRequest($zoneName)
+        public function ajaxPositionsRequest($zoneName)
         {
             $positions = Position::where('zones_list', 'LIKE', "%$zoneName%")->get();
             return json_encode($positions);
@@ -73,7 +73,7 @@
          * @param string $positionName
          * @return array $problems
          */
-        function ajaxProblemsRequest($department, $positionName)
+        public function ajaxProblemsRequest($department, $positionName)
         {
             $problems = Problem::where('departments_list', 'LIKE', "%$department%")->where('positions_list', 'LIKE', "%$positionName%")->orderBy('lp', 'asc')->get();
             return json_encode($problems);
@@ -88,12 +88,27 @@
          * @param string $department
          * @return array @problems
          */
-        function ajaxForTicketDetails($department)
+        public function ajaxForTicketDetails($department)
         {
             $problems = Problem::where('departments_list', 'LIKE', "%$department%")->orderBy('lp', 'asc')->get();
             $members = Staff::where('department', '=', $department)->orderBy('name', 'asc')->get();
             return json_encode(['problems' => $problems, 'members' => $members]);
         }
+
+        /*
+        Function for future dropzone development.
+
+        public function ajaxUpload(Request $request)
+        {
+            $image = $request->file('file');
+            $fileInfo = $image->getClientOriginalName();
+            $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+            $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
+            $file_name= $filename.'-'.time().'.'.$extension;
+            $image->move(public_path('uploads/gallery'),$file_name);
+
+            return response()->json(['success'=>$file_name]);
+        }*/
 
         /**
          * Send ticket and place data in database while attachment (if provided) is placed in ticket_attachments folder on disk.
@@ -102,7 +117,7 @@
          * @param Request $request
          * @return view
          */
-        function sendTicket(Request $request)
+        public function sendTicket(Request $request)
         {
             $acceptanceCheck = Department::where('department_name', $request->department)->first();
 
@@ -171,11 +186,19 @@
          * @param int $id
          * @return view
          */
-        function ticketSent($id)
+        public function ticketSent($id)
         {
             $ticket = Ticket::find($id);
 
             $message = "Pomyślnie dodano zgłoszenie o numerze <strong><u>$ticket->department_ticketID</u></strong>. <br/>";
+
+            $connector = new \Sebbmyr\Teams\TeamsConnector("WEBHOOK_URL_HERE");
+            $card = new \Sebbmyr\Teams\Cards\HeroCard();
+            $card->setTitle("Zgłoszenie $ticket->department_ticketID")
+                ->setSubtitle("Utworzone $ticket->date_created")
+                ->setText("Obszar: $ticket->zone. Stanowisko: $ticket->position. Problem: $ticket->problem.")
+                ->addButton("openUrl", "Link do zgłoszenia", "http://10.39.15.84/laraveltest/ticket/$ticket->ticketID");
+            $connector->send($card);
 
             if ($ticket->target_department != null){
                 $message .= "<br/> Przekazanie tego zgłoszenia do działu <strong>$ticket->target_department</strong>
@@ -230,7 +253,7 @@
          * @param Request $request
          * @return view
          */
-        function ticketList(Request $request, $status = 'active')
+        public function ticketList(Request $request, $status = 'active')
         {
             $pageTitle = "Zgłoszenia";
 
@@ -306,7 +329,7 @@
          * @param int $id
          * @return view
          */
-        function ticketDetails($id)
+        public function ticketDetails($id)
         {
             $pageTitle = "Zgłoszenia";
             $ticket = Ticket::where('ticketID', $id)->first();
@@ -340,7 +363,7 @@
          * @param int @id
          * @return string $message
          */
-        function modifyTicketAction(Request $request, $id)
+        public function modifyTicketAction(Request $request, $id)
         {
             $ticket = Ticket::find($id);
             $ticket->date_modified = new \DateTime('NOW');
@@ -449,7 +472,7 @@
          * @param Ticket $ticket = null
          * @return null
          */
-        function addToHistory(Request $request, $id, $ticket = null)
+        public function addToHistory(Request $request, $id, $ticket = null)
         {
             if ($request->takeTicket || $request->closeTicket || $request->reopenTicket || $request->acceptTicket || $request->rejectTicket) {
                 $history = new TicketHistory;
@@ -487,7 +510,7 @@
          * @param int $id
          * @return string
          */
-        function addNote(Request $request, $id, $contents = null)
+        public function addNote(Request $request, $id, $contents = null)
         {
             $contents = $contents == null ? $request->noteContents : $contents;
 
