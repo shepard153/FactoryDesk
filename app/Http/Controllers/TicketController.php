@@ -136,7 +136,6 @@
                 $newest = $newest->department_ticketID;
                 preg_match_all('/([a-zA-Z]+)(\d+)/', $newest, $matches);
                 $updatedID = $matches[1][0] . $matches[2][0] + 1;
-
             }
             else{
                 $updatedID = Department::where('department_name', $department)->first();
@@ -191,15 +190,15 @@
             $ticket = Ticket::find($id);
 
             $message = "Pomyślnie dodano zgłoszenie o numerze <strong><u>$ticket->department_ticketID</u></strong>. <br/>";
-
-            $connector = new \Sebbmyr\Teams\TeamsConnector("WEBHOOK_URL_HERE");
+/*
+            $connector = new \Sebbmyr\Teams\TeamsConnector("https://carcgl.webhook.office.com/webhookb2/540eeec1-4abc-4500-8937-ffef98e37070@36839a65-7f3f-4bac-9ea4-f571f10a9a03/IncomingWebhook/f418b16cbad947f39b11a1ef450dbbb5/049037dd-17c7-43da-9467-f69945794bb8");
             $card = new \Sebbmyr\Teams\Cards\HeroCard();
             $card->setTitle("Zgłoszenie $ticket->department_ticketID")
                 ->setSubtitle("Utworzone $ticket->date_created")
                 ->setText("Obszar: $ticket->zone. Stanowisko: $ticket->position. Problem: $ticket->problem.")
                 ->addButton("openUrl", "Link do zgłoszenia", "http://10.39.15.84/laraveltest/ticket/$ticket->ticketID");
             $connector->send($card);
-
+*/
             if ($ticket->target_department != null){
                 $message .= "<br/> Przekazanie tego zgłoszenia do działu <strong>$ticket->target_department</strong>
                     odbędzie się po weryfikacji i akceptacji pracownika działu <strong>$ticket->department</strong>.<br/>

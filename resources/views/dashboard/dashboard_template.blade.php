@@ -149,6 +149,12 @@
     <div class="row align-items-end">
       <div class="col">
         <ul class="nav nav-pills flex-column mb-auto">
+            <li>
+            <a href="{{ url('settings') }}" class="nav-link text-white">
+                <svg class="bi me-2" width="16" height="16"><use xlink:href="#building"></use></svg>
+                Ustawienia
+            </a>
+            </li>
           <li>
             <a href="{{ url('/') }}" class="nav-link text-white">
               <svg class="bi me-2" width="16" height="16"><use xlink:href="#house-fill"></use></svg>

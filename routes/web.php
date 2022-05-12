@@ -11,6 +11,8 @@ use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProblemController;
 use App\Http\Controllers\ReporterController;
+use App\Http\Controllers\SettingsController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -58,11 +60,13 @@ Route::middleware('auth')->group(function () {
     Route::post('editProblemAction', [ProblemController::class, 'update'])->name('editProblemAction');
     Route::post('deleteProblemAction', [ProblemController::class, 'delete'])->name('deleteProblemAction');
     Route::post('getReport', [ReporterController::class, 'getReport'])->name('getReport');
+    Route::post('setSettings', [SettingsController::class, 'setSettings'])->name('setSettings');
 
      /**
       * Views
       */
     Route::get('dashboard', [DashboardController::class, 'loadDashboard']);
+    Route::get('dashboard/ajax', [DashboardController::class, 'ajaxDashboardData']);
     Route::get('my_tickets', [TicketController::class, 'memberTickets']);
     Route::get('my_tickets/{status}', [TicketController::class, 'memberTickets']);
     Route::get('tickets', [TicketController::class, 'ticketList']);
@@ -80,4 +84,5 @@ Route::middleware('auth')->group(function () {
     Route::get('positions', [PositionController::class, 'listPositions']);
     Route::get('problems', [ProblemController::class, 'listProblems']);
     Route::get('reporter', [ReporterController::class, 'reporter']);
+    Route::get('settings', [SettingsController::class, 'listSettings']);
 });

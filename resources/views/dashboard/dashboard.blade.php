@@ -8,11 +8,10 @@
  @endsection
 
  @section('content')
-    <meta http-equiv="refresh" content="30">
         <div class="row justify-content-center">
           <div class="col rounded shadow" style="background: white; margin: 0vw 1vw 0vw 1vw;">
             <p class="fs-3 border-bottom" style="text-align: center;">Najnowsze zgłoszenia</p>
-            <table class="table table-hover">
+            <table class="table table-hover" id="newestTable">
 			 @if (count($dashboard['newest']) > 0)
               <thead>
                 <tr>
@@ -24,6 +23,7 @@
                   <td><b>Status</b></td>
                 </tr>
               </thead>
+              <tbody id="newestRows">
               @foreach($dashboard['newest'] as $newest)
                 @if ($newest->priority == 4)
                   <tr class='clickable-row' data-href='ticket/{{ $newest->ticketID }}' style="background-color: #ff7f7f">
@@ -61,14 +61,11 @@
                         <span class='badge rounded-pill bg-primary'>Do zatwierdzenia</span>
                       @elseif ($newest->ticket_status == '0')
                         <span class='badge rounded-pill bg-success'>Nowe</span>
-                      @elseif ($newest->ticket_status == '1')
-                        <span class='badge rounded-pill bg-warning'>Aktywne</span>
-                      @elseif ($newest->ticket_status == '2')
-                        <span class='badge rounded-pill bg-danger'>Zamknięte</span>
                       @endif
                   </td>
                 </tr>
               @endforeach
+              </tbody>
             @else
               <p class="fs-2 text-center" style="padding: 0.2vw 0px 0px 1vw;">Brak nowych zgłoszeń.</p>
             @endif
@@ -85,26 +82,26 @@
                   </tr>
                   <tr>
                     <td><h5>Wszystkie zgłoszenia</h5></td>
-                    <td><h2>{{ $dashboard['total'] }}</h2></td>
+                    <td><h2 id="total">{{ $dashboard['total'] }}</h2></td>
                   </tr>
                 </thead>
                 <tr>
                   <td><h5>Nowe</h5></td>
-                  <td><h2>{{ $dashboard['total_new'] }}</h2></td>
+                  <td><h2 id="total_new">{{ $dashboard['total_new'] }}</h2></td>
                 </tr>
                 <tr>
                   <td><h5>Aktywne</h5></td>
-                  <td><h2>{{ $dashboard['total_open'] }}</h2></td>
+                  <td><h2 id="total_open">{{ $dashboard['total_open'] }}</h2></td>
                 </tr>
                 <tr>
                   <td><h5>Zamknięte</h5></td>
-                  <td><h2>{{ $dashboard['total_closed'] }}</h2></td>
+                  <td><h2 id="total_closed">{{ $dashboard['total_closed'] }}</h2></td>
                 </tr>
               </table>
           </div>
           <div class="col-3 border border-success rounded shadow" style="background: white; max-width: 340px;">
             <p class="fs-2 border-bottom">Obszary z największą liczbą zgłoszeń</p>
-            <table class="table table-sm table-borderless">
+            <table class="table table-sm table-borderless" id="mostProblematic">
               @foreach($dashboard['mostProblematic'] as $mostProblematic)
                 <tr>
                   <td style="text-align: left"><h5>{{ $mostProblematic->zone }}</h5></td>
@@ -126,10 +123,93 @@
           </div>
 
 <script>
-  jQuery(document).ready(function($) {
-    $(".clickable-row").click(function() {
-        window.location = $(this).data("href");
+    jQuery(document).ready(function($) {
+        let refreshTime = "{{ $settings['dashboard_refreshTime'] }}" * 1000;
+        setInterval(update, refreshTime);
+
+        $(".clickable-row").click(function() {
+            window.location = $(this).data("href");
+        });
     });
-});
+
+    /**
+     * Ajax function for Dashboard data. Once the page loads, dashboard data is being refreshed constantly
+     * after time set in "refreshTime" variable.
+     */
+    function update(){
+        $.ajax({
+            type: "GET",
+            url: "dashboard/ajax",
+            dataType: 'json',
+            success: function(dashboardData){
+                $.each(dashboardData, function(key, value) {
+                    $('#total').html(value['total']);
+                    $('#total_new').html(value['total_new']);
+                    $('#total_closed').html(value['total_closed']);
+                    $('#total_open').html(value['total_open']);
+
+                    $('#mostProblematic').empty();
+                    $.each(value['mostProblematic'], function(key, value) {
+                        $('#mostProblematic').append('<tr> \
+                            <td style="text-align: left"><h5>'+ value['zone'] +'</h5></td> \
+                            <td class="text-end"><h4>'+ value['problematic'] +'</h4></td> \
+                        </tr>');
+                    });
+
+                    $('#topProblems').empty();
+                    $.each(value['topProblems'], function(key, value) {
+                        $('#topProblems').append('<tr> \
+                            <td style="text-align: left"><h5>'+ value['zone'] +'</h5></td> \
+                            <td class="text-end"><h4>'+ value['occurence'] +'</h4></td> \
+                        </tr>');
+                    });
+
+                    let row, priority, status;
+                    $('#newestRows').empty();
+                    $.each(value['newest'], function(key, value) {
+                        switch (value['priority']) {
+                            case '4':
+                                row = "<tr class='clickable-row' data-href='ticket/" + value['ticketID'] + "' style='background-color: #ff7f7f'>";
+                                priority = "Krytyczny";
+                                break;
+                            case '0':
+                                row = "<tr class='clickable-row' data-href='ticket/" + value['ticketID'] + "' style='background-color: #d4ebf2'>";
+                                priority = "Powiadomienie";
+                                break;
+                            default:
+                                row = "<tr class='clickable-row' data-href='ticket/" + value['ticketID'] + "'>";
+                                priority = "Standardowy";
+                                break;
+                        }
+
+                        switch (value['ticket_status']){
+                            case '-1':
+                                status = "<span class='badge rounded-pill bg-primary'>Do zatwierdzenia</span>";
+                                break;
+                            case '0':
+                                status = "<span class='badge rounded-pill bg-success'>Nowe</span>";
+                                break;
+                        }
+
+                        date = new Date(value['date_created']);
+                        date = date.getFullYear() + "-" + ('0' + (date.getMonth()+1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2) + " " +
+                                ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2);
+
+                        $('#newestRows').append(row + ' \
+                            <td>' + value['problem'] + '</td> \
+                            <td>' + value['zone'] + '</td> \
+                            <td>' + value['position'] + '</td> \
+                            <td>' + priority + '</td> \
+                            <td>' + date + '</td> \
+                            <td>' + status  + '</td> \
+                            </tr>');
+                    });
+                });
+            },
+            error: function (response) {
+                $("#newestTable").html('Błąd JavaScript. Aby odświeżyć dane, załaduj stronę ponownie.');
+            }
+        });
+    }
 </script>
 @endsection

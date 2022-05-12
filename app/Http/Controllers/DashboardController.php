@@ -5,6 +5,7 @@
     use App\Models\Dashboard;
     use App\Models\Ticket;
     use App\Http\Controllers\Controller;
+    use App\Http\Controllers\SettingsController as Settings;
     use Illuminate\Support\Facades\Auth;
 
     class DashboardController extends Controller
@@ -14,12 +15,28 @@
          *
          * @return view
          */
-        function loadDashboard()
+        public function loadDashboard()
         {
             $dashboardData = $this->dashboardData();
             $user = Auth::getUser();
             $pageTitle = "Dashboard";
-            return view("dashboard/dashboard", ['user'=>$user, 'pageTitle'=>$pageTitle, 'dashboard'=>$dashboardData]);
+            $settings = Settings::getSettings();
+            return view("dashboard/dashboard", [
+                'user' => $user,
+                'pageTitle' => $pageTitle,
+                'dashboard' => $dashboardData,
+                'settings' => $settings
+            ]);
+        }
+
+        /**
+         * Data for ajax query.
+         *
+         * @return JsonResponse
+         */
+        public function ajaxDashboardData()
+        {
+            return json_encode(['dashboardData' => $this->dashboardData()]);
         }
 
         /**
@@ -27,9 +44,11 @@
          *
          * @return array $data
          */
-        function dashboardData()
+        public function dashboardData()
         {
             $department = Auth::user()->department;
+
+            $limit = Settings::getSettings()['dashboard_newestToDisplay'];
 
             if ($department != "All"){
                 $newest = Ticket::where("department", '=', "$department")
@@ -38,7 +57,7 @@
                             ->orWhere('ticket_status', '=', 0);
                     })
                     ->orderBy('date_created', 'desc')
-                    ->limit(5)
+                    ->limit($limit)
                     ->get();
 
                 $topProblems = Ticket::select('problem')
@@ -75,7 +94,7 @@
                 ];
             }
             else{
-                $newest = Ticket::where('ticket_status', '=', 0)->orderBy('date_created', 'desc')->get();
+                $newest = Ticket::where('ticket_status', '=', 0)->orderBy('date_created', 'desc')->limit($limit)->get();
 
                 $topProblems = Ticket::select('problem')->selectRaw('count (*) as occurence')->groupBy('problem')->orderBy('occurence', 'desc')->get();
 
