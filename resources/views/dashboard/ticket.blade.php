@@ -176,14 +176,14 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="modalLabel"></h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" class="btn-close closeModal" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <p id="modalContent"></p>
                                     <textarea class="form-control" id="closingNotes" name="closingNotes" maxlength="250"></textarea>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                                    <button type="button" class="btn btn-secondary closeModal" data-bs-dismiss="modal">Anuluj</button>
                                     <input type="Submit" id="confirmClose" name="" value="Potwierdź" class="btn btn-danger"/>
                                 </div>
                             </div>
@@ -342,5 +342,12 @@
             }
             $("#closingNotes").prop('required', true);
         });
+
+        console.log($('#modal').is(":hidden"));
+
+        $(".closeModal").click(function() {
+            console.log($('#modal').is(":hidden"));
+            $("#closingNotes").prop('required', false);
+        })
     </script>
 @endsection

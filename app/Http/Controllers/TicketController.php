@@ -191,7 +191,7 @@
 
             $message = "Pomyślnie dodano zgłoszenie o numerze <strong><u>$ticket->department_ticketID</u></strong>. <br/>";
 /*
-            $connector = new \Sebbmyr\Teams\TeamsConnector("https://carcgl.webhook.office.com/webhookb2/540eeec1-4abc-4500-8937-ffef98e37070@36839a65-7f3f-4bac-9ea4-f571f10a9a03/IncomingWebhook/f418b16cbad947f39b11a1ef450dbbb5/049037dd-17c7-43da-9467-f69945794bb8");
+            $connector = new \Sebbmyr\Teams\TeamsConnector($department_teamsWebhook);
             $card = new \Sebbmyr\Teams\Cards\HeroCard();
             $card->setTitle("Zgłoszenie $ticket->department_ticketID")
                 ->setSubtitle("Utworzone $ticket->date_created")

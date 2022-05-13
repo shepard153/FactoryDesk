@@ -16,7 +16,27 @@
     <div class="col rounded shadow" style="background: white; margin-top: 1vw;">
         @if ($tickets->count() > 0)
         <table class="table table-hover">
-            <div id="paging"><p class="lead" style="padding: 0.7vw 0px 0px 1vw;">Wyświetlane {{ $tickets->firstItem() }} - {{ $tickets->lastItem() }} z {{ $tickets->total() }} wyników.</p></div>
+            <div id="paging">
+                <p class="lead" style="padding: 0.7vw 0px 0px 1vw;">Wyświetlane {{ $tickets->firstItem() }} - {{ $tickets->lastItem() }} z {{ $tickets->total() }} wyników.</p>
+            </div>
+            <nav aria-label="paging" style="padding-left: 1vw; margin-bottom: -1.5vw">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $tickets->previousPageUrl() }}">&laquo;</a>
+                    </li>
+                    <li>
+                        <form method="get" action="{{ url(url()->current()) }}" style="position: absolute;">
+                            <input type="number" name="page" id="pageNumber" class="form-control" min="1" max="{{ $tickets->lastPage() }}" value="{{ $tickets->currentPage() }}"/>
+                        </form>
+                    </li>
+                    <li class="page-item">
+                        <p class="lead" style="padding: 0.2vw 0.4vw 0.2vw 0.4vw;"> z {{ $tickets->lastPage() }}</p>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $tickets->nextPageUrl() }}">&raquo;</a>
+                    </li>
+                </ul>
+            </nav>
             <thead>
                 <tr>
                     <td style="width: 5%"><b><a href="{{ url(url()->current()).'?sort=ticket_status&order='.$order }}"><i class="{{ $sort == 'ticket_status' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Status</b></td>
