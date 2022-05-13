@@ -33,6 +33,7 @@
             'image_path',
             'department_prefix',
             'acceptance_from',
-            'isHidden'
+            'isHidden',
+            'teams_webhook'
         ];
     }

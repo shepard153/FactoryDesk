@@ -188,17 +188,20 @@
         public function ticketSent($id)
         {
             $ticket = Ticket::find($id);
+            $department = Department::where('department_name', $ticket->department)->first();
 
             $message = "Pomyślnie dodano zgłoszenie o numerze <strong><u>$ticket->department_ticketID</u></strong>. <br/>";
-/*
-            $connector = new \Sebbmyr\Teams\TeamsConnector($department_teamsWebhook);
-            $card = new \Sebbmyr\Teams\Cards\HeroCard();
-            $card->setTitle("Zgłoszenie $ticket->department_ticketID")
-                ->setSubtitle("Utworzone $ticket->date_created")
-                ->setText("Obszar: $ticket->zone. Stanowisko: $ticket->position. Problem: $ticket->problem.")
-                ->addButton("openUrl", "Link do zgłoszenia", "http://10.39.15.84/laraveltest/ticket/$ticket->ticketID");
-            $connector->send($card);
-*/
+
+            if ($department->teams_webhook != null){
+                $connector = new \Sebbmyr\Teams\TeamsConnector("$department->teams_webhook");
+                $card = new \Sebbmyr\Teams\Cards\HeroCard();
+                $card->setTitle("Zgłoszenie $ticket->department_ticketID")
+                    ->setSubtitle("Utworzone $ticket->date_created")
+                    ->setText("Obszar: $ticket->zone. Stanowisko: $ticket->position. Problem: $ticket->problem.")
+                    ->addButton("openUrl", "Link do zgłoszenia", "http://10.39.15.84/laraveltest/ticket/$ticket->ticketID");
+                $connector->send($card);
+            }
+
             if ($ticket->target_department != null){
                 $message .= "<br/> Przekazanie tego zgłoszenia do działu <strong>$ticket->target_department</strong>
                     odbędzie się po weryfikacji i akceptacji pracownika działu <strong>$ticket->department</strong>.<br/>
@@ -441,26 +444,32 @@
 
                 $message = "Zmiany zostały zapisane";
             }
-            else if ($request->timerAction){
-                $ticket->time_spent = new \DateTime($ticket->time_spent);
-
-                switch ($request->timerAction){
-                    case ('5'):
-                        $ticket->time_spent->add(new \DateInterval('PT5M'));
-                        break;
-                    case ('15'):
-                        $ticket->time_spent->add(new \DateInterval('PT15M'));
-                        break;
-                    case ('30'):
-                        $ticket->time_spent->add(new \DateInterval('PT30M'));
-                        break;
-                }
-                $message = "Zmiany zostały zapisane";
-            }
 
             $ticket->save();
 
             return back()->with('message', $message);
+        }
+
+        public function ticketTimerAction($id, $timer)
+        {
+            $this->ticket = Ticket::find($id);
+            $this->ticket->time_spent = new \DateTime($this->ticket->time_spent);
+
+            switch ($timer){
+                case ('5'):
+                    $this->ticket->time_spent->add(new \DateInterval('PT5M'));
+                    break;
+                case ('15'):
+                    $this->ticket->time_spent->add(new \DateInterval('PT15M'));
+                    break;
+                case ('30'):
+                    $this->ticket->time_spent->add(new \DateInterval('PT30M'));
+                    break;
+            }
+
+            $this->ticket->save();
+
+            return json_encode(['time_spent' => $this->ticket->time_spent]);
         }
 
         /**

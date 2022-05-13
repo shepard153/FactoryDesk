@@ -90,7 +90,8 @@
                 'image_path' => $filePath,
                 'department_prefix' => $prefix,
                 'acceptance_from' => $acceptance_from,
-                'isHidden' => $isHidden
+                'isHidden' => $isHidden,
+                'teams_webhook' => $request->teams_webhook
             ]);
 
             return back()->with('message', "Dział został utworzony.");
@@ -119,6 +120,8 @@
 
             $this->department->acceptance_from = $request->acceptance != null ? $request->acceptance_from : null;
             $this->department->isHidden = $request->isHidden != null ? true : false;
+
+            $this->department->teams_webhook = $request->teams_webhook;
 
             $this->department->save();
 

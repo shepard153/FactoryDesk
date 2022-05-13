@@ -149,12 +149,14 @@
     <div class="row align-items-end">
       <div class="col">
         <ul class="nav nav-pills flex-column mb-auto">
-            <li>
-            <a href="{{ url('settings') }}" class="nav-link text-white">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#building"></use></svg>
-                Ustawienia
-            </a>
-            </li>
+            @if (auth()->user()->isAdmin == 1)
+                <li>
+                    <a href="{{ url('settings') }}" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16"><use xlink:href="#building"></use></svg>
+                        Ustawienia
+                    </a>
+                </li>
+            @endif
           <li>
             <a href="{{ url('/') }}" class="nav-link text-white">
               <svg class="bi me-2" width="16" height="16"><use xlink:href="#house-fill"></use></svg>
@@ -174,7 +176,7 @@
         @endphp
       </a>
       <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1" style="">
-        <li><a class="dropdown-item" href="{{ url('profile/staff') }}"><svg class="bi me-2" width="16" height="16"><use xlink:href="#gear-fill"></use></svg>Ustawienia</a></li>
+        <li><a class="dropdown-item" href="{{ url('profile/staff') }}"><svg class="bi me-2" width="16" height="16"><use xlink:href="#gear-fill"></use></svg>Mój profil</a></li>
         <li><hr class="dropdown-divider"></li>
         <li><a class="dropdown-item" href="{{ url('logout') }}"><svg class="bi me-2" width="16" height="16"><use xlink:href="#box-arrow-right"></use></svg>Wyloguj</a></li>
       </ul>

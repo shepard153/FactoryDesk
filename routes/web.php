@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
      * Form Actions
      */
     Route::post('modifyTicketAction/{id}', [TicketController::class, 'modifyTicketAction'])->name('modifyTicketAction');
+    Route::post('ticket/{id}/ajax/{timer}', [TicketController::class, 'ticketTimerAction'])->name('ticketTimerAction');
     Route::post('addNote/{id}', [TicketController::class, 'addNote'])->name('addNote');
     Route::post('addMemberAction', [StaffController::class, 'create'])->name('addMemberAction');
     Route::post('editMemberAction/{staffID}', [StaffController::class, 'update'])->name('editMemberAction');

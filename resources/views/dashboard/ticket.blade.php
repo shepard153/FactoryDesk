@@ -13,7 +13,6 @@
     $date_closed  = new DateTime($ticket->date_closed);
     $date_closed->add(new DateInterval('P2D'));
     $date_now = new DateTime('NOW');
-    $countdown = $date_now->diff($date_closed, true);
 @endphp
 
     <div class="col rounded shadow" style="background: white; padding: 1vw 1vw 0.5vw 1vw;">
@@ -142,7 +141,7 @@
                             </div>
                             <div class="col-4">
                                 <label class="form-label">Czas obsługi zlecenia</label>
-                                <input type="text" class="form-control" value="{{ date('H:i', strtotime($ticket->time_spent)) }}" disabled/>
+                                <input type="text" id="time_spent" class="form-control" value="{{ date('H:i', strtotime($ticket->time_spent)) }}" disabled/>
                             </div>
                         @endif
                     </div>
@@ -160,12 +159,12 @@
                                 <input name="editTicket" class="btn btn-success" type="Submit" value="Zapisz zmiany"/>
                                 <input type="button" class="btn btn-danger" id="close" data-bs-toggle="modal" data-bs-target="#modal" value="Zamknij zgłoszenie" data-id="closeTicket"/>
                                 <span class="btn-group" style="float: right">
-                                    <button name="timerAction" class="btn-sm btn-light-outline" style="margin-left:1%" type="Submit" value="5">+ 5 minut</button>
-                                    <button name="timerAction" class="btn-sm btn-secondary" style="margin-left:1%" type="Submit" value="15">+ 15 minut</button>
-                                    <button name="timerAction" class="btn-sm btn-dark" style="margin-left:1%" type="Submit" value="30">+ 30 minut</button>
+                                    <button name="timerAction" class="btn-sm btn-light-outline" style="margin-left:1%" type="button" value="5">+ 5 minut</button>
+                                    <button name="timerAction" class="btn-sm btn-secondary" style="margin-left:1%" type="button" value="15">+ 15 minut</button>
+                                    <button name="timerAction" class="btn-sm btn-dark" style="margin-left:1%" type="button" value="30">+ 30 minut</button>
                                 </span>
                             @elseif ($date_now < $date_closed && $ticket->target_department == null)
-                                <input name="reopenTicket" class="btn btn-primary" style="margin-left:1%" type="Submit" value="Otwórz ponownie zgłoszenie {{ $countdown->format('%H:%I:%S') }}"/>
+                                <input name="reopenTicket" id="reopenTicket" class="btn btn-primary" style="margin-left:1%" type="Submit" value="Otwórz ponownie zgłoszenie"/>
                             @endif
                         </div>
                     </div>
@@ -303,6 +302,22 @@
             });
         });
 
+        $("button[name='timerAction']").click(function() {
+            var timer = $(this).val();
+            var id = "{{ $ticket->ticketID }}";
+            $.ajax({
+                url: id+'/ajax/'+timer,
+                type: "POST",
+                dataType: "json",
+                data: { "_token": "{{ csrf_token() }}"},
+                success:function(time_spent) {
+                    time_spent = new Date(time_spent['time_spent']['date']);
+                    time_spent =  ('0' + time_spent.getHours()).slice(-2) + ":" + ('0' + time_spent.getMinutes()).slice(-2);
+                    $('#time_spent').val(time_spent);
+                }
+            });
+        });
+
         if ($('#ownerSelect').val() == null){
             $('#ownerSelect').append('<option value="'+ '{{ $ticket->owner }}' +'">'+ '{{ $ticket->owner }}' +'</option>');
             $('#ownerSelect').val($('<div />').html('{{ $ticket->owner }}').text());
@@ -343,11 +358,38 @@
             $("#closingNotes").prop('required', true);
         });
 
-        console.log($('#modal').is(":hidden"));
-
-        $(".closeModal").click(function() {
-            console.log($('#modal').is(":hidden"));
+        $(document).on('show.bs.modal','#modal', function () {
+            $("#closingNotes").prop('required', true);
+        });
+        $(document).on('hide.bs.modal','#modal', function () {
             $("#closingNotes").prop('required', false);
-        })
+        });
+
+        if ("{{ $ticket->date_closed }}"){
+            countdown();
+        }
+
+        function countdown(){
+            var countdownStart = new Date("{{ $ticket->date_closed }}").getTime() + 48 * 60 * 60 * 1000;
+
+            var x = setInterval(function() {
+
+            var now = new Date().getTime();
+
+            var distance = countdownStart - now;
+
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("reopenTicket").value = "Otwórz ponownie zgłoszenie (" +
+                ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2) + ")";
+
+            if (distance < 0) {
+                clearInterval(x);
+            }
+            }, 100);
+        }
+
     </script>
 @endsection
