@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     /**
      * Form Actions
      */
+    Route::post('paginationHelper', [TicketController::class, 'paginationHelper'])->name('paginationHelper');
     Route::post('modifyTicketAction/{id}', [TicketController::class, 'modifyTicketAction'])->name('modifyTicketAction');
     Route::post('ticket/{id}/ajax/{timer}', [TicketController::class, 'ticketTimerAction'])->name('ticketTimerAction');
     Route::post('addNote/{id}', [TicketController::class, 'addNote'])->name('addNote');

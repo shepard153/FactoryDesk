@@ -96,9 +96,9 @@
             else{
                 $newest = Ticket::where('ticket_status', '=', 0)->orderBy('date_created', 'desc')->limit($limit)->get();
 
-                $topProblems = Ticket::select('problem')->selectRaw('count (*) as occurence')->groupBy('problem')->orderBy('occurence', 'desc')->get();
+                $topProblems = Ticket::select('problem')->selectRaw('count (*) as occurence')->groupBy('problem')->orderBy('occurence', 'desc')->limit(5)->get();
 
-                $mostProblematic = Ticket::select('zone')->selectRaw('count (*) AS problematic')->groupBy('zone')->orderBy('problematic', 'desc')->get();
+                $mostProblematic = Ticket::select('zone')->selectRaw('count (*) AS problematic')->groupBy('zone')->orderBy('problematic', 'desc')->limit(5)->get();
 
                 $total = Ticket::all()->count();
 

@@ -249,6 +249,32 @@
         }
 
         /**
+         * Helper function for paginator form. Without it, the sorting filters where deleted by Laravel paginator.
+         *
+         * @param Request $request
+         *
+         * @return JsonResponse
+         */
+        public function paginationHelper(Request $request)
+        {
+            $previousURL = explode("/", url()->previous());
+            $previousURL = end($previousURL);
+
+            if (str_contains($previousURL, 'page')){
+                $url = substr($previousURL, 0, -1);
+                $url = "tickets/".$url.$request->page;
+            }
+            else if (str_contains($previousURL, 'sort') || str_contains($previousURL, 'order')){
+                $url = "tickets/$previousURL&page=$request->page";
+            }
+            else{
+                $url = "tickets/$previousURL?page=$request->page";
+            }
+
+            return redirect($url);
+        }
+
+        /**
          * List all tickets for agents. By default pagination is set to 20 tickets per page. Here you can also change the sorting arrows
          * in $arrows array. Default ones are from font awesome package.
          *
@@ -276,7 +302,23 @@
 
             if ($request->sort != null){
                 $request->order = $request->order == 'desc' ? 'asc': 'desc';
-                if ($status == 'active'){
+                if (auth()->user()->department == 'All' && $status == 'active'){
+                    $tickets = Ticket::where(function($query) {
+                        return $query
+                            ->where('ticket_status', '=', 0)
+                            ->orWhere('ticket_status', '=', 1);
+                         })
+                    ->orderBy($request->sort, $request->order)
+                    ->paginate(20)
+                    ->withQueryString();
+                }
+                else if (auth()->user()->department == 'All'){
+                    $tickets = Ticket::where('ticket_status', '=', $status)
+                        ->orderBy($request->sort, $request->order)
+                        ->paginate(20)
+                        ->withQueryString();
+                }
+                else if ($status == 'active'){
                     $tickets = Ticket::where('department', '=', auth()->user()->department)
                         ->where(function($query) {
                             return $query
@@ -295,7 +337,23 @@
                         ->withQueryString();
                 }
             }else{
-                if ($status == 'active'){
+                if (auth()->user()->department && $status == 'active'){
+                    $tickets = Ticket::where(function($query) {
+                        return $query
+                            ->where('ticket_status', '=', 0)
+                            ->orWhere('ticket_status', '=', 1);
+                     })
+                    ->orderBy('date_modified', 'desc')
+                    ->paginate(20)
+                    ->withQueryString();
+                }
+                else if (auth()->user()->department){
+                    $tickets = Ticket::where('ticket_status', '=', $status)
+                        ->orderBy('date_modified', 'desc')
+                        ->paginate(20)
+                        ->withQueryString();
+                }
+                else if ($status == 'active'){
                     $tickets = Ticket::where('department', '=', auth()->user()->department)
                         ->where(function($query) {
                             return $query
@@ -308,10 +366,10 @@
                 }
                 else{
                     $tickets = Ticket::where('department', '=', auth()->user()->department)
-                    ->where('ticket_status', '=', $status)
-                    ->orderBy('date_modified', 'desc')
-                    ->paginate(20)
-                    ->withQueryString();
+                        ->where('ticket_status', '=', $status)
+                        ->orderBy('date_modified', 'desc')
+                        ->paginate(20)
+                        ->withQueryString();
                 }
             }
 

@@ -49,11 +49,11 @@
                 <div class="mb-3" id="acceptanceDiv" {{ $department->acceptance_from != null ? 'null' : "style=display:none"; }}>
                     <label class="form-label">Dział zatwierdzający</label>
                     <select id="acceptance_from" name="acceptance_from" class="form-select">
-                        @foreach ($departments as $department)
-                            @if ($department->department_name == $department->acceptance_from)
-                                <option value="{{ $department->department_name }}" selected>{{ $department->department_name }}</option>
+                        @foreach ($departments as $departmentAcceptance)
+                            @if ($departmentAcceptance->department_name == $departmentAcceptance->acceptance_from)
+                                <option value="{{ $departmentAcceptance->department_name }}" selected>{{ $departmentAcceptance->department_name }}</option>
                             @else
-                                <option value="{{ $department->department_name }}">{{ $department->department_name }}</option>
+                                <option value="{{ $departmentAcceptance->department_name }}">{{ $departmentAcceptance->department_name }}</option>
                             @endif
                         @endforeach
                     </select>

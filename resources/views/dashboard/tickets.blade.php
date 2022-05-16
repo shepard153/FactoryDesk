@@ -25,7 +25,8 @@
                         <a class="page-link" href="{{ $tickets->previousPageUrl() }}">&laquo;</a>
                     </li>
                     <li>
-                        <form method="get" action="{{ url(url()->current()) }}" style="position: absolute;">
+                        <form method="post" action="{{ url('paginationHelper') }}" style="position: absolute;">
+                            @csrf
                             <input type="number" name="page" id="pageNumber" class="form-control" min="1" max="{{ $tickets->lastPage() }}" value="{{ $tickets->currentPage() }}"/>
                         </form>
                     </li>
@@ -97,7 +98,8 @@
                     <a class="page-link" href="{{ $tickets->previousPageUrl() }}">&laquo;</a>
                 </li>
                 <li>
-                    <form method="get" action="{{ url(url()->current()) }}">
+                    <form method="post" action="{{ url('paginationHelper') }}">
+                        @csrf
                         <input type="number" name="page" id="pageNumber" class="form-control" min="1" max="{{ $tickets->lastPage() }}" value="{{ $tickets->currentPage() }}"/>
                     </form>
                 </li>
