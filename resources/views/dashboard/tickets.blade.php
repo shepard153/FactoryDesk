@@ -40,6 +40,7 @@
             </nav>
             <thead>
                 <tr>
+                    <td><b><a href="{{ url(url()->current()).'?sort=department_ticketID&order='.$order }}"><i class="{{ $sort == 'department_ticketID' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> ID</b></td>
                     <td style="width: 5%"><b><a href="{{ url(url()->current()).'?sort=ticket_status&order='.$order }}"><i class="{{ $sort == 'ticket_status' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Status</b></td>
                     <td><b><a href="{{ url(url()->current()).'?sort=zone&order='.$order }}"><i class="{{ $sort == 'zone' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Obszar</b></td>
                     <td><b><a href="{{ url(url()->current()).'?sort=position&order='.$order }}"><i class="{{ $sort == 'position' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Stanowisko</b></td>
@@ -62,6 +63,7 @@
                 @else
                     <tr class='clickable-row' data-href="{{ url ('ticket/'.$ticket->ticketID) }}">
                 @endif
+                <td><strong><a href="{{ url ('ticket/'.$ticket->ticketID) }}" class="link-success text-decoration-none">{{ $ticket->department_ticketID }}</a></strong></td>
                 <td>
                     @switch ($ticket->ticket_status)
                         @case (-1)
@@ -80,13 +82,13 @@
                 </td>
                 <td><strong><a href="{{ url ('ticket/'.$ticket->ticketID) }}" class="link-success text-decoration-none">{{ $ticket->zone }}</a></strong></td>
                 <td>{{ $ticket->position }}</td>
-                <td style="width: 20%"><strong><a href="{{ url ('ticket/'.$ticket->ticketID) }}" class="link-success text-decoration-none">{{ $ticket->problem }}</a></strong></td>
+                <td style="width: 15%"><strong><a href="{{ url ('ticket/'.$ticket->ticketID) }}" class="link-success text-decoration-none">{{ $ticket->problem }}</a></strong></td>
                 <td>{{ $ticket->device_name }}</td>
-                <td>{{ date('d-m-Y', strtotime($ticket->date_created)) }}</td>
+                <td>{{ date('d-m-Y H:i', strtotime($ticket->date_created)) }}</td>
                 @if (strpos(url()->current(), 'closed') == true)
-                    <td>{{ date('d-m-Y', strtotime($ticket->date_closed)) }}</td>
+                    <td>{{ date('d-m-Y H:i', strtotime($ticket->date_closed)) }}</td>
                 @else
-                    <td>{{ date('d-m-Y', strtotime($ticket->date_modified)) }}</td>
+                    <td>{{ date('d-m-Y H:i', strtotime($ticket->date_modified)) }}</td>
                 @endif
                     <td>{{ $ticket->owner }}</td>
              </tr>

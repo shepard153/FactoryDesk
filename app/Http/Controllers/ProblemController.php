@@ -58,14 +58,21 @@
          */
         public function update(Request $request)
         {
-            $problem = Problem::find($request->save);
+            $problem = Problem::find($request->confirmEdit);
             $problem->problem_name = $request->problem_name;
             $problem->lp = $request->lp;
 
             $problem->isDirty('problem_name') == true ? $request->validate(['problem_name' => 'required|unique:Problems']) : null;
-            $problem->isDirty('lp') == true ? $request->validate(['lp' => 'required|unique:Problems']) : null;
 
-            $problem->positions_list = $request->positions_list;
+            foreach($request->request->all() as $key => $value){
+                if ($key != "_token" && $key != "problem_name" && $key != "lp" && $key != "departments_list" && $key != "confirmEdit"){
+                    $positions[] = str_replace('_', ' ', $key);
+                }
+            }
+
+            $positions = implode(', ', $positions);
+
+            $problem->positions_list = $positions;
             $problem->departments_list = $request->departments_list;
 
             $problem->save();

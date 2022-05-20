@@ -74,7 +74,7 @@
         @csrf
         <div class="form-floating">
           <input type="text" class="form-control" id="floatingInput" name="login" placeholder="Login" required/>
-          <label for="floatingInput">Login</label>
+          <label for="floatingInput">Login lub email</label>
         </div>
         <div class="form-floating">
           <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Hasło" required/>

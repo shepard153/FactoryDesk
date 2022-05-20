@@ -102,13 +102,13 @@
     <body>
         @section('navbar')
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <img class="img-fluid" src="{{ asset('public/img/carrier-logo.png') }}" width="130px" style="margin-left: 5%;"/>
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                    <a class="navbar-brand" href="index.php">Menu</a>
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav" style="font-size: 18px">
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="{{ url('/') }}">Zgłoś problem</a>
                         </li>
@@ -118,12 +118,32 @@
                     </ul>
                 </div>
             </div>
+            <img class="img-fluid" src="{{ asset('public/img/rugdesk-logo.png') }}" width="170px" style="margin-right: 5%"/>
         </nav>
         @show
         <div class="container">
             <div class="row justify-content-md-center top-margin">
                 @yield('content')
             </div>
+            <footer id="footer" class="flex-wrap justify-content-between align-items-center border-top" style="margin: 0px -12px 0px -1%">
+                <div class="col d-flex align-items-center" style="margin: 5px 0px 0px 0px; justify-content: center;">
+                    <img src="{{ asset('public/img/favicon-32x32.png') }}" style="margin: 0px 5px -10px 5px;">
+                    <span class="text-muted">&copy; 2022 RUG ICT</span>
+                </div>
+            </footer>
         </div>
     </body>
+    <script>
+        $(document).ready(function() {
+            var docHeight = $(window).height();
+            var footerHeight = $('#footer').height();
+            var footerTop = $('#footer').position().top + footerHeight;
+            var marginTop = (docHeight - footerTop - 20);
+
+            if (footerTop < docHeight)
+                $('#footer').css('margin-top', marginTop + 'px');
+            else
+                $('#footer').css('margin-top', '0px');
+        });
+    </script>
 </HTML>

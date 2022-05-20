@@ -23,6 +23,17 @@
         }
 
         /**
+         * Ajax request to get available departments.
+         *
+         * @return JsonResponse $departments
+         */
+        public function ajaxDepartmentsRequest()
+        {
+            $departments = Department::all();
+            return json_encode($departments);
+        }
+
+        /**
          * List all departments.
          *
          * @return view

@@ -132,17 +132,10 @@
           </a>
         </li>
         <li>
-          <button class="btn btn-outline-light align-items-center rounded" data-bs-toggle="collapse" data-bs-target="#form-collapse" aria-expanded="false">
+          <a href="{{ url('formEditor') }}" class="nav-link text-white">
             <svg class="bi me-2" width="16" height="16"><use xlink:href="#kanban"></use></svg>
-              Edycja formularza
-          </button>
-          <div class="collapse" id="form-collapse" style="">
-            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
-              <li><a href="{{ url('zones') }}" class="link-light rounded">Obszary</a></li>
-              <li><a href="{{ url('positions') }}" class="link-light rounded">Stanowiska</a></li>
-              <li><a href="{{ url('problems') }}" class="link-light rounded">Problemy</a></li>
-            </ul>
-          </div>
+            Edytor formularza
+          </a>
         </li>
       @endif
     </ul>
@@ -186,16 +179,33 @@
   <div class="b-example-divider"></div>
   @show
   <div class="container-fluid" style="background:#F2F2F2; overflow: auto;">
-    <div class="row">
-      <div class="col">
+    <div class="col">
         <p class="fs-2 border-bottom" style="background:white; margin: 0 -0.6vw 1vw -0.6vw; padding: 0.5vw 4vw 0.6vw 0vw; text-align: right">{{ $pageTitle }}</p>
         @yield('content')
-      </div>
+        <footer id="footer" class="border-top">
+            <div class="col d-flex align-items-center" style="justify-content: center;">
+                <img src="{{ asset('public/img/favicon-32x32.png') }}" style="margin: 0px 5px -2px 5px; height: 32px; width: 32px">
+                <span class="text-muted">&copy; 2022 RUG ICT</span>
+            </div>
+        </footer>
     </div>
-  </div>
+</div>
 
 </main>
 </body>
 <script src="{{ asset('public/js/bootstrap.bundle.min.js') }}" async="async"></script>
+<script>
+    $(document).ready(function() {
+        var docHeight = $(window).height();
+        var footerHeight = $('#footer').height();
+        var footerTop = $('#footer').position().top + footerHeight;
+        var marginTop = (docHeight - footerTop - 10);
 
+        if (footerTop < docHeight)
+            $('#footer').css('margin-top', marginTop + 'px');
+         else
+            $('#footer').css('margin-top', '15px');
+
+    });
+</script>
 </html>

@@ -7,6 +7,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\EditorController;
 use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProblemController;
@@ -39,11 +40,20 @@ Route::get('logout', [LoginController::class, 'logout']);
 
 Route::middleware('auth')->group(function () {
     /**
+     * Ajax Calls
+     */
+    Route::post('ticket/{id}/ajax/{timer}', [TicketController::class, 'ticketTimerAction'])->name('ticketTimerAction');
+    Route::get('dashboard/ajax', [DashboardController::class, 'ajaxDashboardData']);
+    Route::get('ticket/ajax/{department}', [TicketController::class, 'ajaxForTicketDetails']);
+    Route::get('formEditor/ajax/zones', [ZoneController::class, 'ajaxZonesRequest']);
+    Route::get('formEditor/ajax/positions', [PositionController::class, 'ajaxPositionsRequest']);
+    Route::get('formEditor/ajax/departments', [DepartmentController::class, 'ajaxDepartmentsRequest']);
+
+    /**
      * Form Actions
      */
     Route::post('paginationHelper', [TicketController::class, 'paginationHelper'])->name('paginationHelper');
     Route::post('modifyTicketAction/{id}', [TicketController::class, 'modifyTicketAction'])->name('modifyTicketAction');
-    Route::post('ticket/{id}/ajax/{timer}', [TicketController::class, 'ticketTimerAction'])->name('ticketTimerAction');
     Route::post('addNote/{id}', [TicketController::class, 'addNote'])->name('addNote');
     Route::post('addMemberAction', [StaffController::class, 'create'])->name('addMemberAction');
     Route::post('editMemberAction/{staffID}', [StaffController::class, 'update'])->name('editMemberAction');
@@ -68,13 +78,11 @@ Route::middleware('auth')->group(function () {
       * Views
       */
     Route::get('dashboard', [DashboardController::class, 'loadDashboard']);
-    Route::get('dashboard/ajax', [DashboardController::class, 'ajaxDashboardData']);
     Route::get('my_tickets', [TicketController::class, 'memberTickets']);
     Route::get('my_tickets/{status}', [TicketController::class, 'memberTickets']);
     Route::get('tickets', [TicketController::class, 'ticketList']);
     Route::get('tickets/{status}', [TicketController::class, 'ticketList']);
     Route::get('ticket/{id}', [TicketController::class, 'ticketDetails']);
-    Route::get('ticket/ajax/{department}', [TicketController::class, 'ajaxForTicketDetails']);
     Route::get('staff', [StaffController::class, 'loadStaffList']);
     Route::get('addMember', [StaffController::class, 'addMember']);
     Route::get('profile/staff', [StaffController::class, 'profileSettings']);
@@ -82,9 +90,7 @@ Route::middleware('auth')->group(function () {
     Route::get('departments', [DepartmentController::class, 'listDepartments']);
     Route::get('department/{departmentID}', [DepartmentController::class, 'editDepartment']);
     Route::get('addDepartment', [DepartmentController::class, 'addDepartment']);
-    Route::get('zones', [ZoneController::class, 'listZones']);
-    Route::get('positions', [PositionController::class, 'listPositions']);
-    Route::get('problems', [ProblemController::class, 'listProblems']);
+    Route::get('formEditor', [EditorController::class, 'index']);
     Route::get('reporter', [ReporterController::class, 'reporter']);
     Route::get('settings', [SettingsController::class, 'listSettings']);
 });

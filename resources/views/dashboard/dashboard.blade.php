@@ -8,19 +8,19 @@
  @endsection
 
  @section('content')
-        <div class="row justify-content-center">
-          <div class="col rounded shadow" style="background: white; margin: 0vw 1vw 0vw 1vw;">
+          <div class="col rounded shadow" style="background: white;">
             <p class="fs-3 border-bottom" style="text-align: center;">Najnowsze zgłoszenia</p>
             <table class="table table-hover" id="newestTable">
 			 @if (count($dashboard['newest']) > 0)
               <thead>
                 <tr>
-                  <td><b>Problem</b></td>
-                  <td><b>Obszar</b></td>
-                  <td><b>Stanowisko</b></td>
-                  <td><b>Priorytet</b></td>
-                  <td><b>Data zgłoszenia</b></td>
-                  <td><b>Status</b></td>
+                    <td>ID</td>
+                    <td>Status</td>
+                    <td>Obszar</td>
+                    <td>Stanowisko</td>
+                    <td>Problem</td>
+                    <td>Komputer</td>
+                    <td>Data zgłoszenia</td>
                 </tr>
               </thead>
               <tbody id="newestRows">
@@ -32,37 +32,19 @@
                 @else
                   <tr class='clickable-row' data-href='ticket/{{ $newest->ticketID }}'>
                 @endif
-                  <td>{{ $newest->problem }}</td>
+                  <td>{{ $newest->department_ticketID }}</td>
+                  <td>
+                    @if ($newest->ticket_status == '-1')
+                        <span class='badge rounded-pill bg-primary'>Do zatwierdzenia</span>
+                    @elseif ($newest->ticket_status == '0')
+                        <span class='badge rounded-pill bg-success'>Nowe</span>
+                    @endif
+                  </td>
                   <td>{{ $newest->zone }}</td>
                   <td>{{ $newest->position }}</td>
-                  <td>
-                      @switch ($newest->priority )
-                        @case (0)
-                          Powiadomienie
-                          @break
-                        @case (1)
-                          Niski
-                          @break;
-                        @case (2)
-                          Standardowy
-                          @break
-                        @case (3)
-                          Wysoki
-                          @break
-                        @case (4)
-                          Krytyczny
-                          @break
-                        @default ----------
-                    @endswitch
-                  </td>
+                  <td>{{ $newest->problem }}</td>
+                  <td>{{ $newest->device_name }}</td>
                   <td>{{ $newest->date_created }}</td>
-                  <td>
-                      @if ($newest->ticket_status == '-1')
-                        <span class='badge rounded-pill bg-primary'>Do zatwierdzenia</span>
-                      @elseif ($newest->ticket_status == '0')
-                        <span class='badge rounded-pill bg-success'>Nowe</span>
-                      @endif
-                  </td>
                 </tr>
               @endforeach
               </tbody>
@@ -71,7 +53,6 @@
             @endif
             </table>
           </div>
-        </div>
         <div class="row justify-content-center" style="margin-left: 2vw; margin-top: 1vw;">
           <div class="col-3 border border-success rounded shadow" style="background: white; max-width: 340px; margin-right: 3vw">
               <table class="table table-sm table-borderless">
@@ -121,6 +102,7 @@
               @endforeach
             </table>
           </div>
+        </div>
 
 <script>
     jQuery(document).ready(function($) {
@@ -191,17 +173,22 @@
                                 break;
                         }
 
+                        $(".clickable-row").click(function() {
+                            window.location = $(this).data("href");
+                        });
+
                         date = new Date(value['date_created']);
                         date = date.getFullYear() + "-" + ('0' + (date.getMonth()+1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2) + " " +
                                 ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2);
 
-                        $('#newestRows').append(row + ' \
-                            <td>' + value['problem'] + '</td> \
+                        $('#newestRows').append(row +
+                            '<td>' + value['department_ticketID'] + '</td> \
+                            <td>' + status + '</td> \
                             <td>' + value['zone'] + '</td> \
                             <td>' + value['position'] + '</td> \
-                            <td>' + priority + '</td> \
-                            <td>' + date + '</td> \
-                            <td>' + status  + '</td> \
+                            <td>' + value['problem'] + '</td> \
+                            <td>' + value['device_name'] + '</td> \
+                            <td>' + date  + '</td> \
                             </tr>');
                     });
                 });

@@ -11,7 +11,7 @@
     {
         /**
          * List all available zones.
-         * 
+         *
          * @return view
          */
         public function listZones()
@@ -27,8 +27,19 @@
         }
 
         /**
+         * Ajax request to get available zones.
+         *
+         * @return JsonResponse $zones
+         */
+        public function ajaxZonesRequest()
+        {
+            $zones = Zone::all();
+            return json_encode($zones);
+        }
+
+        /**
          * Create new zone for given department.
-         * 
+         *
          * @param Request $request
          * @return View
          */
@@ -44,14 +55,14 @@
 
         /**
          * Update existing zone with new data.
-         * 
+         *
          * @param Request @request
          * @return view
          */
         public function update(Request $request)
         {
             $request->validate(['zone_name' => 'required|unique:Zones']);
-            
+
             $zone = Zone::find($request->save);
             $zone->zone_name = $request->zone_name;
             $zone->save();
@@ -61,7 +72,7 @@
 
         /**
          * Delete existing zone.
-         * 
+         *
          * @param Request $request
          * @return view
          */
@@ -74,4 +85,3 @@
             return back()->with('message', "Obszar $zoneName został usunięty");
         }
     }
-    

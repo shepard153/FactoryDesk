@@ -4,21 +4,13 @@
 
     use App\Http\Controllers\Controller;
     use Illuminate\Http\Request;
-    use App\Models\Department;
     use App\Models\Position;
 
     Class PositionController extends Controller
     {
-        protected $department;
-
-        function __construct(Department $department)
-        {
-            $this->department = $department;
-        }
-
         /**
          * List all available positions.
-         * 
+         *
          * @return view
          */
         public function listPositions()
@@ -34,8 +26,26 @@
         }
 
         /**
+         * Ajax request to get available positions based on chosen zone.
+         *
+         * @param string $zoneName
+         * @return JsonResponse $positions
+         */
+        public function ajaxPositionsRequest($zoneName = null)
+        {
+            if ($zoneName === null) {
+                $positions = Position::all();
+                return json_encode($positions);
+            }
+            else{
+                $positions = Position::where('zones_list', 'LIKE', "%$zoneName%")->get();
+                return json_encode($positions);
+            }
+        }
+
+        /**
          * Create new position for the given zone.
-         * 
+         *
          * @param Request $request
          * @return View
          */
@@ -54,19 +64,26 @@
 
         /**
          * Update existing position with new data.
-         * 
+         *
          * @param Request $request
          * @return view
          */
         public function update(Request $request)
-        {            
-            $position = Position::find($request->save);
+        {
+            $position = Position::find($request->confirmEdit);
             $position->position_name = $request->position_name;
-
             $position->isDirty('position_name') == true ? $request->validate(['position_name' => 'required|unique:Positions']) : null;
 
-            $position->zones_list = $request->zones_list;
-            
+            foreach($request->request->all() as $key => $value){
+                if ($key != "_token" && $key != "position_name" && $key != "confirmEdit"){
+                    $zones[] = str_replace('_', ' ', $key);
+                }
+            }
+
+            $zones = implode(', ', $zones);
+
+            $position->zones_list = $zones;
+
             $position->save();
 
             return back()->with('message', "Wprowadzone zmiany zostały zapisane.");
@@ -74,7 +91,7 @@
 
         /**
          * Delete existing position.
-         * 
+         *
          * @param Request $request
          * @return view
          */
@@ -87,4 +104,3 @@
             return back()->with('message', "Stanowisko $positionName zostało usunięte.");
         }
     }
-    
