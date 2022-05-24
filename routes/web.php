@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\TicketAttachmentController as AttachmentController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StaffController;
@@ -28,11 +29,10 @@ use App\Http\Controllers\SettingsController;
 
 Route::get('/', [DepartmentController::class, 'getDepartments']);
 Route::get('ticket_step2/{department}', [TicketController::class, 'ticketRequest']);
-Route::get('ticket_step2/ajax/zone/{id}', [TicketController::class, 'ajaxPositionsRequest']);
-Route::get('ticket_step2/{department}/ajax/position/{id}', [TicketController::class, 'ajaxProblemsRequest']);
+Route::get('ticket_step2/ajax/zone/{id}', [PositionController::class, 'ajaxPositionsRequest']);
+Route::get('ticket_step2/{department}/ajax/position/{id}', [ProblemController::class, 'ajaxProblemsRequest']);
 Route::post('sendTicket', [TicketController::class, 'sendTicket'])->name('sendTicket');
 Route::get('ticket_sent/{id}', [TicketController::class, 'ticketSent'])->name('ticketSent');
-#Route::post('ticket_step2/ajax/upload', [TicketController::class, 'ajaxUpload']);
 
 Route::get('login', [LoginController::class, 'index'])->name('login');
 Route::post('loginAction', [LoginController::class, 'loginAction'])->name('loginAction');
@@ -42,9 +42,10 @@ Route::middleware('auth')->group(function () {
     /**
      * Ajax Calls
      */
-    Route::post('ticket/{id}/ajax/{timer}', [TicketController::class, 'ticketTimerAction'])->name('ticketTimerAction');
     Route::get('dashboard/ajax', [DashboardController::class, 'ajaxDashboardData']);
+    Route::post('ticket/{id}/ajax/{timer}', [TicketController::class, 'ticketTimerAction'])->name('ticketTimerAction');
     Route::get('ticket/ajax/{department}', [TicketController::class, 'ajaxForTicketDetails']);
+    Route::post('ticket/{id}/dropzoneUpload', [AttachmentController::class, 'dropzoneUpload'])->name('dropzoneUpload');
     Route::get('formEditor/ajax/zones', [ZoneController::class, 'ajaxZonesRequest']);
     Route::get('formEditor/ajax/positions', [PositionController::class, 'ajaxPositionsRequest']);
     Route::get('formEditor/ajax/departments', [DepartmentController::class, 'ajaxDepartmentsRequest']);

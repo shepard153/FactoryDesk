@@ -8,9 +8,11 @@
         <link rel="stylesheet" href="{{ asset('public/css/sidebars.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/css/lightbox.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/fontawesome6/css/all.css') }}">
+        <link rel="stylesheet" href="{{ asset('public/css/dropzone.min.css') }}"/>
         <title>RUGDesk - Panel Admina</title>
         <script src="{{ asset('public/js/jquery-3.6.0.min.js') }}"></script>
         <script src="{{ asset('public/js/lightbox.js') }}"></script>
+        <script src="{{ asset('public/js/dropzone.min.js') }}"></script>
         <style>
           img {
             margin-top: 0.9vw;
@@ -25,15 +27,28 @@
                     display: none;
                 }
             }
+        .dropzone {
+            position: relative;
+            border: 2px solid #ccc;
+            overflow: hidden;
+            margin-bottom: 10px;
+            text-align: center;
+            font-family: "Quicksand", sans-serif;
+            font-weight: 500;
+            font-size: 20px;
+            cursor: pointer;
+            color: #cccccc;
+            border: 4px dashed #009578;
+            border-radius: 10px;
+        }
+        .dropzone:hover {
+            border-style: solid;
+        }
         </style>
     </head>
 <body>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-  <symbol id="bootstrap" viewBox="0 0 118 94">
-    <title>Bootstrap</title>
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
-  </symbol>
   <symbol id="speedometer2" viewBox="0 0 16 16">
     <path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4zM3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.389.389 0 0 0-.029-.518z"></path>
     <path fill-rule="evenodd" d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A7.988 7.988 0 0 1 0 10zm8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3z"></path>
@@ -196,16 +211,17 @@
 <script src="{{ asset('public/js/bootstrap.bundle.min.js') }}" async="async"></script>
 <script>
     $(document).ready(function() {
-        var docHeight = $(window).height();
-        var footerHeight = $('#footer').height();
-        var footerTop = $('#footer').position().top + footerHeight;
-        var marginTop = (docHeight - footerTop - 10);
+        setInterval(function() {
+            var docHeight = $(window).height();
+            var footerHeight = $('#footer').height();
+            var footerTop = $('#footer').position().top + footerHeight;
+            var marginTop = (docHeight - footerTop - 10);
 
-        if (footerTop < docHeight)
-            $('#footer').css('margin-top', marginTop + 'px');
-         else
-            $('#footer').css('margin-top', '15px');
-
+            if (footerTop < docHeight)
+                $('#footer').css('margin-top', marginTop + 'px');
+            else
+                $('#footer').css('margin-top', '-4');
+        }, 200);
     });
 </script>
 </html>

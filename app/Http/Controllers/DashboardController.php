@@ -53,8 +53,9 @@
             if ($department != "All"){
                 $newest = Ticket::where("department", '=', "$department")
                     ->where(function ($query){
-                        $query->where('ticket_status', '=', -1)
-                            ->orWhere('ticket_status', '=', 0);
+                        $query->where('ticket_status', '!=', 2)
+                            ->orWhere('ticket_status', '=', 0)
+                            ->orWhere('ticket_status', '=', 1);
                     })
                     ->orderBy('date_created', 'desc')
                     ->limit($limit)
@@ -94,7 +95,14 @@
                 ];
             }
             else{
-                $newest = Ticket::where('ticket_status', '=', 0)->orderBy('date_created', 'desc')->limit($limit)->get();
+                $newest = Ticket::where(function ($query){
+                    $query->where('ticket_status', '!=', 2)
+                        ->orWhere('ticket_status', '=', 0)
+                        ->orWhere('ticket_status', '=', 1);
+                    })
+                    ->orderBy('date_created', 'desc')
+                    ->limit($limit)
+                    ->get();;
 
                 $topProblems = Ticket::select('problem')->selectRaw('count (*) as occurence')->groupBy('problem')->orderBy('occurence', 'desc')->limit(5)->get();
 

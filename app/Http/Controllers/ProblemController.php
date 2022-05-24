@@ -28,6 +28,20 @@
         }
 
         /**
+         * Ajax request to get available problem based on chosen position and department.
+         *
+         * @param Position $position
+         * @param string $department
+         * @param string $positionName
+         * @return array $problems
+         */
+        public function ajaxProblemsRequest($department, $positionName)
+        {
+            $problems = Problem::where('departments_list', 'LIKE', "%$department%")->where('positions_list', 'LIKE', "%$positionName%")->orderBy('lp', 'asc')->get();
+            return json_encode($problems);
+        }
+
+        /**
          * Create new problem for given position and department.
          *
          * @param Request $request
@@ -35,14 +49,21 @@
          */
         public function create(Request $request)
         {
-            $request->validate([
-                'problem_name' => 'required|unique:Problems',
-                'lp' => 'required|unique:Problems'
-            ]);
+            $request->validate(['problem_name' => 'required|unique:Problems']);
+
+            $positions = [];
+
+            foreach($request->request->all() as $key => $value){
+                if ($key != "_token" && $key != "problem_name" && $key != "lp" && $key != "departments_list" && $key != "confirmCreate"){
+                    $positions[] = str_replace('_', ' ', $key);
+                }
+            }
+
+            $positions = implode(', ', $positions);
 
             Problem::create([
                 'problem_name' => $request->problem_name,
-                'positions_list' => $request->positions_list,
+                'positions_list' => $positions,
                 'departments_list' => $request->departments_list,
                 'lp' => $request->lp,
             ]);

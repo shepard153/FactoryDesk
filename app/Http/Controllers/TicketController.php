@@ -53,33 +53,6 @@
         }
 
         /**
-         * Ajax request to get available positions based on chosen zone.
-         *
-         * @param Position $position
-         * @param string $zoneName
-         * @return array $positions
-         */
-        public function ajaxPositionsRequest($zoneName)
-        {
-            $positions = Position::where('zones_list', 'LIKE', "%$zoneName%")->get();
-            return json_encode($positions);
-        }
-
-        /**
-         * Ajax request to get available problem based on chosen position and department.
-         *
-         * @param Position $position
-         * @param string $department
-         * @param string $positionName
-         * @return array $problems
-         */
-        public function ajaxProblemsRequest($department, $positionName)
-        {
-            $problems = Problem::where('departments_list', 'LIKE', "%$department%")->where('positions_list', 'LIKE', "%$positionName%")->orderBy('lp', 'asc')->get();
-            return json_encode($problems);
-        }
-
-        /**
          * Ajax request to get all problems for chosen department. Function is a part of a dashboard ticket
          * details service. If agent changes ticket department, all available problems will be listed.
          * Same goes for ticket owner list.
@@ -95,20 +68,26 @@
             return json_encode(['problems' => $problems, 'members' => $members]);
         }
 
-        /*
-        Function for future dropzone development.
 
+        /**
+         * Dropzone function
+         */
         public function ajaxUpload(Request $request)
         {
-            $image = $request->file('file');
-            $fileInfo = $image->getClientOriginalName();
-            $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
-            $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
-            $file_name= $filename.'-'.time().'.'.$extension;
-            $image->move(public_path('uploads/gallery'),$file_name);
+            $attachments = $request->file('file');
+
+            foreach ($attachments as $attachment){
+                $fileInfo = $attachment->getClientOriginalName();
+                $filename = pathinfo($fileInfo, PATHINFO_FILENAME);
+                $extension = pathinfo($fileInfo, PATHINFO_EXTENSION);
+                $file_name = $filename.'-'.time().'.'.$extension;
+                $attachment->move(storage_path('app/public/ticket_attachments/temp'), $file_name);
+
+                $request->session()->push('attachments', $file_name);
+            }
 
             return response()->json(['success'=>$file_name]);
-        }*/
+        }
 
         /**
          * Send ticket and place data in database while attachment (if provided) is placed in ticket_attachments folder on disk.
@@ -162,21 +141,12 @@
 
             $ticketID = $this->ticket->ticketID;
 
-            if ($request->hasFile('attachment')){
-                $file = $request->file('attachment');
-
-                $request->validate(['attachment' => 'max:5120']);
-
-                $filePath = $file->storeAs('ticket_attachments', "ticket-$ticketID-attachment.". $file->getClientOriginalExtension());
-                $fileName = "ticket-" . $ticketID . "-attachment." . $file->getClientOriginalExtension();
-                $filePath = "ticket_attachments/";
-                TicketAttachment::create(['ticketID' => $ticketID, 'file_name' => $fileName, 'file_path'=>$filePath]);
-            }
-            else{
-                $filePath = null;
+            $attachments = $request->file('file');
+            if ($attachments != null && $attachments[0]->getClientOriginalName() != 'blob'){
+                AttachmentController::dropzoneUpload($request, $ticketID);
             }
 
-            return redirect()->route('ticketSent', ['id' => $ticketID]);;
+            return response()->json(['id' => $ticketID]);
         }
 
         /**
@@ -198,7 +168,7 @@
                 $card->setTitle("Zgłoszenie $ticket->department_ticketID")
                     ->setSubtitle("Utworzone $ticket->date_created")
                     ->setText("Obszar: $ticket->zone. Stanowisko: $ticket->position. Problem: $ticket->problem.")
-                    ->addButton("openUrl", "Link do zgłoszenia", "http://10.39.15.84/laraveltest/ticket/$ticket->ticketID");
+                    ->addButton("openUrl", "Link do zgłoszenia", url('/') . "/ticket/$ticket->ticketID");
                 $connector->send($card);
             }
 
@@ -387,7 +357,7 @@
          * Render ticket details page for given ticket ID.
          *
          * @param int $id
-         * @return view
+         * @return Response
          */
         public function ticketDetails($id)
         {
@@ -400,8 +370,8 @@
             $problems = Problem::where('departments_list', 'LIKE', "%$ticket->department%")->get();
             $notes = Note::where('ticketID', $id)->orderBy('created_at','desc')->get();
             $history = TicketHistory::where('ticketID', $id)->orderBy('date_modified','desc')->get();
-            $attachment = TicketAttachment::where('ticketID', $id)->first();
-            $attachmentDisplay = $attachment != null && $attachment->file_name != null ? AttachmentController::attachmentDisplay($attachment) : null;
+            $attachments = TicketAttachment::where('ticketID', $id)->get();
+            $attachmentsDisplay = $attachments != null ? AttachmentController::attachmentDisplay($attachments) : null;
             $staffMembers = Staff::where('department', '=', $ticket->department)->get();
 
             return view("dashboard/ticket", [
@@ -411,16 +381,17 @@
                 'problems' => $problems,
                 'notes' => $notes,
                 'history' => $history,
-                'attachment' => $attachment,
-                'attachmentDisplay' => $attachmentDisplay,
-                'staffMembers' => $staffMembers]);
+                'attachments' => $attachments,
+                'attachmentsDisplay' => $attachmentsDisplay,
+                'staffMembers' => $staffMembers
+            ]);
         }
 
         /**
          * All available ticket actions (Take/Close/Reopen),
          *
          * @param Request $request
-         * @param int @id
+         * @param int $id
          * @return string $message
          */
         public function modifyTicketAction(Request $request, $id)
@@ -443,7 +414,7 @@
                 $ticket->ticket_status = 2;
                 $ticket->date_closed = new \DateTime('NOW');
 
-                $ticket->owner =  $request->rejectTicket ? auth()->user()->name : $ticket->owner;
+                $ticket->owner = $request->rejectTicket ? auth()->user()->name : $ticket->owner;
 
                 $this->addNote($request, $id, $request->closingNotes);
                 $this->addToHistory($request, $id);
@@ -508,6 +479,11 @@
             return back()->with('message', $message);
         }
 
+        /**
+         * @param int $id
+         * @param string $timer
+         * @return JsonResponse $time_spent
+         */
         public function ticketTimerAction($id, $timer)
         {
             $this->ticket = Ticket::find($id);

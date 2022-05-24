@@ -53,9 +53,19 @@
         {
             $request->validate(['position_name' => 'required|unique:Positions']);
 
+            $zones = [];
+
+            foreach($request->request->all() as $key => $value){
+                if ($key != "_token" && $key != "position_name" && $key != "confirmCreate"){
+                    $zones[] = str_replace('_', ' ', $key);
+                }
+            }
+
+            $zones = implode(', ', $zones);
+
             Position::create([
                 'position_name' => $request->position_name,
-                'zones_list' => $request->zones_list
+                'zones_list' => $zones
             ]);
 
             return back()->with('message', "Stanowisko zostało utworzone.");

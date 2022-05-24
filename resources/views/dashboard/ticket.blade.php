@@ -191,23 +191,40 @@
 
                 </form>
                 <div class="col">
-                    <p class="fs-4 border-bottom">Załącznik</p>
-                    @if ($attachment != null)
-                        @switch ($attachmentDisplay)
-                            @case ('image')
-                                <a href="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" data-lightbox="image" data-title="{{ $attachment->file_name }}">
-                                    <img src="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" id="attachment" style="width:400px; height:250px;"/>
-                                </a>
-                                @break
-                            @case ('download')
-                                <label for="download" class="form-label">Plik: {{ $attachment->file_name }}</label><br/>
-                                <a href="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" download="{{ $attachment->file_name}}">
-                                    <button class="btn btn-primary" name="download"><i class="fa fa-download"></i> Pobierz załącznik</button>
-                                </a>
-                                @break
-                            @default
-                                @break
-                        @endswitch
+                    <p class="fs-4 border-bottom">Załączniki</p>
+                    @if ($ticket->ticket_status != 2)
+                    <div class="form-group top-margin">
+                        <label class="form-label">Dodaj załącznik (max 3 pliki do 5MB każdy)</label><br/>
+                            <div class="dropzone" id="myDropzone">
+                            <div class="data-dz-message"><span></span></div>
+                         </div>
+                    </div>
+                    @endif
+                    @if ($attachments != null)
+                        <div class="row align-items-end">
+                            @foreach ($attachments as $attachment)
+                                @switch ($attachmentsDisplay[$attachment->file_name])
+                                    @case ('image')
+                                        <div class="col-2 text-center">
+                                            <a href="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" data-lightbox="image" data-title="{{ $attachment->file_name }}">
+                                                <img src="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" class="img-fluid" style="min-width: 100%; min-height: 100%; width: auto; height: auto;"/>
+                                            </a>
+                                        </div>
+                                        @break
+                                    @case ('download')
+                                        <div class="col-2 text-center">
+                                        <img src="{{ asset('public/img/download-icon.png') }}" class="img-fluid" style="max-width: 50%; max-height: 50%; width: auto; height: auto;"/>
+                                            <label for="download" class="form-label">{{ $attachment->file_name }}</label><br/>
+                                            <a href="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" download="{{ $attachment->file_name }}">
+                                                <button class="btn btn-primary" name="download"><i class="fa fa-download"></i> Pobierz załącznik</button>
+                                            </a>
+                                        </div>
+                                        @break
+                                    @default
+                                        @break
+                                @endswitch
+                            @endforeach
+                        </div>
                     @else
                         Brak załącznika
                     @endif
@@ -390,6 +407,31 @@
             }
             }, 100);
         }
+
+        /**
+         * Dropzone options
+         */
+        Dropzone.autoDiscover = false;
+        var myDropzone = new Dropzone(".dropzone", {
+            url: "{{ $ticket->ticketID }}/dropzoneUpload",
+            autoProcessQueue: true,
+            uploadMultiple: true,
+            parallelUploads: 3,
+            maxFiles: 3,
+            maxFilesize: 5,
+            dictDefaultMessage: '<img src="{{ asset('public/img/upload-icon.png') }}" class="img-fluid"/><br/> Kliknij tutaj lub upuść plik aby wysłać',
+            dictFileTooBig: "Wielkość pliku przekracza 5MB",
+            dictInvalidFileType: "Nieprawidłowy typ pliku",
+            dictCancelUpload: "Anuluj wysyłanie",
+            dictUploadCanceled: "Anulowano wysyłanie",
+            dictRemoveFile: "Usuń plik",
+            dictMaxFilesExceeded: "Przekroczono dozwoloną ilość plików",
+            //acceptedFiles: 'image/*',
+            addRemoveLinks: true,
+            headers: {
+                'X-CSRF-TOKEN': $('input[name="_token"]').attr('value')
+            }
+        });
 
     </script>
 @endsection
