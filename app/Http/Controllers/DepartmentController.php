@@ -112,7 +112,7 @@
          * Update existing department with new data. When no new image is provided, the old one will be kept.
          *
          * @param Request $request
-         * @param Department $departmentID
+         * @param int $departmentID
          * @return string
          */
         function update(Request $request, $departmentID)
@@ -174,7 +174,7 @@
         /**
          * Generate view for edit department form.
          *
-         * @param Department $departmentID
+         * @param int $departmentID
          * @return view
          */
         function editDepartment($departmentID)

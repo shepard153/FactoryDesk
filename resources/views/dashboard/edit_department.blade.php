@@ -50,11 +50,7 @@
                     <label class="form-label">Dział zatwierdzający</label>
                     <select id="acceptance_from" name="acceptance_from" class="form-select">
                         @foreach ($departments as $departmentAcceptance)
-                            @if ($departmentAcceptance->department_name == $departmentAcceptance->acceptance_from)
-                                <option value="{{ $departmentAcceptance->department_name }}" selected>{{ $departmentAcceptance->department_name }}</option>
-                            @else
-                                <option value="{{ $departmentAcceptance->department_name }}">{{ $departmentAcceptance->department_name }}</option>
-                            @endif
+                            <option value="{{ $departmentAcceptance->department_name }}">{{ $departmentAcceptance->department_name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -79,5 +75,6 @@
         $('#acceptance').click(function() {
             $("#acceptanceDiv").toggle(300);
         });
+        $('#acceptance_from').val($('<div />').html('{{ $department->acceptance_from }}').text());
     </script>
 @endsection

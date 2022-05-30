@@ -8,7 +8,7 @@
  @endsection
 
  @section('content')
-    <div class="col rounded shadow" style="background: white;">
+    <div class="col col-lg-12 rounded shadow" style="background: white;">
         <p class="fs-3 border-bottom" style="text-align: center;">Najnowsze zgłoszenia</p>
         <table class="table table-hover" id="newestTable">
             <thead>
@@ -56,54 +56,42 @@
             </tbody>
         </table>
     </div>
-    <div class="row justify-content-center" style="margin-left: 2vw; margin-top: 1vw;">
-        <div class="col-3 border border-success rounded shadow" style="background: white; max-width: 340px; margin-right: 3vw">
-            <table class="table table-sm table-borderless">
-                <thead>
-                    <tr class="border-bottom">
-                        <td class="removable"><img src="{{ asset('public/img/dashboard-icon.png') }}" class="rounded"></td>
-                        <td style="vertical-align: center"><p class="fs-2" style="margin-bottom: 1.5vw">Statystyki</p></td>
-                    </tr>
-                    <tr>
-                        <td><h5>Wszystkie zgłoszenia</h5></td>
-                        <td><h2 id="total">{{ $dashboard['total'] }}</h2></td>
-                    </tr>
-                </thead>
-                <tr>
-                    <td><h5>Nowe</h5></td>
-                    <td><h2 id="total_new">{{ $dashboard['total_new'] }}</h2></td>
-                </tr>
-                <tr>
-                    <td><h5>Aktywne</h5></td>
-                    <td><h2 id="total_open">{{ $dashboard['total_open'] }}</h2></td>
-                </tr>
-                <tr>
-                    <td><h5>Zamknięte</h5></td>
-                    <td><h2 id="total_closed">{{ $dashboard['total_closed'] }}</h2></td>
-                </tr>
-            </table>
+    <div class="row mt-2">
+        <div class="col col-lg-3">
+            <div class="col">
+                <label class="form-label" for="startDate">Data</label>
+                <input type="date" class="form-control" name="startDate" id="startDate" onchange="datePick(this);"/>
+            </div>
+            <div class="card border-primary mt-2">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-column" style="color: blue"></i> Zgłoszeń łącznie</h5>
+                    <span class="h2 font-weight-bold mb-0" id="allCard"></span>
+                </div>
+            </div>
+            <div class="card border-warning mt-2">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-bars-progress" style="color: orange"></i> W realizacji</h5>
+                    <span class="h2 font-weight-bold mb-0" id="allOpenCard"></span>
+                </div>
+            </div>
+            <div class="card border-info mt-2">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-area" style="color: cyan"></i> Najwięcej zgłoszeń z</h5>
+                    <span class="h2 font-weight-bold mb-0" id="mostProblematicCard"></span>
+                </div>
+            </div>
+            <div class="card border-dark mt-2">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-diagram-successor" style="color: dark"></i> Najczęstszy problem</h5>
+                    <span class="h2 font-weight-bold mb-0" id="topProblemCard"></span>
+                </div>
+            </div>
         </div>
-        <div class="col-3 border border-success rounded shadow" style="background: white; max-width: 340px;">
-            <p class="fs-2 border-bottom">Obszary z największą liczbą zgłoszeń</p>
-            <table class="table table-sm table-borderless" id="mostProblematic">
-                @foreach($dashboard['mostProblematic'] as $mostProblematic)
-                    <tr>
-                        <td style="text-align: left"><h5>{{ $mostProblematic->zone }}</h5></td>
-                        <td class="text-end"><h4>{{ $mostProblematic->problematic }}</h4></td>
-                    </tr>
-                @endforeach
-            </table>
-        </div>
-        <div class="col-3 border border-success rounded shadow" style="background: white; max-width: 340px; margin-left: 3vw">
-            <p class="fs-2 border-bottom">Najczęstsze problemy</p>
-            <table class="table table table-borderless">
-                @foreach($dashboard['topProblems'] as $topProblems)
-                    <tr>
-                        <td style="text-align: left"><h5>{{ $topProblems->problem }}</h5></td>
-                        <td class="text-end"><h4>{{ $topProblems->occurence }}</h4></td>
-                    </tr>
-                @endforeach
-            </table>
+        <div class="col col-lg-9">
+            <canvas id="graphCanvas" height="auto"></canvas>
+            <div id="loadingSpinner" class="text-center">
+                <img src="{{ asset('public/img/loading.gif')}}"/>
+            </div>
         </div>
     </div>
 
@@ -111,12 +99,17 @@
     jQuery(document).ready(function($) {
         let refreshTime = "{{ $settings['dashboard_refreshTime'] }}" * 1000;
         update();
+        showChart();
+        setInterval(function () {showChart($('#startDate').val());}, refreshTime);
         setInterval(update, refreshTime);
-
         $(".clickable-row").click(function() {
             window.location = $(this).data("href");
         });
     });
+
+    function datePick(e) {
+        showChart(e.value);
+    }
 
     /**
      * Ajax function for Dashboard data. Once the page loads, dashboard data is being refreshed constantly
@@ -128,27 +121,12 @@
             url: "dashboard/ajax",
             dataType: 'json',
             success: function(dashboardData){
+                $('#allCard').text(dashboardData['dashboardData']['all']);
+                $('#allOpenCard').text(dashboardData['dashboardData']['allOpen']);
+                $('#mostProblematicCard').text(dashboardData['dashboardData']['mostProblematic'][0]['zone']);
+                $('#topProblemCard').text(dashboardData['dashboardData']['topProblem'][0]['problem']);
+
                 $.each(dashboardData, function(key, value) {
-                    $('#total').html(value['total']);
-                    $('#total_new').html(value['total_new']);
-                    $('#total_closed').html(value['total_closed']);
-                    $('#total_open').html(value['total_open']);
-
-                    $('#mostProblematic').empty();
-                    $.each(value['mostProblematic'], function(key, value) {
-                        $('#mostProblematic').append('<tr> \
-                            <td style="text-align: left"><h5>'+ value['zone'] +'</h5></td> \
-                            <td class="text-end"><h4>'+ value['problematic'] +'</h4></td> \
-                        </tr>');
-                    });
-
-                    $('#topProblems').empty();
-                    $.each(value['topProblems'], function(key, value) {
-                        $('#topProblems').append('<tr> \
-                            <td style="text-align: left"><h5>'+ value['zone'] +'</h5></td> \
-                            <td class="text-end"><h4>'+ value['occurence'] +'</h4></td> \
-                        </tr>');
-                    });
 
                     let row, priority, status;
                     $('#phpNothingNewMessage').hide();
@@ -188,9 +166,6 @@
                                     break;
                             }
 
-                            $(".clickable-row").click(function() {
-                                window.location = $(this).data("href");
-                            });
 
                             date = new Date(value['date_created']);
                             date = date.getFullYear() + "-" + ('0' + (date.getMonth()+1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2) + " " +
@@ -206,12 +181,79 @@
                                 <td>' + date  + '</td> \
                                 </tr>'
                             );
+
+                            $(".clickable-row").click(function() {
+                                window.location = $(this).data("href");
+                            });
                         });
                     }
                 });
             },
             error: function (response) {
                 $("#newestTable").html('Błąd JavaScript. Aby odświeżyć dane, załaduj stronę ponownie.');
+            }
+        });
+    }
+
+
+    /**
+     * Draw chart function.
+     */
+    function showChart(startDate = null)
+    {
+        startDate = startDate === null ? 'null' : null;
+        $.ajax({
+            type: "GET",
+            url: "dashboard/chart/" + startDate,
+            dataType: 'json',
+            beforeSend: function() {
+                $("#graphCanvas").hide();
+                $("#loadingSpinner").show();
+            },
+            success: function(data) {
+                $("#loadingSpinner").hide();
+                $("#graphCanvas").show();
+
+                const ctx = $('#graphCanvas');
+
+                let chartStatus = Chart.getChart("graphCanvas");
+                if (chartStatus != undefined) {
+                    chartStatus.destroy();
+                }
+
+                const myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data['labels'],
+                        datasets: [{
+                            label: 'Nowe: ' + data['chartLegendNew'],
+                            data: data['new'],
+                            fill: false,
+                            borderColor: 'green',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Podjęte: ' + data['chartLegendOpen'],
+                            data: data['opened'],
+                            fill: false,
+                            borderColor: 'orange',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Zamknięte: ' + data['chartLegendClosed'],
+                            data: data['closed'],
+                            fill: false,
+                            borderColor: 'red',
+                            tension: 0.1
+                        },
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: { beginAtZero: true}
+                        },
+                    }
+                });
             }
         });
     }

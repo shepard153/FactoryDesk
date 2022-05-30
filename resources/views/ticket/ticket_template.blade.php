@@ -10,10 +10,10 @@
         <script src="{{ asset('public/js/jquery-3.6.0.min.js') }}"></script>
         <script src="{{ asset('public/js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('public/js/dropzone.min.js') }}"></script>
+        <script src="{{ asset('public/js/chart.min.js') }}"></script>
         <script nomodule>window.MSInputMethodContext && document.documentMode && document.write('<link rel="stylesheet" href="{{ asset('public/css/bootstrap-ie11.min.css') }}"><script src="{{ asset('public/js/element-qsa-scope@1.js') }}"><\/script>');</script>
         <style type="text/css">
             _:-ms-fullscreen, :root .col { flex: 1 0 auto; } /* Poprawka dla IE11. Bez tego, przeglądarka ustawia domyślną szerokość pól na 1% */
-            .top-margin{margin-top: 1vw;}
             @media all and (-ms-high-contrast:none)
             {
             *::-ms-backdrop, .ie11-margin { margin-left: 1vw;}
@@ -66,7 +66,7 @@
                 <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                     <ul class="navbar-nav" style="font-size: 18px">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ url('/') }}">Zgłoś problem</a>
+                            <a class="nav-link {{ \Route::currentRouteName() == 'home' ? 'active' : '' }}" aria-current="page" href="{{ url('/') }}">Zgłoś problem</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url('dashboard/') }}">Panel admina</a>
@@ -78,10 +78,10 @@
         </nav>
         @show
         <div class="container">
-            <div class="row justify-content-md-center top-margin">
+            <div class="row justify-content-md-center mt-2">
                 @yield('content')
             </div>
-            <footer id="footer" class="flex-wrap justify-content-between align-items-center border-top" style="margin: 0px -12px 0px -1%">
+            <footer id="footer" class="flex-wrap justify-content-between align-items-center border-top">
                 <div class="col d-flex align-items-center" style="margin: 5px 0px 0px 0px; justify-content: center;">
                     <img src="{{ asset('public/img/favicon-32x32.png') }}" style="margin: 0px 5px -10px 5px;">
                     <span class="text-muted">&copy; 2022 RUG ICT</span>
@@ -90,7 +90,8 @@
         </div>
     </body>
     <script>
-        $(document).ready(function() {
+    $(document).ready(function() {
+        setInterval(function() {
             var docHeight = $(window).height();
             var footerHeight = $('#footer').height();
             var footerTop = $('#footer').position().top + footerHeight;
@@ -99,7 +100,8 @@
             if (footerTop < docHeight)
                 $('#footer').css('margin-top', marginTop + 'px');
             else
-                $('#footer').css('margin-top', '10px');
-        });
+                $('#footer').css('margin-top', '-4');
+        }, 2);
+    });
     </script>
 </HTML>

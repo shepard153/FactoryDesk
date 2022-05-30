@@ -14,6 +14,7 @@ use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProblemController;
 use App\Http\Controllers\ReporterController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\OverviewController;
 
 
 /*
@@ -27,12 +28,15 @@ use App\Http\Controllers\SettingsController;
 |
 */
 
-Route::get('/', [DepartmentController::class, 'getDepartments']);
+Route::get('/', [DepartmentController::class, 'getDepartments'])->name('home');
 Route::get('ticket_step2/{department}', [TicketController::class, 'ticketRequest']);
 Route::get('ticket_step2/ajax/zone/{id}', [PositionController::class, 'ajaxPositionsRequest']);
 Route::get('ticket_step2/{department}/ajax/position/{id}', [ProblemController::class, 'ajaxProblemsRequest']);
 Route::post('sendTicket', [TicketController::class, 'sendTicket'])->name('sendTicket');
 Route::get('ticket_sent/{id}', [TicketController::class, 'ticketSent'])->name('ticketSent');
+
+Route::get('overview', [OverviewController::class, 'index'])->name('overview');
+Route::get('overview/chartData/{department}', [OverviewController::class, 'chartData']);
 
 Route::get('login', [LoginController::class, 'index'])->name('login');
 Route::post('loginAction', [LoginController::class, 'loginAction'])->name('loginAction');
@@ -43,6 +47,7 @@ Route::middleware('auth')->group(function () {
      * Ajax Calls
      */
     Route::get('dashboard/ajax', [DashboardController::class, 'ajaxDashboardData']);
+    Route::get('dashboard/chart/{startDate}', [DashboardController::class, 'chartData']);
     Route::post('ticket/{id}/ajax/{timer}', [TicketController::class, 'ticketTimerAction'])->name('ticketTimerAction');
     Route::get('ticket/ajax/{department}', [TicketController::class, 'ajaxForTicketDetails']);
     Route::post('ticket/{id}/dropzoneUpload', [AttachmentController::class, 'dropzoneUpload'])->name('dropzoneUpload');

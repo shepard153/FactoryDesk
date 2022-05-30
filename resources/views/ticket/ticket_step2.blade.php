@@ -17,11 +17,11 @@
                     <label class="form-label">Nazwa komputera</label>
                     <input type="text" name="device_name" value="{{ $domain }}" class="form-control" readonly>
                 </div>
-                <div class="form-group top-margin">
+                <div class="form-group mt-3">
                     <label class="form-label">Nazwa użytkownika</label>
                     <input type="text" name="username" value="User" class="form-control" readonly>
                 </div>
-                <div class="form-group top-margin">
+                <div class="form-group mt-3">
                     <label class="form-label">Obszar/dział produkcji <span style="color:red">*</span></label>
                     <select id="zoneSelect" name="zoneSelect" class="form-select form-select-lg mb-3" required>
                         <option value="">Wybierz obszar produkcji</option>
@@ -30,14 +30,14 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group top-margin">
+                <div class="form-group mt-3">
                     <label class="form-label">Stanowisko <span style="color:red">*</span></label>
                     <select id="positionSelect" name="positionSelect" class="form-select form-select-lg mb-3" disabled required>
                         <option value="">Wybierz stanowisko</option>
                         <!-- Opcje wyboru zaciągane z tabeli JS w zależności od wybranego działu. -->
                     </select>
                 </div>
-                <div class="form-group top-margin">
+                <div class="form-group mt-3">
                     <label class="form-label">Problem <span style="color:red">*</span></label>
                     <select id="problemSelect" name="problemSelect" class="form-select form-select-lg mb-3" disabled required>
                         <option value="">Wybierz problem</option>
@@ -48,13 +48,13 @@
                     <label class="form-label">Wiadomość (max 500 znaków) (opcjonalnie)</label><br/>
                     <textarea class="form-control" name="message" maxlength="500"></textarea>
                 </div>
-                <div class="form-group top-margin">
+                <div class="form-group mt-3">
                     <label class="form-label">Załączniki (max 3 pliki do 5MB każdy) (opcjonalnie)</label><br/>
                     <div class="dropzone" id="myDropzone">
                         <div class="data-dz-message"><span></span></div>
                     </div>
                 </div>
-                <div class="form-group top-margin">
+                <div class="form-group mt-3">
                     <input id="submit" name="submit" class="btn btn-lg btn-primary" type="button" value="Prześlij" disabled/>
                 </div>
             </div>

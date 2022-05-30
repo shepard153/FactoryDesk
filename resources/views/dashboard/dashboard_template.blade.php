@@ -13,6 +13,7 @@
         <script src="{{ asset('public/js/jquery-3.6.0.min.js') }}"></script>
         <script src="{{ asset('public/js/lightbox.js') }}"></script>
         <script src="{{ asset('public/js/dropzone.min.js') }}"></script>
+        <script src="{{ asset('public/js/chart.min.js') }}"></script>
         <style>
           img {
             margin-top: 0.9vw;
@@ -96,7 +97,7 @@
 </svg>
 @section('sidebar')
 <main>
-  <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 240px;">
+  <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 240px;">
     <p href="index.php" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
     <svg class="bi me-2" width="32" height="32"><use xlink:href="#signpost-split-fill"></use></svg>
       <span class="fs-4">Menu</span>
@@ -173,7 +174,7 @@
           </li>
         </ul>
       </div>
-  </div>
+    </div>
     <hr>
     <div class="dropdown">
       <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -191,7 +192,9 @@
     </div>
   </div>
 
-  <div class="b-example-divider"></div>
+  <div class="b-example-divider">
+      <button type="button" id="menuToggler" class="btn btn-dark" style="position: sticky"><i id="navArrow" class="fa-solid fa-angle-left"></i>Menu</button>
+  </div>
   @show
   <div class="container-fluid" style="background:#F2F2F2; overflow: auto;">
     <div class="col">
@@ -222,6 +225,19 @@
             else
                 $('#footer').css('margin-top', '-4');
         }, 200);
+    });
+
+    $('#menuToggler').on('click', function(){
+        var sidebar = $('#sidebar');
+        if ($('#sidebar').hasClass('d-flex')){
+            sidebar.removeClass('d-flex');
+            $('#navArrow').removeClass('fa-angle-left').addClass('fa-angle-right');
+        }
+        else{
+            sidebar.addClass('d-flex');
+            $('#navArrow').removeClass('fa-angle-right').addClass('fa-angle-left');
+        }
+        sidebar.toggle(500);
     });
 </script>
 </html>

@@ -301,7 +301,7 @@
         });
 
         /**
-         * Different behaviours of "create new" button depending on selected nav tab.
+         * Different behaviours for "create new" button depending on selected nav tab.
          */
         $("#createNew").click(function() {
             $("#createNew").val() == 'zone' ? $('#newZoneForm').toggle(300) : null;
@@ -341,7 +341,7 @@
             $('#modalForm').attr('action', "{{ url('addPositionAction') }}");
             $('#modalLabel').text('Utwórz nowe stanowisko');
             $('#text').text('');
-            $('#text').append('<input class="form-control" type="text" name="position_name"/><br/>');
+            $('#text').append('<input class="form-control" type="text" name="position_name" required/><br/>');
 
             $.ajax({
                 type: "GET",
@@ -372,9 +372,9 @@
             $('#confirmDelete').hide();
             $('#modalForm').attr('action', "{{ url('addProblemAction') }}");
             $('#text').text('');
-            $('#text').append('<label for="lp" class="form-label">Kolejność wyświetlania</label><input class="form-control" type="text" name="lp"/><br/>');
-            $('#text').append('<label for="problem_name" class="form-label">Problem</label><input class="form-control" type="text" name="problem_name"/><br/>');
-            $('#text').append('<label for="departments_list" class="form-label">Dział</label><select class="form-select" id="departmentSelect" name="departments_list"/>');
+            $('#text').append('<label for="lp" class="form-label">Kolejność wyświetlania</label><input class="form-control" type="number" name="lp" required/><br/>');
+            $('#text').append('<label for="problem_name" class="form-label">Problem</label><input class="form-control" type="text" name="problem_name" required/><br/>');
+            $('#text').append('<label for="departments_list" class="form-label">Dział</label><select class="form-select" id="departmentSelect" name="departments_list" required/>');
             $('#text').append('<br/><h4>Stanowiska:</h4>');
 
             $.ajax({

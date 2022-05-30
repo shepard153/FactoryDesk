@@ -101,7 +101,7 @@
                         </div>
                         <div class="col">
                             <label class="form-label">Problem</label>
-                            <select id="problemSelect" name="problemSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
+                            <select id="problemSelect" name="problemSelect" class="form-select" required {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                                 @foreach ($problems as $problem)
                                     <option value="{{ $problem->problem_name }}">{{ $problem->problem_name }}</option>
                                 @endforeach
@@ -121,7 +121,7 @@
                             <hr>
                             <div class="col-4">
                                 <label class="form-label">Osoba odpowiedzialna</label>
-                                <select id="ownerSelect" name="ownerSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
+                                <select id="ownerSelect" name="ownerSelect" class="form-select" required {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                                     @foreach ($staffMembers as $member)
                                         @if ($member->login != 'root')
                                             <option value="{{ $member->name }}">{{ $member->name }}</option>
@@ -200,7 +200,7 @@
                          </div>
                     </div>
                     @endif
-                    @if ($attachments != null)
+                    @if ($attachments->count() > 0)
                         <div class="row align-items-end">
                             @foreach ($attachments as $attachment)
                                 @switch ($attachmentsDisplay[$attachment->file_name])
@@ -277,12 +277,18 @@
     </div>
 
     <script>
+        /**
+         * Set select fields with values from actual ticket.
+         */
         $('#prioritySelect').val({{ $ticket->priority }});
         $('#problemSelect').val($('<div />').html('{{ $ticket->problem }}').text());
 		$('#ownerSelect').val($('<div />').html('{{ $ticket->owner }}').text());
 
+        /**
+         * Part of ticket acceptance logic. If ticket must be accepted by differend department than user's
+         * then it sets department as targeted department. If not, the default department field is used.
+         */
         var targetDepartment = '{{ $ticket->target_department }}';
-
         if (targetDepartment != '' && targetDepartment != null && targetDepartment != undefined) {
             $('#departmentSelect').val('{{ $ticket->target_department }}');
         }
@@ -319,6 +325,10 @@
             });
         });
 
+        /**
+         * Ajax call for timerAction buttons. When one of the buttons is clicked, the time spent on ticket is increased
+         * by picked value.
+         */
         $("button[name='timerAction']").click(function() {
             var timer = $(this).val();
             var id = "{{ $ticket->ticketID }}";
@@ -335,6 +345,9 @@
             });
         });
 
+        /**
+         * Workaround for ownerSelect. When ticket is accepted/closed empty field was displayed
+         */
         if ($('#ownerSelect').val() == null){
             $('#ownerSelect').append('<option value="'+ '{{ $ticket->owner }}' +'">'+ '{{ $ticket->owner }}' +'</option>');
             $('#ownerSelect').val($('<div />').html('{{ $ticket->owner }}').text());
@@ -343,6 +356,9 @@
             $('#ownerSelect').val($('<div />').html('{{ $ticket->owner }}').text());
         }
 
+        /**
+         * External ticket input field toggler.
+         */
         $('#isExternal').click(function() {
             if ($('#isExternal').is(':checked')){
                 $('#external_ticketID').removeAttr('disabled', 'disabled');
@@ -353,6 +369,9 @@
             }
         });
 
+        /**
+         * Modal window for different ticket actions.
+         */
         $("#close, #accept").click(function() {
             var type = $(this).attr('data-id');
             switch (type) {
@@ -375,17 +394,23 @@
             $("#closingNotes").prop('required', true);
         });
 
-        $(document).on('show.bs.modal','#modal', function () {
-            $("#closingNotes").prop('required', true);
-        });
+        /**
+         * Remove closing notes field fill requirement on modal close.
+         */
         $(document).on('hide.bs.modal','#modal', function () {
             $("#closingNotes").prop('required', false);
         });
 
-        if ("{{ $ticket->date_closed }}"){
+        /**
+         * Check if ticket is closed. If true, start countdown timer.
+         */
+        if ("{{ $ticket->date_closed }}" && $('#reopenTicket').val() != null){
             countdown();
         }
 
+        /**
+         * Countdown logic for "Reopen ticket" button.
+         */
         function countdown(){
             var countdownStart = new Date("{{ $ticket->date_closed }}").getTime() + 48 * 60 * 60 * 1000;
 
@@ -399,8 +424,7 @@
             var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            document.getElementById("reopenTicket").value = "Otwórz ponownie zgłoszenie (" +
-                ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2) + ")";
+            document.getElementById("reopenTicket").value = "Otwórz ponownie zgłoszenie (" + ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2) + ")";
 
             if (distance < 0) {
                 clearInterval(x);

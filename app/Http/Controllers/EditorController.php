@@ -9,6 +9,11 @@ use App\Models\Problem;
 
 class EditorController extends Controller
 {
+    /**
+     * Render view for form editor.
+     *
+     * @return Response
+     */
     public function index()
     {
         $pageTitle = 'Edytor formularza';
