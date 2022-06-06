@@ -8,7 +8,6 @@
 @endsection
 
 @section('content')
-    <div class="row justify-content-end">
         <form class="row" id="form">
             <div class="col-5 offset-md-1">
                 @csrf
@@ -34,14 +33,14 @@
                     <label class="form-label">Stanowisko <span style="color:red">*</span></label>
                     <select id="positionSelect" name="positionSelect" class="form-select form-select-lg mb-3" disabled required>
                         <option value="">Wybierz stanowisko</option>
-                        <!-- Opcje wyboru zaciągane z tabeli JS w zależności od wybranego działu. -->
+                        <!-- Positions list loaded through ajax call based on selected zone -->
                     </select>
                 </div>
                 <div class="form-group mt-3">
                     <label class="form-label">Problem <span style="color:red">*</span></label>
                     <select id="problemSelect" name="problemSelect" class="form-select form-select-lg mb-3" disabled required>
                         <option value="">Wybierz problem</option>
-                        <!-- Opcje wyboru zaciągane z tabeli JS w zależności od wybranego działu. -->
+                        <!-- Problems list loaded through ajax call based on selected position -->
                     </select>
                 </div>
                 <div class="form-group">
@@ -55,7 +54,7 @@
                     </div>
                 </div>
                 <div class="form-group mt-3">
-                    <input id="submit" name="submit" class="btn btn-lg btn-primary" type="button" value="Prześlij" disabled/>
+                    <button id="submit" name="submit" class="btn btn-lg btn-primary" type="button" disabled>Wyślij</button>
                 </div>
             </div>
             <div class="col-5 ie11-margin">
@@ -89,9 +88,11 @@
                 </div>
             </div>
         </form>
-    </div>
     <script type="text/javascript">
         $(document).ready(function() {
+            /**
+             * Get positions based on selected zone.
+             */
             $('#zoneSelect').on('change', function() {
                 var zoneName = $(this).val();
                 if(zoneName) {
@@ -119,6 +120,9 @@
                 }
             });
 
+            /**
+             * Get problems based on selected position.
+             */
             $('#positionSelect').on('change', function() {
                 var positionName = $(this).val();
                 var department = $('#department').val();
@@ -144,6 +148,9 @@
                 }
             });
 
+            /**
+             * Final check if all form fields are selected. If true, enable submit button.
+             */
             $('#problemSelect').on('change', function() {
                 var problemName = $(this).val();
                 if(problemName != "null" && problemName != "Wybierz problem") {
@@ -154,8 +161,87 @@
             });
         });
 
+        /**
+         * Dropzone settings
+         */
+        Dropzone.autoDiscover = false;
+        var myDropzone = new Dropzone(".dropzone", {
+            url: "{{route('sendTicket')}}",
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            parallelUploads: 3,
+            maxFiles: 3,
+            maxFilesize: 5,
+            dictDefaultMessage: '<img src="{{ asset('public/img/upload-icon.png') }}" class="img-fluid" style="max-width:25%"/><br/> Kliknij tutaj lub upuść plik aby wysłać',
+            dictFileTooBig: "Wielkość pliku przekracza 5MB",
+            dictInvalidFileType: "Nieprawidłowy typ pliku",
+            dictCancelUpload: "Anuluj wysyłanie",
+            dictUploadCanceled: "Anulowano wysyłanie",
+            dictRemoveFile: "Usuń plik",
+            dictMaxFilesExceeded: "Przekroczono dozwoloną ilość plików",
+            //acceptedFiles: 'image/*',
+            addRemoveLinks: true,
+            headers: {
+                'X-CSRF-TOKEN': $('input[name="_token"]').attr('value')
+            },
+            init: function() {
+                dzClosure = this;
+
+                document.getElementById("submit").addEventListener("click", function(e) {
+                    e.stopPropagation();
+                });
+                this.on('sending', function(file, xhr, formData) {
+                    // Append all form inputs to the formData Dropzone will POST
+                    var data = $('#form').serializeArray();
+                    $.each(data, function(key, el) {
+                        formData.append(el.name, el.value);
+                    });
+                });
+                this.on('success', function(file, response){
+                    localStorage.setItem("id", response['id']);
+                    id = response['id'];
+                    window.location = "{{ url('ticket_sent') }}/" + id;
+                });
+                this.on("error", function(file, errormessage, xhr){
+                    if(xhr) {
+                        var response = JSON.parse(xhr.responseText);
+                        alert(response.message);
+                    }
+                    $('#submit').removeAttr('disabled', 'disabled');
+                    $('#submit').text('Wyślij');
+                });
+            }
+        });
+
+        /**
+         * On submit check if files are uploaded. If not send fake blob file so the form can be processed
+         * by dropzone.
+         */
+        $("#submit").on('click', function() {
+            if (myDropzone.getQueuedFiles().length === 0) {
+                var blob = new Blob();
+                blob.upload = { 'chunked': myDropzone.defaultOptions };
+                myDropzone.uploadFile(blob);
+                spinnerTrigger();
+            } else {
+                myDropzone.processQueue();
+                spinnerTrigger();
+            }
+        });
+
+        /**
+         * Trigger function for spinner animation on form send.
+         */
+        function spinnerTrigger(){
+                $('#submit').text('');
+                $('#submit').attr('disabled', 'disabled');
+                $('#submit').append('<span class="spinner-border spinner-border-sm" role="status"></span>');
+                $('#submit').append(' Wysyłanie...');
+        }
+
+
 /*
-//Paste file to dropzone box
+//Paste file to dropzone box. WORK IN PROGRESS
 
 var input = document.querySelector("#text");
 input.addEventListener("paste",function(event){
@@ -201,57 +287,5 @@ function dataURLtoFile(dataurl, filename) {
     return new File([u8arr], filename, {type:mime});
 }
 */
-
-        Dropzone.autoDiscover = false;
-        var myDropzone = new Dropzone(".dropzone", {
-            url: "{{route('sendTicket')}}",
-            autoProcessQueue: false,
-            uploadMultiple: true,
-            parallelUploads: 3,
-            maxFiles: 3,
-            maxFilesize: 5,
-            dictDefaultMessage: '<img src="{{ asset('public/img/upload-icon.png') }}" class="img-fluid" style="max-width:25%"/><br/> Kliknij tutaj lub upuść plik aby wysłać',
-            dictFileTooBig: "Wielkość pliku przekracza 5MB",
-            dictInvalidFileType: "Nieprawidłowy typ pliku",
-            dictCancelUpload: "Anuluj wysyłanie",
-            dictUploadCanceled: "Anulowano wysyłanie",
-            dictRemoveFile: "Usuń plik",
-            dictMaxFilesExceeded: "Przekroczono dozwoloną ilość plików",
-            //acceptedFiles: 'image/*',
-            addRemoveLinks: true,
-            headers: {
-                'X-CSRF-TOKEN': $('input[name="_token"]').attr('value')
-            },
-            init: function() {
-                dzClosure = this;
-
-                document.getElementById("submit").addEventListener("click", function(e) {
-                    e.stopPropagation();
-                });
-                this.on('sending', function(file, xhr, formData) {
-                    // Append all form inputs to the formData Dropzone will POST
-                    var data = $('#form').serializeArray();
-                    $.each(data, function(key, el) {
-                        formData.append(el.name, el.value);
-                    });
-                });
-                this.on('success', function(file, response){
-                    localStorage.setItem("id", response['id']);
-                    id = response['id'];
-                    window.location = "{{ url('ticket_sent') }}/" + id;
-                });
-            }
-        });
-
-        $("#submit").on('click', function() {
-            if (myDropzone.getQueuedFiles().length === 0) {
-                var blob = new Blob();
-                blob.upload = { 'chunked': myDropzone.defaultOptions };
-                myDropzone.uploadFile(blob);
-            } else {
-                myDropzone.processQueue();
-            }
-        });
-
     </script>
 @endsection

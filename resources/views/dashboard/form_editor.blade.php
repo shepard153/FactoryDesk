@@ -148,7 +148,6 @@
         </div>
     </div>
     <script>
-
         /**
          * Delete buttons trigger function.
          */
@@ -341,7 +340,8 @@
             $('#modalForm').attr('action', "{{ url('addPositionAction') }}");
             $('#modalLabel').text('Utwórz nowe stanowisko');
             $('#text').text('');
-            $('#text').append('<input class="form-control" type="text" name="position_name" required/><br/>');
+            $('#text').append('<label for="position_name" class="form-label">Stanowisko</label><input class="form-control" type="text" name="position_name" required/><br/>');
+            $('#text').append('<h4>Obszary:</h4>');
 
             $.ajax({
                 type: "GET",
@@ -349,12 +349,12 @@
                 dataType: 'json',
                 success: function(zones){
                     $.each(zones, function(key, value) {
-                        input = '<input type="checkbox" class="form-check-input" name="' + value['zone_name'] + '">';
+                        input = '<input type="checkbox" id="' + value['zone_name'] + '" class="form-check-input" name="' + value['zone_name'] + '">';
                         $('#text').append('<tr> \
                             <td> \
-                                <h5>' + input + ' \
+                                <h4>' + input + ' \
                                     <label class="form-check-label" for="' + value['zone_name'] + '">' + value['zone_name'] + '</label> \
-                                </h5> \
+                                </h4> \
                             </td> \
                         </tr>');
                     });
@@ -371,6 +371,7 @@
             $('#confirmEdit').hide();
             $('#confirmDelete').hide();
             $('#modalForm').attr('action', "{{ url('addProblemAction') }}");
+            $('#modalLabel').text('Utwórz nowy problem');
             $('#text').text('');
             $('#text').append('<label for="lp" class="form-label">Kolejność wyświetlania</label><input class="form-control" type="number" name="lp" required/><br/>');
             $('#text').append('<label for="problem_name" class="form-label">Problem</label><input class="form-control" type="text" name="problem_name" required/><br/>');
@@ -383,12 +384,12 @@
                 dataType: 'json',
                 success: function(positions){
                     $.each(positions, function(key, value) {
-                        input = '<input type="checkbox" class="form-check-input" name="' + value['position_name'] + '">';
+                        input = '<input type="checkbox" id="' + value['position_name'] + '" class="form-check-input" name="' + value['position_name'] + '">';
                         $('#text').append('\
                             <div class="form-group"> \
-                                <p>' + input + ' \
+                                <h5>' + input + ' \
                                     <label class="form-check-label" for="' + value['position_name'] + '">' + value['position_name'] + '</label> \
-                                </p> \
+                                </h5> \
                             </div> \
                         ');
                     });

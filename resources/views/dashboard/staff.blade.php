@@ -1,12 +1,12 @@
 @extends('dashboard/dashboard_template')
- 
+
  @section('title', 'RUGDesk')
-  
+
  @section('sidebar')
      @parent
-  
+
  @endsection
-  
+
  @section('content')
         <div class="col rounded shadow" style="background: white; margin-top: 1vw; padding: 1vw 1vw 0.5vw 1vw;">
             <a href="{{ url('addMember') }}" class="btn btn-success btn-sm" style="float:right; margin: 0.7vw 1vw 0vw 0vw;">Dodaj użytkownika</a>
@@ -16,7 +16,7 @@
             @endif
             <table class="table table-striped table-hover responsive">
                 @if ($staffMembers != null)
-                <thead>               
+                <thead>
                     <tr>
                         <td><b>Login</b></td>
                         <td><b>Nazwa użytkownika</b></td>
@@ -38,7 +38,7 @@
                         <a href="{{ url('staff/'.$member->staffID) }}" class="btn btn-success btn-sm">Edytuj</a>
                         <button class="btn btn-danger btn-sm" name="delete" data-bs-toggle="modal" data-bs-target="#modal" value="{{ $member->login }}" data-id="{{ $member->staffID }}">Usuń</button>
 
-                        <!-- Okienko z potwierdzeniem -->
+                        <!-- Modal confirmation window -->
                         <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <form method="post" action="{{ url('deleteMemberAction') }}">
                                 @csrf
@@ -49,7 +49,7 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <p id="text"><!-- Tekst ze skryptu JS --></p>
+                                            <p id="text"><!-- Text from JS script --></p>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>

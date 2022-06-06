@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\TicketAttachmentController as AttachmentController;
+use App\Http\Controllers\SettingsController as Settings;
 use App\Models\Ticket;
 use App\Models\TicketAttachment;
 use App\Models\TicketHistory;
@@ -17,7 +18,7 @@ use App\Models\Staff;
 use App\Models\Department;
 use App\Models\Priority;
 
-Class TicketController extends Controller
+class TicketController extends Controller
 {
     /**
      * @var Ticket $ticket
@@ -170,30 +171,22 @@ Class TicketController extends Controller
         $pageTitle = "Moje zgłoszenia";
 
         if ($status == 'taken'){
-            $latestTickets = Ticket::where('ticket_status', '=', 1)->where('owner', '=', auth()->user()->name)->orderBy('date_modified', 'desc')->get();
+            $latestTickets = Ticket::where('ticket_status', '=', 1)->where('owner', '=', auth()->user()->name)->orderBy('date_modified', 'desc')->limit(10)->get();
             $tickets = Ticket::where('ticket_status', '=', 1)->where('owner', '=', auth()->user()->name)->orderBy('date_modified', 'desc')->paginate(10)->withQueryString();
         }
         else{
-            $latestTickets = Ticket::where('ticket_status', '=', 2)->where('owner', '=', auth()->user()->name)->orderBy('date_closed', 'desc')->get();
+            $latestTickets = Ticket::where('ticket_status', '=', 2)->where('owner', '=', auth()->user()->name)->orderBy('date_closed', 'desc')->limit(10)->get();
             $tickets = Ticket::where('ticket_status', '=', 2)->where('owner', '=', auth()->user()->name)->orderBy('date_closed', 'desc')->paginate(10)->withQueryString();
         }
 
         $ticketsOpen = Ticket::where('ticket_status', '=', 1)->where('owner', '=', auth()->user()->name)->get()->count();
         $ticketsClosed = Ticket::where('ticket_status', '=', 2)->where('owner', '=', auth()->user()->name)->get()->count();
 
-        if ($ticketsClosed > 0 || $ticketsOpen > 0){
-            $percentageSolved = $ticketsClosed * 100 / ($ticketsClosed + $ticketsOpen);
-        }
-        else{
-            $percentageSolved = 0;
-        }
-
         return view("dashboard/my_tickets", ['pageTitle' => $pageTitle,
             'latestTickets' => $latestTickets,
             'tickets' => $tickets,
             'ticketsOpen' => $ticketsOpen,
             'ticketsClosed' => $ticketsClosed,
-            'percentageSolved' => $percentageSolved,
         ]);
     }
 
@@ -233,6 +226,7 @@ Class TicketController extends Controller
     public function ticketList(Request $request, $status = 'active')
     {
         $pageTitle = "Zgłoszenia";
+        $settings = Settings::getSettings();
 
         switch ($status){
             case 'awaiting':
@@ -252,19 +246,19 @@ Class TicketController extends Controller
         if ($request->sort != null){
             $request->order = $request->order == 'desc' ? 'asc': 'desc';
             if (auth()->user()->department == 'All' && $status == 'active'){
-                 $tickets = Ticket::where(function($query) {
+                $tickets = Ticket::where(function($query) {
                     return $query
                         ->where('ticket_status', '=', 0)
                         ->orWhere('ticket_status', '=', 1);
                     })
-                ->orderBy($request->sort, $request->order)
-                ->paginate(20)
-                ->withQueryString();
+                    ->orderBy($request->sort, $request->order)
+                    ->paginate($settings['tickets_pagination'])
+                    ->withQueryString();
             }
             else if (auth()->user()->department == 'All'){
                 $tickets = Ticket::where('ticket_status', '=', $status)
                     ->orderBy($request->sort, $request->order)
-                    ->paginate(20)
+                    ->paginate($settings['tickets_pagination'])
                     ->withQueryString();
             }
              else if ($status == 'active'){
@@ -275,14 +269,14 @@ Class TicketController extends Controller
                             ->orWhere('ticket_status', '=', 1);
                         })
                     ->orderBy($request->sort, $request->order)
-                    ->paginate(20)
+                    ->paginate($settings['tickets_pagination'])
                     ->withQueryString();
             }
             else{
                 $tickets = Ticket::where('department', '=', auth()->user()->department)
                     ->where('ticket_status', '=', $status)
                     ->orderBy($request->sort, $request->order)
-                    ->paginate(20)
+                    ->paginate($settings['tickets_pagination'])
                     ->withQueryString();
             }
         }else{
@@ -293,13 +287,13 @@ Class TicketController extends Controller
                         ->orWhere('ticket_status', '=', 1);
                     })
                     ->orderBy('date_modified', 'desc')
-                    ->paginate(20)
+                    ->paginate($settings['tickets_pagination'])
                     ->withQueryString();
             }
             else if (auth()->user()->department == 'All'){
                 $tickets = Ticket::where('ticket_status', '=', $status)
                     ->orderBy('date_modified', 'desc')
-                    ->paginate(20)
+                    ->paginate($settings['tickets_pagination'])
                     ->withQueryString();
             }
             else if ($status == 'active'){
@@ -310,14 +304,14 @@ Class TicketController extends Controller
                             ->orWhere('ticket_status', '=', 1);
                     })
                     ->orderBy('date_modified', 'desc')
-                    ->paginate(20)
+                    ->paginate($settings['tickets_pagination'])
                     ->withQueryString();
             }
             else{
                 $tickets = Ticket::where('department', '=', auth()->user()->department)
                     ->where('ticket_status', '=', $status)
                     ->orderBy('date_modified', 'desc')
-                    ->paginate(20)
+                    ->paginate($settings['tickets_pagination'])
                     ->withQueryString();
             }
         }

@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateStaffTable extends Migration
 {
@@ -14,7 +15,7 @@ class CreateStaffTable extends Migration
     public function up()
     {
         Schema::create('Staff', function (Blueprint $table) {
-            $table->id('staffID');
+            $table->increments('staffID');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('login')->unique();
@@ -24,6 +25,15 @@ class CreateStaffTable extends Migration
             $table->integer('isAdmin');
             $table->timestamps();
         });
+
+        DB::table('Staff')->insert([
+            'name' => 'root',
+            'email' => 'root@example.com',
+            'login' => 'root',
+            'password' => bcrypt('root'),
+            'department' => 'All',
+            'isAdmin' => 1,
+        ]);
     }
 
     /**

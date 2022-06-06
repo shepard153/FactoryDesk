@@ -10,7 +10,7 @@ use App\Models\Ticket;
 use App\Models\TicketAttachment;
 
 
-Class TicketAttachmentController extends Controller
+class TicketAttachmentController extends Controller
 {
     /**
      * @var TicketAttachment $attachments

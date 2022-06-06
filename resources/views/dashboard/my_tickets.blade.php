@@ -11,26 +11,11 @@
     <a href="{{ url ('my_tickets/') }}" class="btn btn-warning">Podjęte</a>
     <a href="{{ url ('my_tickets/closed') }}" class="btn btn-danger">Zamknięte</a>
     <div class="row rounded shadow" style="background: white; margin: 1vw 0vw 0vw 0vw">
-        <div class="col-4">
-            <div class="row">
+        <div class="col-sm-4" style="min-width: 380px">
             <p class="fs-3 border-bottom text-center" style="margin: 0.6vw 0vw 0.5vw 0.3vw">Moje statystyki</p>
-                <div class="col">
-                    <p class="fs-5 text-center">Ilość zamkniętych zgłoszeń</p>
-                    <canvas id="closedCanvas" style="margin-left: auto;margin-right: auto;display: block;" width="200" height="200"></canvas>
-                </div>
-                <div class="col">
-                    <p class="fs-5 text-center">Ilość aktywnych zgłoszeń</p>
-                    <canvas id="openCanvas" style="margin-left: auto;margin-right: auto;display: block;" width="200" height="200"></canvas>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <p class="fs-5 text-center">Procent rozwiązanych</p>
-                    <canvas id="pieChartCanvas" style="margin-left: auto;margin-right: auto;display: block;" width="200" height="200"></canvas>
-                </div>
-            </div>
+            <canvas id="doughnutChart" style="width: 400px; margin-left: auto; margin-right: auto"></canvas>
         </div>
-        <div class="col-8">
+        <div class="col-sm-8">
         @if ($latestTickets->count() > 0)
         <table class="table table-hover">
             <caption class="fs-3 border-bottom" style="caption-side: top; text-align: center;">Ostatnio {{ str_contains(url()->current(), 'closed') ? 'zamknięte' : 'podjęte' }} zgłoszenia</caption>
@@ -50,9 +35,6 @@
                 </tr>
             </thead>
             @foreach ($latestTickets as $latest)
-                @if ($loop->iteration > 10)
-                    @break
-                @endif
                 @if ($latest->priority == 4)
                     <tr class='clickable-row' data-href="{{ url ('ticket/'.$latest->ticketID) }}" style="background-color: #ff7f7f">
                 @elseif ($latest->priority == 0)
@@ -168,7 +150,6 @@
         @endif​
     </div>
 
-    <script src="{{ asset('public/js/rpie.js') }}"></script>
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             $(".clickable-row").click(function() {
@@ -176,58 +157,25 @@
             });
         });
 
-		var pieChartObject = {
-						pie: 'stroke',
-						values: [{{ $percentageSolved }}],
-						colors: ['#4CAF50'],
-						isStrokePie: {
-							stroke: 20,
-                            overlayStroke: true,
-							strokeStartEndPoints: 'Yes',
-							strokeAnimation: true,
-							strokeAnimationSpeed: 15,
-							fontSize: '40px',
-							textAlignement: 'center',
-							fontFamily: 'Arial',
-							fontWeight: 'bold',
-						}
-					  };
-
-        generatePieGraph('pieChartCanvas', pieChartObject);
-
-        var c = document.getElementById("closedCanvas");
-        var ctx = c.getContext("2d");
-        ctx.beginPath();
-        var grd = ctx.createRadialGradient(100, 95, 40, 100, 100, 100);
-        grd.addColorStop(0, "#4CAF50");
-        grd.addColorStop(1, "green");
-        ctx.fillStyle = grd;
-        ctx.strokeStyle = "black";
-        ctx.font = "40px Georgia";
-        ctx.lineWidth = 10;
-        ctx.arc(100, 100, 90, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.fillStyle = "#4c4c4c";
-        ctx.textAlign = 'center';
-        ctx.fillText({{ $ticketsClosed }}, 90, 105);
-        ctx.fill();
-
-        var c = document.getElementById("openCanvas");
-        var ctx = c.getContext("2d");
-        ctx.beginPath();
-        var grd = ctx.createRadialGradient(100, 95, 40, 100, 100, 100);
-        grd.addColorStop(1, "#ffae1a");
-        grd.addColorStop(0, "#ffd667");
-        ctx.fillStyle = grd;
-        ctx.strokeStyle = "black";
-        ctx.font = "40px Georgia";
-        ctx.lineWidth = 10;
-        ctx.arc(100, 100, 90, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.fillStyle = "#4c4c4c";
-        ctx.fillText({{ $ticketsOpen }}, 90, 105);
-        ctx.fill();
+        const ctx = $('#doughnutChart');
+        const myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Podjęte', 'Zamknięte'],
+                datasets: [{
+                    data: ['{{ $ticketsOpen }}', '{{ $ticketsClosed }}'],
+                    backgroundColor: ['Orange', '#66AF66'],
+                },
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                }
+            },
+        });
     </script>
 @endsection

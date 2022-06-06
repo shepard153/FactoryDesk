@@ -12,6 +12,11 @@ use App\Models\Ticket;
 
 class ReporterController extends Controller
 {
+    /**
+     * Render view for reporter.
+     *
+     * @return string $pageTitle
+     */
     public function reporter()
     {
         $pageTitle = "Raportowanie";
@@ -19,6 +24,12 @@ class ReporterController extends Controller
         return view('dashboard/reporter', ['pageTitle' => $pageTitle]);
     }
 
+    /**
+     * Generate report and export to selected format.
+     *
+     * @param Request $request
+     * @return Response
+     */
     public function getReport(Request $request)
     {
         $columns = [];
@@ -47,6 +58,13 @@ class ReporterController extends Controller
         return back()->with('message', "Raport wygenerowany.");
     }
 
+    /**
+     * Export report data to CSV format.
+     *
+     * @param array $columns
+     * @param array $items
+     * @return void
+     */
     public function exportToCsv($columns, $items)
     {
         $csv = Writer::createFromFileObject(new \SplTempFileObject());
@@ -86,6 +104,14 @@ class ReporterController extends Controller
         exit;
     }
 
+    /**
+     * Export report data to PDF file. Not working as of 30.05.2022.
+     * Exported data is too wide even for horizontal layout.
+     *
+     * @param array $columns
+     * @param array $items
+     * @return void
+     */
     public function exportToPdf($columns, $items)
     {
         $pdf = new FPDF();

@@ -29,7 +29,7 @@
             </div>
             <div class="row" style="margin-top:1vw;">
                 <h4>Zakres wyszukiwania</h4>
-                <div class="alert alert-warning">
+                <div class="alert alert-warning"><i class="fa fa-circle-exclamation"></i> &nbsp;
                     Pod uwagę brana jest data utworzenia zgłoszenia!
                 </div>
                 <div class="col-2">
@@ -43,7 +43,7 @@
             </div>
             <div class="row" style="margin-top:1vw;">
                 <h4>Kolumny do exportu</h4>
-                <div class="alert alert-info">
+                <div class="alert alert-info"><i class="fa fa-info-circle"></i> &nbsp;
                     Wybierz kolumny, które mają pojawić się w pliku wyjściowym i kliknij <b>Generuj raport</b>, aby otrzymać raport.<br/>
                     Domyślnie zaznaczone są wszystkie opcje.
                 </div>

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Session;
 use Illuminate\Support\Facades\Auth;
 
-Class LoginController extends Controller
+class LoginController extends Controller
 {
     /**
      * Check if user agent is IE. If true, redirect to error page.

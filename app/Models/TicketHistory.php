@@ -8,19 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class TicketHistory extends Model
 {
     use HasFactory;
-        /**
-         * The table associated with the model.
-         *
-         * @var string
-         */
-        protected $table = 'Ticket_history';
 
-        /**
-         * The primary key associated with the table.
-         *
-         * @var string
-         */
-        protected $primaryKey = 'editID';
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'Ticket_history';
 
-        public $timestamps = null;
+    /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'editID';
+
+    public $timestamps = null;
 }

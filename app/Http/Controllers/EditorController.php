@@ -12,7 +12,7 @@ class EditorController extends Controller
     /**
      * Render view for form editor.
      *
-     * @return Response
+     * @return view
      */
     public function index()
     {

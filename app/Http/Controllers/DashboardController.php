@@ -127,8 +127,16 @@ class DashboardController extends Controller
     public function chartData($startDate = null)
     {
         $department = Auth::user()->department;
+        $settings = Settings::getSettings();
 
-        $startDate == 'null' ? $startDate = new \DateTime('2022-05-20') : $startDate = new \DateTime($startDate);
+        if ($startDate == null || $startDate == 'null') {
+            $startDate = new \DateTime('NOW');
+            $startDate = $startDate->modify('-'. $settings['dashboard_chartDaySpan'] - 1 . 'day');
+        }
+        else{
+            $startDate = new \DateTime($startDate);
+        }
+
         $timeNow = new \DateTime('NOW');
         $diff = $timeNow->diff($startDate);
         $diff = $diff->format('%a');

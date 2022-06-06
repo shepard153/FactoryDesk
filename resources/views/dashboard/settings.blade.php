@@ -34,6 +34,17 @@
                     <label for="dashboard_newestToDisplay" class="form-label">Ilość najnowszych zgłoszeń do wyświetlenia</label>
                     <input type="text" class="form-control" name="dashboard_newestToDisplay" value="{{ $settings['dashboard_newestToDisplay'] }}">
                 </div>
+                <div class="mb-3">
+                    <label for="dashboard_chartDaySpan" class="form-label">Zakres wyświetlanych dni na wykresie</label>
+                    <input type="text" class="form-control" name="dashboard_chartDaySpan" value="{{ $settings['dashboard_chartDaySpan'] }}">
+                </div>
+            </div>
+            <div class="col-4">
+                <p class="fs-4 border-bottom" style="padding: 0vw 0vw 0.6vw 0vw;">Zgłoszenia</p>
+                <div class="mb-3">
+                    <label for="tickets_pagination" class="form-label">Liczba zgłoszeń na stronę</label>
+                    <input type="text" class="form-control" name="tickets_pagination" value="{{ $settings['tickets_pagination'] }}">
+                </div>
             </div>
             <div class="mb-3">
                 <input name="submit" class="btn btn-primary" type="Submit"/>

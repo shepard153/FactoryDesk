@@ -201,10 +201,13 @@
      */
     function showChart(startDate = null)
     {
-        startDate = startDate === null ? 'null' : null;
+        if (startDate == null || startDate == ''){
+            startDate = null;
+        }
+
         $.ajax({
             type: "GET",
-            url: "dashboard/chart/" + startDate,
+            url: 'dashboard/chart/' + startDate,
             dataType: 'json',
             beforeSend: function() {
                 $("#graphCanvas").hide();
@@ -230,21 +233,18 @@
                             data: data['new'],
                             fill: false,
                             borderColor: 'green',
-                            tension: 0.1
                         },
                         {
                             label: 'Podjęte: ' + data['chartLegendOpen'],
                             data: data['opened'],
                             fill: false,
                             borderColor: 'orange',
-                            tension: 0.1
                         },
                         {
                             label: 'Zamknięte: ' + data['chartLegendClosed'],
                             data: data['closed'],
                             fill: false,
                             borderColor: 'red',
-                            tension: 0.1
                         },
                         ]
                     },
@@ -252,6 +252,26 @@
                         scales: {
                             y: { beginAtZero: true}
                         },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        label = label.split(':')[0];
+
+                                        if (label) {
+                                            label += ': ';
+                                        }
+
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y;
+                                        }
+
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
                     }
                 });
             }
