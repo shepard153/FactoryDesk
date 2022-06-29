@@ -9,17 +9,17 @@
 
  @section('content')
     <div class="col col-lg-12 rounded shadow" style="background: white;">
-        <p class="fs-3 border-bottom" style="text-align: center;">Najnowsze zgłoszenia</p>
+        <p class="fs-3 border-bottom" style="text-align: center;">{{ __('dashboard_main.newest_tickets') }}</p>
         <table class="table table-hover" id="newestTable">
             <thead>
                 <tr>
-                    <td>ID</td>
-                    <td>Status</td>
-                    <td>Obszar</td>
-                    <td>Stanowisko</td>
-                    <td>Problem</td>
-                    <td>Komputer</td>
-                    <td>Data zgłoszenia</td>
+                    <td>{{ __('dashboard_main.table_ID') }}</td>
+                    <td>{{ __('dashboard_main.table_status') }}</td>
+                    <td>{{ __('dashboard_main.table_zone') }}</td>
+                    <td>{{ __('dashboard_main.table_position') }}</td>
+                    <td>{{ __('dashboard_main.table_problem') }}</td>
+                    <td>{{ __('dashboard_main.table_device') }}</td>
+                    <td>{{ __('dashboard_main.table_date') }}</td>
                 </tr>
             </thead>
             <tbody id="newestRows">
@@ -35,11 +35,11 @@
                   <td>{{ $newest->department_ticketID }}</td>
                   <td>
                     @if ($newest->ticket_status == '-1')
-                        <span class='badge rounded-pill bg-primary'>Do zatwierdzenia</span>
+                        <span class='badge rounded-pill bg-primary'>{{ __('dashboard_main.status_pill_awaiting') }}</span>
                     @elseif ($newest->ticket_status == '0')
-                        <span class='badge rounded-pill bg-success'>Nowe</span>
+                        <span class='badge rounded-pill bg-success'>{{ __('dashboard_main.status_pill_new') }}</span>
                     @elseif ($newest->ticket_status == '1')
-                        <span class='badge rounded-pill bg-warning'>Podjęte</span>
+                        <span class='badge rounded-pill bg-warning'>{{ __('dashboard_main.status_pill_in_progress') }}</span>
                     @endif
                   </td>
                   <td>{{ $newest->zone }}</td>
@@ -50,39 +50,39 @@
                 </tr>
               @endforeach
             @else
-                <p class="fs-2 text-center" id="phpNothingNewMessage" style="padding: 0vw 0px 1vw 0px;">Brak nowych zgłoszeń.</p>
+                <p class="fs-2 text-center" id="phpNothingNewMessage" style="padding: 0vw 0px 1vw 0px;">{{ __('dashboard_main.table_no_new_tickets') }}</p>
             @endif
-                <p class="fs-2 text-center" id="nothingNewMessage" style="padding: 0vw 0px 1vw 0px; display: none">Brak nowych zgłoszeń.</p>
+                <p class="fs-2 text-center" id="nothingNewMessage" style="padding: 0vw 0px 1vw 0px; display: none">{{ __('dashboard_main.table_no_new_tickets') }}</p>
             </tbody>
         </table>
     </div>
     <div class="row mt-2">
         <div class="col col-lg-3">
             <div class="col">
-                <label class="form-label" for="startDate">Data</label>
+                <label class="form-label" for="startDate">{{ __('dashboard_main.chart_start_date') }}</label>
                 <input type="date" class="form-control" name="startDate" id="startDate" onchange="datePick(this);"/>
             </div>
             <div class="card border-primary mt-2">
                 <div class="card-body">
-                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-column" style="color: blue"></i> Zgłoszeń łącznie</h5>
+                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-column" style="color: blue"></i> {{ __('dashboard_main.card_tickets_total') }}</h5>
                     <span class="h2 font-weight-bold mb-0" id="allCard"></span>
                 </div>
             </div>
             <div class="card border-warning mt-2">
                 <div class="card-body">
-                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-bars-progress" style="color: orange"></i> W realizacji</h5>
+                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-bars-progress" style="color: orange"></i> {{ __('dashboard_main.card_tickets_in_progress') }}</h5>
                     <span class="h2 font-weight-bold mb-0" id="allOpenCard"></span>
                 </div>
             </div>
             <div class="card border-info mt-2">
                 <div class="card-body">
-                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-area" style="color: cyan"></i> Najwięcej zgłoszeń z</h5>
+                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-area" style="color: cyan"></i> {{ __('dashboard_main.card_most_problematic') }}</h5>
                     <span class="h2 font-weight-bold mb-0" id="mostProblematicCard"></span>
                 </div>
             </div>
             <div class="card border-dark mt-2">
                 <div class="card-body">
-                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-diagram-successor" style="color: dark"></i> Najczęstszy problem</h5>
+                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-diagram-successor" style="color: dark"></i> {{ __('dashboard_main.card_top_problem') }}</h5>
                     <span class="h2 font-weight-bold mb-0" id="topProblemCard"></span>
                 </div>
             </div>
@@ -128,7 +128,7 @@
 
                 $.each(dashboardData, function(key, value) {
 
-                    let row, priority, status;
+                    let row, status;
                     $('#phpNothingNewMessage').hide();
                     if (value['newest'].length === 0) {
                         $('#nothingNewMessage').css('display', 'block');
@@ -142,27 +142,24 @@
                             switch (value['priority']) {
                                 case '4':
                                     row = "<tr class='clickable-row' data-href='ticket/" + value['ticketID'] + "' style='background-color: #ff7f7f'>";
-                                    priority = "Krytyczny";
                                     break;
                                 case '0':
                                     row = "<tr class='clickable-row' data-href='ticket/" + value['ticketID'] + "' style='background-color: #d4ebf2'>";
-                                    priority = "Powiadomienie";
                                     break;
                                 default:
                                     row = "<tr class='clickable-row' data-href='ticket/" + value['ticketID'] + "'>";
-                                    priority = "Standardowy";
                                     break;
                             }
 
                             switch (value['ticket_status']){
                                 case '-1':
-                                    status = "<span class='badge rounded-pill bg-primary'>Do zatwierdzenia</span>";
+                                    status = "<span class='badge rounded-pill bg-primary'>{{ __('dashboard_main.status_pill_awaiting') }}</span>";
                                     break;
                                 case '0':
-                                    status = "<span class='badge rounded-pill bg-success'>Nowe</span>";
+                                    status = "<span class='badge rounded-pill bg-success'>{{ __('dashboard_main.status_pill_new') }}</span>";
                                     break;
                                 case '1':
-                                    status = "<span class='badge rounded-pill bg-warning'>Podjęte</span>";
+                                    status = "<span class='badge rounded-pill bg-warning'>{{ __('dashboard_main.status_pill_in_progress') }}</span>";
                                     break;
                             }
 
@@ -190,7 +187,7 @@
                 });
             },
             error: function (response) {
-                $("#newestTable").html('Błąd JavaScript. Aby odświeżyć dane, załaduj stronę ponownie.');
+                $("#newestTable").html('{{ __("dashboard_main.javascript_error_message") }}');
             }
         });
     }
@@ -209,10 +206,6 @@
             type: "GET",
             url: 'dashboard/chart/' + startDate,
             dataType: 'json',
-            beforeSend: function() {
-                $("#graphCanvas").hide();
-                $("#loadingSpinner").show();
-            },
             success: function(data) {
                 $("#loadingSpinner").hide();
                 $("#graphCanvas").show();
@@ -229,28 +222,28 @@
                     data: {
                         labels: data['labels'],
                         datasets: [{
-                            label: 'Nowe: ' + data['chartLegendNew'],
+                            label: '{{ __("dashboard_main.card_tickets_new") }}: ' + data['chartLegendNew'],
                             data: data['new'],
                             fill: false,
                             borderColor: 'green',
+                            tension: 0.4
                         },
                         {
-                            label: 'Podjęte: ' + data['chartLegendOpen'],
+                            label: '{{ __("dashboard_main.card_tickets_in_progress") }}: ' + data['chartLegendOpen'],
                             data: data['opened'],
                             fill: false,
                             borderColor: 'orange',
-                        },
-                        {
-                            label: 'Zamknięte: ' + data['chartLegendClosed'],
-                            data: data['closed'],
-                            fill: false,
-                            borderColor: 'red',
-                        },
-                        ]
+                            tension: 0.4
+                        }]
                     },
                     options: {
                         scales: {
-                            y: { beginAtZero: true}
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
                         },
                         plugins: {
                             tooltip: {

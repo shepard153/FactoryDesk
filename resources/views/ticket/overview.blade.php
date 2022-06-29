@@ -13,6 +13,7 @@
 
     <div class="col-3">
         <select id="overviewDepartment" class="form-select">
+            <option value="All">{{ __('main_page.overview_all_departments') }}</option>
             @foreach ($departmentList as $department)
                 <option value="{{ $department->department_name }}">{{ $department->department_name }}</option>
             @endforeach
@@ -23,13 +24,13 @@
         <div class="col col-lg-3 mt-3">
             <div class="card border-primary mt-3">
                 <div class="card-body">
-                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-line" style="color: blue"></i> Zgłoszeń łącznie</h5>
+                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-line" style="color: blue"></i> {{ __('main_page.overview_tickets_total') }}</h5>
                     <span class="h2 font-weight-bold mb-0" id="allCard"></span>
                 </div>
             </div>
             <div class="card border-warning mt-3">
                 <div class="card-body">
-                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-area" style="color: orange"></i> W realizacji</h5>
+                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-area" style="color: orange"></i> {{ __('main_page.overview_tickets_in_progress') }}</h5>
                     <span class="h2 font-weight-bold mb-0" id="allOpenCard"></span>
                 </div>
             </div>
@@ -45,12 +46,12 @@
     <script>
     $(document).ready(function () {
         showChart('{{ $defaultDepartment}}');
-        $('#header').text('Statystyki dla działu {{ $defaultDepartment}}');
+        $('#header').text('{{ __("main_page.overview_heading", ["department" => $defaultDepartment]) }}');
     });
 
     $('#overviewDepartment').on('change', function() {
         department = $(this).val();
-        $('#header').text('Statystyki dla działu ' + department);
+        $('#header').text('{{ __("main_page.overview_heading", ["department" => '']) }}' + department);
         showChart(department);
     })
 
@@ -72,7 +73,6 @@
                 $("#graphCanvas").show();
                 $('#allCard').text(data['all']);
                 $('#allOpenCard').text(data['allOpen']);
-                $('#allClosedCard').text(data['allClosed']);
 
                 const ctx = $('#graphCanvas');
 
@@ -86,32 +86,31 @@
                     data: {
                         labels: data['labels'],
                         datasets: [{
-                            label: 'Nowe',
+                            label: '{{ __("main_page.overview_tickets_new") }}',
                             data: data['new'],
                             fill: false,
-                            borderColor: 'green',
+                            borderColor: 'rgb(75, 192, 192)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.5)',
                             tension: 0.1
                         },
                         {
-                            label: 'Podjęte',
+                            label: '{{ __("main_page.overview_tickets_in_progress") }}',
                             data: data['opened'],
                             fill: false,
-                            borderColor: 'orange',
+                            borderColor: 'rgb(255, 159, 64)',
+                            backgroundColor: 'rgba(255, 159, 64, 0.5)',
                             tension: 0.1
-                        },
-                        {
-                            label: 'Zamknięte',
-                            data: data['closed'],
-                            fill: false,
-                            borderColor: 'red',
-                            tension: 0.1
-                        },
-                        ]
+                        }]
                     },
                     options: {
                         scales: {
-                            y: { beginAtZero: true}
-                        }
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        },
                     }
                 });
             }

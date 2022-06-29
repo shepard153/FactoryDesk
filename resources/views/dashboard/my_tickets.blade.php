@@ -8,29 +8,29 @@
  @endsection
 
  @section('content')
-    <a href="{{ url ('my_tickets/') }}" class="btn btn-warning">Podjęte</a>
-    <a href="{{ url ('my_tickets/closed') }}" class="btn btn-danger">Zamknięte</a>
+    <a href="{{ url ('my_tickets/') }}" class="btn btn-warning">{{ __('dashboard_tickets.filter_in_progress') }}</a>
+    <a href="{{ url ('my_tickets/closed') }}" class="btn btn-danger">{{ __('dashboard_tickets.filter_closed') }}</a>
     <div class="row rounded shadow" style="background: white; margin: 1vw 0vw 0vw 0vw">
         <div class="col-sm-4" style="min-width: 380px">
-            <p class="fs-3 border-bottom text-center" style="margin: 0.6vw 0vw 0.5vw 0.3vw">Moje statystyki</p>
+            <p class="fs-3 border-bottom text-center" style="margin: 0.6vw 0vw 0.5vw 0.3vw">{{ __('dashboard_tickets.my_statistics') }}</p>
             <canvas id="doughnutChart" style="width: 400px; margin-left: auto; margin-right: auto"></canvas>
         </div>
         <div class="col-sm-8">
         @if ($latestTickets->count() > 0)
         <table class="table table-hover">
-            <caption class="fs-3 border-bottom" style="caption-side: top; text-align: center;">Ostatnio {{ str_contains(url()->current(), 'closed') ? 'zamknięte' : 'podjęte' }} zgłoszenia</caption>
+            <caption class="fs-3 border-bottom text-center" style="caption-side: top;">{{ str_contains(url()->current(), 'closed') ? __('dashboard_tickets.last_closed') : __('dashboard_tickets.last_taken') }}</caption>
             <thead>
                 <tr>
-                    <td style="width: 5%"><b>Status</b></td>
-                    <td><b>Obszar</b></td>
-                    <td><b>Stanowisko</b></td>
-                    <td><b>Problem</b></td>
-                    <td><b>Komputer</b</td>
-                    <td style="width: 10%"><b>Data zgłoszenia</b></td>
+                    <td style="width: 5%"><b>{{ __('dashboard_tickets.table_status') }}</b></td>
+                    <td><b>{{ __('dashboard_tickets.table_zone') }}</b></td>
+                    <td><b>{{ __('dashboard_tickets.table_position') }}</b></td>
+                    <td><b>{{ __('dashboard_tickets.table_problem') }}</b></td>
+                    <td><b>{{ __('dashboard_tickets.table_device') }}</b</td>
+                    <td style="width: 10%"><b>{{ __('dashboard_tickets.table_date_created') }}</b></td>
                     @if (strpos(url()->current(), 'closed') == true)
-                        <td style="width: 9%"><b>Data zamknięcia</b></td>
+                        <td style="width: 9%"><b>{{ __('dashboard_tickets.table_date_closed') }}</b></td>
                     @else
-                       <td style="width: 9%"><b>Data modyfikacji</b></td>
+                       <td style="width: 9%"><b>{{ __('dashboard_tickets.table_date_modified') }}</b></td>
                     @endif
                 </tr>
             </thead>
@@ -45,13 +45,13 @@
                 <td>
                     @switch ($latest->ticket_status)
                         @case (0)
-                            <span class='badge rounded-pill bg-success'>Nowe</span>
+                            <span class='badge rounded-pill bg-success'>{{ __('dashboard_tickets.filter_new') }}</span>
                             @break
                         @case (1)
-                            <span class='badge rounded-pill bg-warning'>Podjęte</span>
+                            <span class='badge rounded-pill bg-warning'>{{ __('dashboard_tickets.filter_in_progress') }}</span>
                             @break
                         @case (2)
-                            <span class='badge rounded-pill bg-danger'>Zamknięte</span>
+                            <span class='badge rounded-pill bg-danger'>{{ __('dashboard_tickets.filter_closed') }}</span>
                             @break
                     @endswitch
                 </td>
@@ -77,19 +77,19 @@
     <div class="col rounded shadow" style="background: white; margin: 1vw 0vw 0.5vw 0vw; padding: 0vw 0.5vw 0vw 0.5vw">
         @if ($tickets->count() > 0)
         <table class="table table-hover">
-            <caption class="fs-3 border-bottom" style="caption-side: top; text-align: center;">Wszystkie {{ str_contains(url()->current(), 'closed') ? 'zamknięte' : 'podjęte' }} zgłoszenia</caption>
+            <caption class="fs-3 border-bottom" style="caption-side: top; text-align: center;">{{ str_contains(url()->current(), 'closed') ? __('dashboard_tickets.all_closed') : __('dashboard_tickets.all_taken') }}</caption>
             <thead>
                 <tr>
-                    <td style="width: 5%"><b>Status</b></td>
-                    <td style="width: 7%"><b>Obszar</b></td>
-                    <td style="width: 13%"><b>Stanowisko</b></td>
-                    <td><b>Problem</b></td>
-                    <td style="width: 10%"><b>Komputer</b</td>
-                    <td style="width: 10%"><b>Data zgłoszenia</b></td>
+                    <td style="width: 5%"><b>{{ __('dashboard_tickets.table_status') }}</b></td>
+                    <td style="width: 7%"><b>{{ __('dashboard_tickets.table_zone') }}</b></td>
+                    <td style="width: 13%"><b>{{ __('dashboard_tickets.table_position') }}</b></td>
+                    <td><b>{{ __('dashboard_tickets.table_problem') }}</b></td>
+                    <td style="width: 10%"><b>{{ __('dashboard_tickets.table_device') }}</b</td>
+                    <td style="width: 10%"><b>{{ __('dashboard_tickets.table_date_created') }}</b></td>
                     @if (strpos(url()->current(), 'closed') == true)
-                        <td style="width: 10%"><b>Data zamknięcia</b></td>
+                        <td style="width: 10%"><b>{{ __('dashboard_tickets.table_date_closed') }}</b></td>
                     @else
-                       <td style="width: 10%"><b>Data modyfikacji</b></td>
+                       <td style="width: 10%"><b>{{ __('dashboard_tickets.table_date_modified') }}</b></td>
                     @endif
                 </tr>
             </thead>
@@ -104,13 +104,13 @@
                 <td>
                     @switch ($ticket->ticket_status)
                         @case (0)
-                            <span class='badge rounded-pill bg-success'>Nowe</span>
+                            <span class='badge rounded-pill bg-success'>{{ __('dashboard_tickets.filter_new') }}</span>
                             @break
                         @case (1)
-                            <span class='badge rounded-pill bg-warning'>Podjęte</span>
+                            <span class='badge rounded-pill bg-warning'>{{ __('dashboard_tickets.filter_in_progress') }}</span>
                             @break
                         @case (2)
-                            <span class='badge rounded-pill bg-danger'>Zamknięte</span>
+                            <span class='badge rounded-pill bg-danger'>{{ __('dashboard_tickets.filter_closed') }}</span>
                             @break
                     @endswitch
                 </td>
@@ -138,7 +138,7 @@
                     </form>
                 </li>
                 <li class="page-item">
-                    <p class="lead" style="padding: 0.2vw 0.4vw 0.2vw 0.4vw;"> z {{ $tickets->lastPage() }}</p>
+                    <p class="lead" style="padding: 0.2vw 0.4vw 0.2vw 0.4vw;"> {{ __('dashboard_tickets.pagination_of', ['last_page' => $tickets->lastPage()]) }}</p>
                 </li>
                 <li class="page-item">
                     <a class="page-link" href="{{ $tickets->nextPageUrl() }}">&raquo;</a>
@@ -146,7 +146,7 @@
             </ul>
         </nav>
         @else
-            <p class="h2 text-center" style="padding-top: 1vw">Brak elementów do wyświetlenia.</p>
+            <p class="h2 text-center" style="padding-top: 1vw">{{ __('dashboard_tickets.table_nothing_found') }}</p>
         @endif​
     </div>
 
@@ -161,7 +161,7 @@
         const myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Podjęte', 'Zamknięte'],
+                labels: ['{{ __("dashboard_tickets.filter_in_progress") }}', '{{ __("dashboard_tickets.filter_closed") }}'],
                 datasets: [{
                     data: ['{{ $ticketsOpen }}', '{{ $ticketsClosed }}'],
                     backgroundColor: ['Orange', '#66AF66'],

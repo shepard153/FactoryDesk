@@ -9,23 +9,6 @@ use App\Models\Position;
 class PositionController extends Controller
 {
     /**
-     * List all available positions.
-     *
-     * @return view
-     */
-    public function listPositions()
-    {
-        $pageTitle = "Edytor formularza";
-
-        $positions = Position::all();
-
-        return view('dashboard.positions', [
-            'pageTitle' => $pageTitle,
-            'positions' => $positions
-        ]);
-    }
-
-    /**
      * Ajax request to get available positions based on chosen zone.
      *
      * @param string $zoneName
@@ -68,7 +51,7 @@ class PositionController extends Controller
             'zones_list' => $zones
         ]);
 
-        return back()->with('message', "Stanowisko zostało utworzone.");
+        return back()->with('message', __('dashboard_editor.position_created'));
     }
 
     /**
@@ -95,7 +78,7 @@ class PositionController extends Controller
 
         $position->save();
 
-        return back()->with('message', "Wprowadzone zmiany zostały zapisane.");
+        return back()->with('message', __('dashboard_editor.position_updated'));
     }
 
     /**
@@ -110,6 +93,6 @@ class PositionController extends Controller
         $positionName = $request->position_name;
         $position->delete();
 
-        return back()->with('message', "Stanowisko $positionName zostało usunięte.");
+        return back()->with('message', __('dashboard_editor.position_deleted'));
     }
 }

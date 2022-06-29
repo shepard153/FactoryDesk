@@ -1,0 +1,31 @@
+<?php
+
+return [
+    'page_title' => 'Raportowanie',
+    'form_header' => 'Formularz raportowania',
+    'file_type' => 'Format pliku',
+    'search_range' => 'Zakres wyszukiwania',
+    'search_range_info' => 'Pod uwagę brana jest data utworzenia zgłoszenia!',
+    'start_date' => 'Data początkowa',
+    'end_date' => 'Data końcowa',
+    'cols_to_export' => 'Kolumny do eksportu',
+    'cols_to_export_info' => 'Wybierz kolumny, które mają pojawić się w pliku wyjściowym i kliknij Generuj raport, aby otrzymać raport. </br>
+        Domyślnie zaznaczone są wszystkie opcje.',
+    'col_id' => 'Identyfikator',
+    'col_department' => 'Dział',
+    'col_device' => 'Nazwa urządzenia',
+    'col_raised_by' => 'Zgłaszający',
+    'col_zone' => 'Obszar',
+    'col_position' => 'Stanowisko',
+    'col_problem' => 'Problem',
+    'col_external' => 'Zgłoszenie zewnętrzne',
+    'col_priority' => 'Priorytet',
+    'col_service_time' => 'Czas obsługi',
+    'col_message' => 'Wiadomość',
+    'col_owner' => 'Osoba odpowiedzialna',
+    'col_date_created' => 'Data utworzenia',
+    'col_date_opened' => 'Data podjęcia',
+    'col_date_closed' => 'Data zamknięcia',
+    'generate_report' => 'Generuj raport',
+    'report_generated' => 'Raport został wygenerowany.',
+];

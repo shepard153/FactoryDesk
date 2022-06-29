@@ -8,16 +8,18 @@
  @endsection
 
  @section('content')
-    <a href="{{ url ('tickets/awaiting') }}" class="btn btn-primary">Do zatwierdzenia</a>
-    <a href="{{ url ('tickets/new') }}" class="btn btn-success">Nowe</a>
-    <a href="{{ url ('tickets/taken') }}" class="btn btn-warning">Podjęte</a>
-    <a href="{{ url ('tickets/closed') }}" class="btn btn-danger">Zamknięte</a>
-    <a href="{{ url ('tickets/active') }}" class="btn btn-secondary">Aktywne</a>
+    <a href="{{ url ('tickets/awaiting') }}" class="btn btn-primary">{{ __('dashboard_tickets.filter_awaiting') }}</a>
+    <a href="{{ url ('tickets/new') }}" class="btn btn-success">{{ __('dashboard_tickets.filter_new') }}</a>
+    <a href="{{ url ('tickets/taken') }}" class="btn btn-warning">{{ __('dashboard_tickets.filter_in_progress') }}</a>
+    <a href="{{ url ('tickets/closed') }}" class="btn btn-danger">{{ __('dashboard_tickets.filter_closed') }}</a>
+    <a href="{{ url ('tickets/active') }}" class="btn btn-secondary">{{ __('dashboard_tickets.filter_active') }}</a>
     <div class="col rounded shadow" style="background: white; margin-top: 1vw;">
         @if ($tickets->count() > 0)
         <table class="table table-hover">
             <div id="paging">
-                <p class="lead" style="padding: 0.7vw 0px 0px 1vw;">Wyświetlane {{ $tickets->firstItem() }} - {{ $tickets->lastItem() }} z {{ $tickets->total() }} wyników.</p>
+                <p class="lead" style="padding: 0.7vw 0px 0px 1vw;">
+                  {{ __('dashboard_tickets.pagination_displaying', ['start' => $tickets->firstItem(), 'end' => $tickets->lastItem(), 'total' => $tickets->total()]) }}
+                </p>
             </div>
             <nav aria-label="paging" style="padding-left: 1vw; margin-bottom: -1.5vw">
                 <ul class="pagination">
@@ -31,7 +33,7 @@
                         </form>
                     </li>
                     <li class="page-item">
-                        <p class="lead" style="padding: 0.2vw 0.4vw 0.2vw 0.4vw;"> z {{ $tickets->lastPage() }}</p>
+                        <p class="lead" style="padding: 0.2vw 0.4vw 0.2vw 0.4vw;"> {{ __('dashboard_tickets.pagination_of', ['last_page' => $tickets->lastPage()]) }}</p>
                     </li>
                     <li class="page-item">
                         <a class="page-link" href="{{ $tickets->nextPageUrl() }}">&raquo;</a>
@@ -40,19 +42,19 @@
             </nav>
             <thead>
                 <tr>
-                    <td><b><a href="{{ url(url()->current()).'?sort=department_ticketID&order='.$order }}"><i class="{{ $sort == 'department_ticketID' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> ID</b></td>
-                    <td style="width: 5%"><b><a href="{{ url(url()->current()).'?sort=ticket_status&order='.$order }}"><i class="{{ $sort == 'ticket_status' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Status</b></td>
-                    <td><b><a href="{{ url(url()->current()).'?sort=zone&order='.$order }}"><i class="{{ $sort == 'zone' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Obszar</b></td>
-                    <td><b><a href="{{ url(url()->current()).'?sort=position&order='.$order }}"><i class="{{ $sort == 'position' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Stanowisko</b></td>
-                    <td><b><a href="{{ url(url()->current()).'?sort=problem&order='.$order }}"><i class="{{ $sort == 'problem' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Problem</b></td>
-                    <td><b><a href="{{ url(url()->current()).'?sort=device_name&order='.$order }}"><i class="{{ $sort == 'device_name' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Komputer</b</td>
-                    <td style="width: 9%"><b><a href="{{ url(url()->current()).'?sort=date_created&order='.$order }}"><i class="{{ $sort == 'date_created' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Data zgłoszenia</b></td>
+                    <td><b><a href="{{ url(url()->current()).'?sort=department_ticketID&order='.$order }}"><i class="{{ $sort == 'department_ticketID' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> {{ __('dashboard_tickets.table_ID') }}</b></td>
+                    <td style="width: 5%"><b><a href="{{ url(url()->current()).'?sort=ticket_status&order='.$order }}"><i class="{{ $sort == 'ticket_status' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> {{ __('dashboard_tickets.table_status') }}</b></td>
+                    <td><b><a href="{{ url(url()->current()).'?sort=zone&order='.$order }}"><i class="{{ $sort == 'zone' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> {{ __('dashboard_tickets.table_zone') }}</b></td>
+                    <td><b><a href="{{ url(url()->current()).'?sort=position&order='.$order }}"><i class="{{ $sort == 'position' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> {{ __('dashboard_tickets.table_position') }}</b></td>
+                    <td><b><a href="{{ url(url()->current()).'?sort=problem&order='.$order }}"><i class="{{ $sort == 'problem' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> {{ __('dashboard_tickets.table_problem') }}</b></td>
+                    <td><b><a href="{{ url(url()->current()).'?sort=device_name&order='.$order }}"><i class="{{ $sort == 'device_name' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> {{ __('dashboard_tickets.table_device') }}</b</td>
+                    <td style="width: 9%"><b><a href="{{ url(url()->current()).'?sort=date_created&order='.$order }}"><i class="{{ $sort == 'date_created' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> {{ __('dashboard_tickets.table_date_created') }}</b></td>
                     @if (strpos(url()->current(), 'closed') == true)
-                        <td style="width: 9%"><b><a href="{{ url(url()->current()).'?sort=date_closed&order='.$order }}"><i class="{{ $sort == 'date_closed' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Data zamknięcia</b></td>
+                        <td style="width: 9%"><b><a href="{{ url(url()->current()).'?sort=date_closed&order='.$order }}"><i class="{{ $sort == 'date_closed' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> {{ __('dashboard_tickets.table_date_closed') }}</b></td>
                     @else
-                       <td style="width: 9%"><b><a href="{{ url(url()->current()).'?sort=date_modified&order='.$order }}"><i class="{{ $sort == 'date_modified' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Data modyfikacji</b></td>
+                       <td style="width: 9%"><b><a href="{{ url(url()->current()).'?sort=date_modified&order='.$order }}"><i class="{{ $sort == 'date_modified' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> {{ __('dashboard_tickets.table_date_modified') }}</b></td>
                     @endif
-                    <td style="width: 12%"><b><a href="{{ url(url()->current()).'?sort=owner&order='.$order }}"><i class="{{ $sort == 'owner' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> Osoba odpowiedzialna</b></td>
+                    <td style="width: 12%"><b><a href="{{ url(url()->current()).'?sort=owner&order='.$order }}"><i class="{{ $sort == 'owner' ? $arrows : 'fa-solid fa-arrows-up-down'}}"></i></a> {{ __('dashboard_tickets.table_owner') }}</b></td>
                 </tr>
             </thead>
             @foreach ($tickets as $ticket)
@@ -67,16 +69,16 @@
                 <td>
                     @switch ($ticket->ticket_status)
                         @case (-1)
-                            <span class='badge rounded-pill bg-primary'>Oczekujące</span>
+                            <span class='badge rounded-pill bg-primary'>{{ __('dashboard_tickets.filter_awaiting') }}</span>
                             @break
                         @case (0)
-                            <span class='badge rounded-pill bg-success'>Nowe</span>
+                            <span class='badge rounded-pill bg-success'>{{ __('dashboard_tickets.filter_new') }}</span>
                             @break
                         @case (1)
-                            <span class='badge rounded-pill bg-warning'>Podjęte</span>
+                            <span class='badge rounded-pill bg-warning'>{{ __('dashboard_tickets.filter_in_progress') }}</span>
                             @break
                         @case (2)
-                            <span class='badge rounded-pill bg-danger'>Zamknięte</span>
+                            <span class='badge rounded-pill bg-danger'>{{ __('dashboard_tickets.filter_closed') }}</span>
                             @break
                     @endswitch
                 </td>
@@ -106,7 +108,7 @@
                     </form>
                 </li>
                 <li class="page-item">
-                    <p class="lead" style="padding: 0.2vw 0.4vw 0.2vw 0.4vw;"> z {{ $tickets->lastPage() }}</p>
+                    <p class="lead" style="padding: 0.2vw 0.4vw 0.2vw 0.4vw;"> {{ __('dashboard_tickets.pagination_of', ['last_page' => $tickets->lastPage()]) }}</p>
                 </li>
                 <li class="page-item">
                     <a class="page-link" href="{{ $tickets->nextPageUrl() }}">&raquo;</a>
@@ -114,7 +116,7 @@
             </ul>
         </nav>
         @else
-            <p class="h2 text-center" style="padding-top: 1vw">Brak elementów do wyświetlenia.</p>
+            <p class="h2 text-center" style="padding-top: 1vw">{{ __('dashboard_tickets.table_nothing_found') }}</p>
         @endif​
     </div>
     <script type="text/javascript">

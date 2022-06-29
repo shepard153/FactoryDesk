@@ -19,7 +19,7 @@ class ReporterController extends Controller
      */
     public function reporter()
     {
-        $pageTitle = "Raportowanie";
+        $pageTitle = __('dashboard_reporting.page_title');
 
         return view('dashboard/reporter', ['pageTitle' => $pageTitle]);
     }
@@ -55,7 +55,7 @@ class ReporterController extends Controller
                 break;
         }
 
-        return back()->with('message', "Raport wygenerowany.");
+        return back()->with('message', __('dashboard_reporting.report_generated'));
     }
 
     /**
@@ -105,7 +105,7 @@ class ReporterController extends Controller
     }
 
     /**
-     * Export report data to PDF file. Not working as of 30.05.2022.
+     * Export report data to PDF file. Not working as of 21.06.2022.
      * Exported data is too wide even for horizontal layout.
      *
      * @param array $columns

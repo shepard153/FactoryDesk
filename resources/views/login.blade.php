@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ asset('public/css/bootstrap.min.css') }}"/>
     <script src="{{ asset('public/js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('public/js/bootstrap.min.js') }}"></script>
-    <title>Logowanie</title>
+    <title>{{ __('login.title') }}</title>
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -70,20 +70,20 @@
           <img class="mb-4" src="{{ asset('public/img/rugdesk-logo.png') }}" alt="" width="560" height="120">
           <figcaption class="figure-caption text-middle" style="margin-top: -2.5vw">RUG TICKETING SYSTEM</figcaption>
         </figure>
-        <h1 class="h3 mb-3 fw-normal">Logowanie</h1>
+        <h1 class="h3 mb-3 fw-normal">{{ __('login.title') }}</h1>
         @csrf
         <div class="form-floating">
           <input type="text" class="form-control" id="floatingInput" name="login" placeholder="Login" required/>
-          <label for="floatingInput">Login lub email</label>
+          <label for="floatingInput">{{ __('login.login_input') }}</label>
         </div>
         <div class="form-floating">
-          <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Hasło" required/>
-          <label for="floatingPassword">Hasło</label>
+          <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="{{ __('login.password_input') }}" required/>
+          <label for="floatingPassword">{{ __('login.password_input') }}</label>
         </div>
           @if ($errors->has('error'))
               <div class="alert alert-danger">{{ $errors->first('error') }}</div>
           @endif
-        <button class="w-100 btn btn-lg btn-primary" type="submit" name="submit">Zaloguj</button>
+        <button class="w-100 btn btn-lg btn-primary" type="submit" name="submit">{{ __('login.signin') }}</button>
       </form>
     </main>
   </body>

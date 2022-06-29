@@ -11,7 +11,7 @@
     <div class="alert alert-danger text-center">
         <h4>System testowy - pomimo wysłanego zgłoszenia poinformuj przełożonego.</h4>
     </div>
-    <p class="fs-4 border-bottom text-center">Wybierz dział z którym chcesz się skontaktować.</p>
+    <p class="fs-4 border-bottom text-center">{{ __('raise_ticket_form.select_department') }}</p>
 
     <div class="row justify-content-md-center mt-1">
         @php

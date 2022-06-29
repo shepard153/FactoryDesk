@@ -16,6 +16,21 @@ class StaffController
     protected $member;
 
     /**
+     * @var string $pageTitle
+     */
+    public string $pageTitle;
+
+    /**
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->pageTitle = __('dashboard_staff.page_title');
+
+        return null;
+    }
+
+    /**
      * Get a validator for an incoming registration request.
      *
      * @param  array  $data
@@ -57,7 +72,7 @@ class StaffController
             'isAdmin' => $isAdmin,
         ]);
 
-        return back()->with('message', 'Konto użytkownika zostało utworzone.');
+        return back()->with('message', __('dashboard_staff.account_created'));
     }
 
     /**
@@ -89,7 +104,7 @@ class StaffController
         $this->member->isAdmin = $isAdmin;
         $this->member->save();
 
-        return back()->with('message', 'Konto użytkownika zostało zaktualizowane.');
+        return back()->with('message', __('dashboard_staff.account_updated'));
     }
 
     /**
@@ -104,7 +119,7 @@ class StaffController
         $memberName = $this->member->name;
         $this->member->delete();
 
-        return back()->with('message', "Konto użytkownika $memberName zostało usunięte.");
+        return back()->with('message', __('dashboard_staff.account_deleted', ['username' => $memberName]));
     }
 
     /**
@@ -130,7 +145,7 @@ class StaffController
             $this->member->save();
         }
 
-        return back()->with('message', "Wprowadzone zmiany zostały zapisane.");
+        return back()->with('message', __('dashboard_staff.changes_saved'));
     }
 
     /**
@@ -141,12 +156,10 @@ class StaffController
      */
     public function loadStaffList(Staff $staff)
     {
-        $pageTitle = "Użytkownicy";
-
         $staffMembers = $staff::all();
 
         return view('dashboard/staff', [
-            'pageTitle' => $pageTitle,
+            'pageTitle' => $this->pageTitle,
             'staffMembers' => $staffMembers]);
     }
 
@@ -158,12 +171,10 @@ class StaffController
      */
     public function addMember(Department $departments)
     {
-        $pageTitle = "Użytkownicy";
-
         $departments = $departments::all();
 
         return view('dashboard/add_member', [
-            'pageTitle' => $pageTitle,
+            'pageTitle' => $this->pageTitle,
             'departments' => $departments]);
     }
 
@@ -177,13 +188,11 @@ class StaffController
      */
     public function editMember(Staff $staff, Department $departments, $staffID)
     {
-        $pageTitle = "Użytkownicy";
-
         $staff = $staff::find($staffID);
         $departments = $departments::all();
 
         return view('dashboard/edit_member', [
-            'pageTitle' => $pageTitle,
+            'pageTitle' => $this->pageTitle,
             'member' => $staff,
             'departments' => $departments]);
     }
@@ -195,10 +204,10 @@ class StaffController
      */
     public function profileSettings()
     {
-        $pageTitle = "Ustawienia konta";
+        $this->pageTitle = __('dashboard_profile.page_title');
 
         return view('dashboard.profile', [
-            'pageTitle' => $pageTitle,
+            'pageTitle' => $this->pageTitle,
         ]);
     }
 }

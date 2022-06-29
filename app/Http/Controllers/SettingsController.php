@@ -17,7 +17,7 @@ class SettingsController extends Controller
      */
     public function listSettings()
     {
-        $pageTitle = 'Ustawienia globalne';
+        $pageTitle = __('dashboard_settings.page_title');
 
         $settings = Settings::pluck('value', 'name')->all();
 
@@ -58,6 +58,6 @@ class SettingsController extends Controller
 
         Cache::forget('settings');
 
-        return back()->with('message', 'Dane zostały zaktualizowane.');
+        return back()->with('message', __('dashboard_settings.settings_updated') );
     }
 }

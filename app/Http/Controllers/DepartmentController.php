@@ -13,6 +13,21 @@ class DepartmentController
      */
     protected $department;
 
+    /**
+     * @var string $pageTitle
+     */
+    public $pageTitle;
+
+    /**
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->pageTitle = __('dashboard_departments.page_title');
+
+        return null;
+    }
+
     #----------------------------------------------------------------
     # Views
     #----------------------------------------------------------------
@@ -22,7 +37,7 @@ class DepartmentController
      *
      * @return view
      */
-    function getDepartments()
+    public function getDepartments()
     {
         $departments = Department::all();
 
@@ -34,14 +49,12 @@ class DepartmentController
      *
      * @return view
      */
-    function addDepartment()
+    public function addDepartment()
     {
-        $pageTitle = "Edytor formularza";
-
         $departments = Department::all();
 
         return view('dashboard/add_department', [
-            'pageTitle' => $pageTitle,
+            'pageTitle' => $this->pageTitle,
             'departments' => $departments
         ]);
     }
@@ -52,16 +65,14 @@ class DepartmentController
      * @param int $departmentID
      * @return view
      */
-    function editDepartment($departmentID)
+    public function editDepartment($departmentID)
     {
-        $pageTitle = "Edytor formularza";
-
         $this->department = Department::find($departmentID);
 
         $departments = Department::all();
 
         return view('dashboard/edit_department', [
-            'pageTitle' => $pageTitle,
+            'pageTitle' => $this->pageTitle,
             'department' => $this->department,
             'departments' => $departments
         ]);
@@ -72,13 +83,12 @@ class DepartmentController
      *
      * @return view
      */
-    function listDepartments()
+    public function listDepartments()
     {
-        $pageTitle = "Edytor formularza";
         $departments = Department::all();
 
         return view('dashboard/departments', [
-            'pageTitle' => $pageTitle,
+            'pageTitle' => $this->pageTitle,
             'departments' => $departments]);
     }
 
@@ -104,7 +114,7 @@ class DepartmentController
      *
      * @return string
      */
-    function create(Request $request)
+    public function create(Request $request)
     {
         $request->validate(['department_name' => 'required|unique:Departments']);
 
@@ -154,7 +164,7 @@ class DepartmentController
             'teams_webhook' => $request->teams_webhook
         ]);
 
-        return back()->with('message', "Dział został utworzony.");
+        return back()->with('message', __('dashboard_departments.department_created'));
     }
 
     /**
@@ -164,7 +174,7 @@ class DepartmentController
      * @param int $departmentID
      * @return string
      */
-    function update(Request $request, $departmentID)
+    public function update(Request $request, $departmentID)
     {
         $this->department = Department::find($departmentID);
         $this->department->department_name = $request->department_name;
@@ -185,7 +195,7 @@ class DepartmentController
 
         $this->department->save();
 
-        return back()->with('message', "Wprowadzone zmiany zostały zapisane.");
+        return back()->with('message', __('dashboard_departments.department_updated'));
     }
 
     /**
@@ -194,12 +204,12 @@ class DepartmentController
      * @param Request $request
      * @return string
      */
-    function delete(Request $request)
+    public function delete(Request $request)
     {
         $this->department = Department::find($request->confirmDelete);
         $departmentName = $this->department->department_name;
         $this->department->delete();
 
-        return back()->with('message', "Dział $departmentName został usunięty.");
+        return back()->with('message', __('dashboard_departments.department_deleted', ['departmentName' => $departmentName]));
     }
 }

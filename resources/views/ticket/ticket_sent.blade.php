@@ -9,9 +9,9 @@
 
 @section('content')
         <div class="alert alert-success text-center">
-            <h4>{!! $message !!}</h4><br/>
+            <h4>{!! $ticketSentMessage !!}</h4><br/>
             <a href="{{ url('/') }}" onClick="window.close();">
-                <button type="button" class="btn btn-danger btn-lg">Zamknij okno</button>
+                <button type="button" class="btn btn-danger btn-lg">{{ __('raise_ticket_form.close_form') }}</button>
             </a>
         </div>
 @endsection

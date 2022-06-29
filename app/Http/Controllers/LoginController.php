@@ -45,7 +45,7 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'error' => 'Podano nieprawidłowy login lub hasło',
+            'error' => __('login.invalid_credentials'),
         ]);
     }
 

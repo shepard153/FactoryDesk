@@ -149,12 +149,10 @@ class DashboardController extends Controller
                 $labels[] = $date;
                 $new[$date] = Ticket::where('department', $department)->where('date_created', 'LIKE', "$date%")->count();
                 $opened[$date] = Ticket::where('department', $department)->where('date_opened', 'LIKE', "$date%")->count();
-                $closed[$date] = Ticket::where('department', $department)->where('date_closed', 'LIKE', "$date%")->count();
             }
 
-            $chartLegendNew = Ticket::where('department', $department)->whereBetween('date_created', [$startDate, $timeNow])->count();
-            $chartLegendOpen = Ticket::where('department', $department)->whereBetween('date_opened', [$startDate, $timeNow])->count();
-            $chartLegendClosed = Ticket::where('department', $department)->whereBetween('date_closed', [$startDate, $timeNow])->count();
+            $chartLegendNew = Ticket::where('department', $department)->where('ticket_status', 0)->count();
+            $chartLegendOpen = Ticket::where('department', $department)->where('ticket_status', 1)->count();
         }
         else{
             for ($i = $diff; $i >= 0; $i--){
@@ -162,23 +160,19 @@ class DashboardController extends Controller
                 $date = $date->modify("-$i day");
                 $date = $date->format('Y-m-d');
                 $labels[] = $date;
-                $new[$date] = Ticket::where('date_created', 'LIKE', "$date%")->count();
-                $opened[$date] = Ticket::where('date_opened', 'LIKE', "$date%")->count();
-                $closed[$date] = Ticket::where('date_closed', 'LIKE', "$date%")->count();
+                $new[$date] = Ticket::where('date_created', 'LIKE', "%$date%")->count();
+                $opened[$date] = Ticket::where('date_opened', 'LIKE', "%$date%")->count();
             }
 
-            $chartLegendNew = Ticket::whereBetween('date_created', [$startDate, $timeNow])->count();
-            $chartLegendOpen = Ticket::whereBetween('date_opened', [$startDate, $timeNow])->count();
-            $chartLegendClosed = Ticket::whereBetween('date_closed', [$startDate, $timeNow])->count();
+            $chartLegendNew = Ticket::where('ticket_status', 0)->count();
+            $chartLegendOpen = Ticket::where('ticket_status', 1)->count();
         }
 
         return json_encode(['labels' => $labels,
             'new' => $new,
             'opened' => $opened,
-            'closed' => $closed,
             'chartLegendNew' => $chartLegendNew,
             'chartLegendOpen' => $chartLegendOpen,
-            'chartLegendClosed' => $chartLegendClosed,
         ]);
     }
 }

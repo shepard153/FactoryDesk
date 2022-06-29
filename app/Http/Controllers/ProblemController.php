@@ -9,31 +9,12 @@ use App\Models\Problem;
 
 class ProblemController extends Controller
 {
-
-    /**
-     * List all available problems.
-     *
-     * @return view
-     */
-    public function listProblems()
-    {
-        $pageTitle = "Edytor formularza";
-
-        $problems = Problem::orderBy('lp', 'asc')->get();
-
-        return view('dashboard.problems', [
-            'pageTitle' => $pageTitle,
-            'problems' => $problems
-        ]);
-    }
-
     /**
      * Ajax request to get available problem based on chosen position and department.
      *
-     * @param Position $position
      * @param string $department
      * @param string $positionName
-     * @return array $problems
+     * @return JsonResponse $problems
      */
     public function ajaxProblemsRequest($department, $positionName)
     {
@@ -68,7 +49,7 @@ class ProblemController extends Controller
             'lp' => $request->lp,
         ]);
 
-        return back()->with('message', "Problem został utworzony.");
+        return back()->with('message', __('dashboard_editor.problem_created'));
     }
 
     /**
@@ -98,7 +79,7 @@ class ProblemController extends Controller
 
         $problem->save();
 
-        return back()->with('message', "Wprowadzone zmiany zostały zapisane.");
+        return back()->with('message', __('dashboard_editor.problem_updated'));
     }
 
     /**
@@ -112,6 +93,6 @@ class ProblemController extends Controller
         $problemName = $request->problem_name;
         $problem->delete();
 
-        return back()->with('message', "Problem $problemName został usunięty.");
+        return back()->with('message', __('dashboard_editor.problem_deleted'));
     }
 }

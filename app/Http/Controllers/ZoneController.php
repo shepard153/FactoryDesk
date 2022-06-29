@@ -10,23 +10,6 @@ use App\Models\Zone;
 class ZoneController extends Controller
 {
     /**
-     * List all available zones.
-     *
-     * @return view
-     */
-    public function listZones()
-    {
-        $pageTitle = "Edytor formularza";
-
-        $zones = Zone::all();
-
-        return view('dashboard.zones', [
-            'pageTitle' => $pageTitle,
-            'zones' => $zones
-        ]);
-    }
-
-    /**
      * Ajax request to get available zones.
      *
      * @return JsonResponse $zones
@@ -49,7 +32,7 @@ class ZoneController extends Controller
 
         Zone::create(['zone_name' => $request->zone_name]);
 
-        return back()->with('message', "Obszar został utworzony.");
+        return back()->with('message', __('dashboard_editor.zone_created') );
     }
 
     /**
@@ -66,7 +49,7 @@ class ZoneController extends Controller
         $zone->zone_name = $request->zone_name;
         $zone->save();
 
-        return back()->with('message', "Wprowadzone zmiany zostały zapisane.");
+        return back()->with('message', __('dashboard_editor.zone_updated') );
     }
 
     /**
@@ -81,6 +64,6 @@ class ZoneController extends Controller
         $zoneName = $request->zone_name;
         $zone->delete();
 
-        return back()->with('message', "Obszar $zoneName został usunięty");
+        return back()->with('message', __('dashboard_editor.zone_deleted'));
     }
 }

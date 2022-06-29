@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketAttachmentController as AttachmentController;
@@ -27,6 +28,13 @@ use App\Http\Controllers\OverviewController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('lang/{locale}', function ($locale) {
+    app()->setLocale($locale);
+    session()->put('locale', $locale);
+
+    return redirect()->back();
+});
 
 Route::get('/', [DepartmentController::class, 'getDepartments'])->name('home');
 Route::get('ticket_step2/{department}', [TicketController::class, 'ticketRequest']);
@@ -58,7 +66,7 @@ Route::middleware('auth')->group(function () {
     /**
      * Form Actions
      */
-    Route::post('paginationHelper', [TicketController::class, 'paginationHelper'])->name('paginationHelper');
+    Route::post('paginationHelper', [Controller::class, 'paginationHelper'])->name('paginationHelper');
     Route::post('modifyTicketAction/{id}', [TicketController::class, 'modifyTicketAction'])->name('modifyTicketAction');
     Route::post('addNote/{id}', [TicketController::class, 'addNote'])->name('addNote');
     Route::post('addMemberAction', [StaffController::class, 'create'])->name('addMemberAction');
@@ -83,20 +91,20 @@ Route::middleware('auth')->group(function () {
      /**
       * Views
       */
-    Route::get('dashboard', [DashboardController::class, 'loadDashboard']);
-    Route::get('my_tickets', [TicketController::class, 'memberTickets']);
-    Route::get('my_tickets/{status}', [TicketController::class, 'memberTickets']);
-    Route::get('tickets', [TicketController::class, 'ticketList']);
-    Route::get('tickets/{status}', [TicketController::class, 'ticketList']);
+    Route::get('dashboard', [DashboardController::class, 'loadDashboard'])->name('dashboard');
+    Route::get('my_tickets', [TicketController::class, 'memberTickets'])->name('myTickets');
+    Route::get('my_tickets/{status}', [TicketController::class, 'memberTickets'])->name('myTickets');
+    Route::get('tickets', [TicketController::class, 'ticketList'])->name('tickets');
+    Route::get('tickets/{status}', [TicketController::class, 'ticketList'])->name('tickets');
     Route::get('ticket/{id}', [TicketController::class, 'ticketDetails']);
-    Route::get('staff', [StaffController::class, 'loadStaffList']);
-    Route::get('addMember', [StaffController::class, 'addMember']);
-    Route::get('profile/staff', [StaffController::class, 'profileSettings']);
-    Route::get('staff/{staffID}', [StaffController::class, 'editMember']);
-    Route::get('departments', [DepartmentController::class, 'listDepartments']);
+    Route::get('staff', [StaffController::class, 'loadStaffList'])->name('staff');
+    Route::get('addMember', [StaffController::class, 'addMember'])->name('staff');
+    Route::get('profile/staff', [StaffController::class, 'profileSettings'])->name('profile');
+    Route::get('staff/{staffID}', [StaffController::class, 'editMember'])->name('staff');
+    Route::get('departments', [DepartmentController::class, 'listDepartments'])->name('departments');
     Route::get('department/{departmentID}', [DepartmentController::class, 'editDepartment']);
-    Route::get('addDepartment', [DepartmentController::class, 'addDepartment']);
-    Route::get('formEditor', [EditorController::class, 'index']);
-    Route::get('reporter', [ReporterController::class, 'reporter']);
-    Route::get('settings', [SettingsController::class, 'listSettings']);
+    Route::get('addDepartment', [DepartmentController::class, 'addDepartment'])->name('departments');
+    Route::get('formEditor', [EditorController::class, 'index'])->name('formEditor');
+    Route::get('reporter', [ReporterController::class, 'reporter'])->name('reporter');
+    Route::get('settings', [SettingsController::class, 'listSettings'])->name('settings');
 });

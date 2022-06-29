@@ -70,8 +70,10 @@ class TicketController extends Controller
     }
 
     /**
-     * Send ticket and place data in database while attachment (if provided) is placed in ticket_attachments folder on disk.
-     * If operation is successful, the user will be prompted with success message na ticket ID.
+     * Sends ticket to database while attachment (if provided) is placed in ticket_attachments folder on disk.
+     * If operation is successful, the user will be prompted with success message and ticket ID via ticketSent function.
+     *
+     * acceptanceCheck variable is used to check if requested department requires acceptance from another department first.
      *
      * @param Request $request
      * @return view
@@ -140,25 +142,26 @@ class TicketController extends Controller
         $ticket = Ticket::find($id);
         $department = Department::where('department_name', $ticket->department)->first();
 
-        $message = "Pomyślnie dodano zgłoszenie o numerze <strong><u>$ticket->department_ticketID</u></strong>. <br/>";
+        $ticketSentMessage = __('raise_ticket_form.ticket_sent_message', ['ticketID' => $ticket->department_ticketID]);
 
         if ($department->teams_webhook != null){
             $connector = new \Sebbmyr\Teams\TeamsConnector("$department->teams_webhook");
             $card = new \Sebbmyr\Teams\Cards\HeroCard();
-            $card->setTitle("Zgłoszenie $ticket->department_ticketID")
-                ->setSubtitle("Utworzone $ticket->date_created")
-                ->setText("Obszar: $ticket->zone. Stanowisko: $ticket->position. Problem: $ticket->problem.")
-                ->addButton("openUrl", "Link do zgłoszenia", url('/') . "/ticket/$ticket->ticketID");
+            $card->setTitle(__('raise_ticket_form.teams_message_title', ['ticketID' => $ticket->department_ticketID]))
+                ->setSubtitle(__('raise_ticket_form.teams_message_subtitle', ['dateCreated' => $ticket->date_created]))
+                ->setText(__('raise_ticket_form.teams_message_text', ['zone' => $ticket->zone, 'position' => $ticket->position, 'problem' => $ticket->problem]))
+                ->addButton("openUrl", __('raise_ticket_form.teams_message_url'), url('/') . "/ticket/$ticket->ticketID");
             $connector->send($card);
         }
 
         if ($ticket->target_department != null){
-            $message .= "<br/> Przekazanie tego zgłoszenia do działu <strong>$ticket->target_department</strong>
-                odbędzie się po weryfikacji i akceptacji pracownika działu <strong>$ticket->department</strong>.<br/>
-                Poinformuj przełożonego o swoim zgłoszeniu.";
+            $ticketSentMessage .= __('raise_ticket_form.ticket_sent_acceptance_message', [
+                'targetDepartment' => $ticket->target_department,
+                'department' => $ticket->department,
+            ]);
         }
 
-        return view("ticket/ticket_sent", ['message' => $message]);
+        return view("ticket/ticket_sent", ['ticketSentMessage' => $ticketSentMessage]);
     }
 
     /**
@@ -168,7 +171,7 @@ class TicketController extends Controller
      */
     public function memberTickets($status = 'taken')
     {
-        $pageTitle = "Moje zgłoszenia";
+        $pageTitle = __('dashboard_tickets.my_tickets_page_title');
 
         if ($status == 'taken'){
             $latestTickets = Ticket::where('ticket_status', '=', 1)->where('owner', '=', auth()->user()->name)->orderBy('date_modified', 'desc')->limit(10)->get();
@@ -191,32 +194,6 @@ class TicketController extends Controller
     }
 
     /**
-     * Helper function for paginator form. Without it, the sorting filters where deleted by Laravel paginator.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function paginationHelper(Request $request)
-    {
-        $previousURL = explode("/", url()->previous());
-        $previousURL = end($previousURL);
-
-        if (str_contains($previousURL, 'page')){
-            $url = substr($previousURL, 0, -1);
-            $url = "tickets/".$url.$request->page;
-        }
-        else if (str_contains($previousURL, 'sort') || str_contains($previousURL, 'order')){
-            $url = "tickets/$previousURL&page=$request->page";
-        }
-        else{
-            $url = "tickets/$previousURL?page=$request->page";
-        }
-
-        return redirect($url);
-    }
-
-    /**
      * List all tickets for agents. By default pagination is set to 20 tickets per page. Here you can also change the sorting arrows
      * in $arrows array. Default ones are from font awesome package.
      *
@@ -225,7 +202,7 @@ class TicketController extends Controller
      */
     public function ticketList(Request $request, $status = 'active')
     {
-        $pageTitle = "Zgłoszenia";
+        $pageTitle = __('dashboard_tickets.page_title');
         $settings = Settings::getSettings();
 
         switch ($status){
@@ -334,7 +311,7 @@ class TicketController extends Controller
      */
     public function ticketDetails($id)
     {
-        $pageTitle = "Zgłoszenia";
+        $pageTitle = __('dashboard_tickets.page_title');
         $ticket = Ticket::where('ticketID', $id)->first();
 
         $ticket->target_department != null ? $ticket->department = $ticket->target_department : null;
@@ -381,7 +358,7 @@ class TicketController extends Controller
 
             $this->addToHistory($request, $id);
 
-            $message = "Podjęto zgłoszenie.";
+            $message = __('dashboard_tickets.ticket_taken');
         }
         else if ($request->closeTicket || $request->rejectTicket){
             $ticket->ticket_status = 2;
@@ -392,7 +369,7 @@ class TicketController extends Controller
             $this->addNote($request, $id, $request->closingNotes);
             $this->addToHistory($request, $id);
 
-            $message = $request->closeTicket ? "Zamknięto zgłoszenie." : "Odrzucono zgłoszenie";
+            $message = $request->closeTicket ? __('dashboard_tickets.ticket_closed') : __('dashboard_tickets.ticket_rejected');
         }
         else if ($request->acceptTicket){
             $newTicket = $ticket->replicate();
@@ -423,7 +400,7 @@ class TicketController extends Controller
             $this->addNote($request, $id, $request->closingNotes);
             $this->addToHistory($request, $id, $newTicket);
 
-            $message = "Zatwierdzono zgłoszenie.";
+            $message = __('dashboard_tickets.ticket_accepted');
         }
         else if ($request->reopenTicket){
             $ticket->ticket_status = 1;
@@ -432,7 +409,7 @@ class TicketController extends Controller
 
             $this->addToHistory($request, $id);
 
-            $message = "Ponownie otwarto zgłoszenie.";
+            $message = __('dashboard_tickets.ticket_reopened');
         }
         else if ($request->editTicket){
             $ticket->date_modified = new \DateTime('NOW');
@@ -444,7 +421,7 @@ class TicketController extends Controller
 
             $this->addToHistory($request, $id, $ticket);
 
-            $message = "Zmiany zostały zapisane";
+            $message = __('dashboard_tickets.ticket_saved');
         }
 
         $ticket->save();
@@ -493,22 +470,36 @@ class TicketController extends Controller
             $history = new TicketHistory;
             $history->ticketID = $id;
             $history->username = auth()->user()->name;
-            $request->takeTicket != null ? $history->contents = "Zgłoszenie podjęte przez ". auth()->user()->name : null;
-            $request->closeTicket != null ? $history->contents = "Zgłoszenie zamknięte przez ". auth()->user()->name : null;
-            $request->reopenTicket != null ? $history->contents = "Zgłoszenie ponownie otwarte przez ". auth()->user()->name : null;
-            $request->acceptTicket != null ? $history->contents = "Zgłoszenie zatwierdzone przez " . auth()->user()->name .
-                                                                    " i przesłane do działu $ticket->department pod numerem ID $ticket->department_ticketID." : null;
-            $request->rejectTicket != null ? $history->contents = "Zgłoszenie odrzucone przez " . auth()->user()->name : null;
+            $request->takeTicket != null ? $history->contents = __('dashboard_tickets.taken_by', ['username' => auth()->user()->name]) : null;
+            $request->closeTicket != null ? $history->contents = __('dashboard_tickets.closed_by', ['username' => auth()->user()->name]) : null;
+            $request->reopenTicket != null ? $history->contents = __('dashboard_tickets.reopened_by', ['username' => auth()->user()->name]) : null;
+            $request->acceptTicket != null ? $history->contents = __('dashboard_tickets.accepted_by', ['username' => auth()->user()->name,
+                                                                    'department' => $ticket->department, 'ticketID' => $ticket->department_ticketID]) : null;
+            $request->rejectTicket != null ? $history->contents = __('dashboard_tickets.rejected_by', ['username' => auth()->user()->name]) : null;
 
             $history->save();
         }
         else if ($request->editTicket){
             $dirtyArray = array();
-            $ticket->isDirty('department') == true ? array_push($dirtyArray, "Zmieniono dział z ".$ticket->getOriginal('department')." na $request->departmentSelect") : null;
-            $ticket->isDirty('problem') == true ? array_push($dirtyArray, "Zmieniono problem z ".$ticket->getOriginal('problem')." na $request->problemSelect") : null;
-            $ticket->isDirty('priority') == true ? array_push($dirtyArray, "Zmieniono priorytet z ".$ticket->getOriginal('priority')." na $request->prioritySelect") : null;
-            $ticket->isDirty('owner') == true ? array_push($dirtyArray, "Zmieniono osobę odpowiedzialną z ".$ticket->getOriginal('owner')." na $request->ownerSelect") : null;
-            $ticket->isDirty('external_ticketID') == true ? array_push($dirtyArray, "Ustawiono zgłoszenie jako zewnętrzne z ID $request->external_ticketID") : null;
+            $ticket->isDirty('department') == true ? array_push($dirtyArray, __('dashboard_tickets.department_changed', [
+                'original' => $ticket->getOriginal('department'),
+                'new' => $request->departmentSelect
+                ])) : null;
+            $ticket->isDirty('problem') == true ? array_push($dirtyArray, __('dashboard_tickets.problem_changed', [
+                'original' => $ticket->getOriginal('problem'),
+                'new' => $request->problemSelect
+                ])) : null;
+            $ticket->isDirty('priority') == true ? array_push($dirtyArray, __('dashboard_tickets.priority_changed', [
+                'original' => $ticket->getOriginal('priority'),
+                'new' => $request->prioritySelect
+                ])) : null;
+            $ticket->isDirty('owner') == true ? array_push($dirtyArray, __('dashboard_tickets.owner_changed', [
+                'original' => $ticket->getOriginal('owner'),
+                'new' => $request->ownerSelect
+                ])) : null;
+            $ticket->isDirty('external_ticketID') == true ? array_push($dirtyArray, __('dashboard_tickets.external_ticket_set', [
+                'externalID' => $request->external_ticketID
+                ])) : null;
 
             foreach ($dirtyArray as $edit){
                 $history = new TicketHistory;
@@ -539,6 +530,6 @@ class TicketController extends Controller
         $ticket->date_modified = new \DateTime('NOW');
         $ticket->save();
 
-        return back()->with('message', "Pomyślnie dodano notatkę.");
+        return back()->with('message', __('dashboard_tickets.note_added'));
     }
 }
