@@ -16,6 +16,10 @@
       @media all and (-ms-high-contrast:none){
         *::-ms-backdrop, .ie11-margin { margin-left: 1vw;}
       }
+      @media only screen and (max-width: 991px){
+        #rugLogo {display: none}
+        #navbarNav {text-align: right}
+      }
       select::-ms-expand {
         display: none;
       }
@@ -56,9 +60,9 @@
   <body>
     @section('navbar')
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <img class="img-fluid" src="{{ asset('public/img/carrier-logo.png') }}" width="130px" style="margin-left: 5%;"/>
         <div class="container-fluid">
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <img id="carrierLogo" class="img-fluid mx-3" src="{{ asset('public/img/carrier-logo.png') }}" width="130px"/>
+          <button id="navbarToggler" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
@@ -74,14 +78,12 @@
               </li>
             </ul>
           </div>
+          <img id="rugLogo" class="img-fluid mx-3" src="{{ asset('public/img/rugdesk-logo.png') }}" width="170px"/>
         </div>
-        <img class="img-fluid" src="{{ asset('public/img/rugdesk-logo.png') }}" width="170px" style="margin-right: 5%"/>
       </nav>
       @show
       <div class="container">
-        <div class="row justify-content-md-center mt-2">
-          @yield('content')
-        </div>
+        @yield('content')
         <footer id="footer" class="row border-top">
           <div class="col" style="margin: 5px 0px 0px 0px; justify-content: center;">
             <img src="{{ asset('public/img/favicon-32x32.png') }}" style="margin: 0px 5px -10px 5px;">

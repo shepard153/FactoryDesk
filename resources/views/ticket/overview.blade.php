@@ -8,42 +8,39 @@
 @endsection
 
 @section('content')
-
-    <p class="fs-4 border-bottom text-center" id="header"></p>
-
-    <div class="col-3">
-        <select id="overviewDepartment" class="form-select">
-            <option value="All">{{ __('main_page.overview_all_departments') }}</option>
-            @foreach ($departmentList as $department)
-                <option value="{{ $department->department_name }}">{{ $department->department_name }}</option>
-            @endforeach
-        </select>
-    </div>
-
-    <div class="row mt-2">
-        <div class="col col-lg-3 mt-3">
-            <div class="card border-primary mt-3">
-                <div class="card-body">
-                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-line" style="color: blue"></i> {{ __('main_page.overview_tickets_total') }}</h5>
-                    <span class="h2 font-weight-bold mb-0" id="allCard"></span>
-                </div>
-            </div>
-            <div class="card border-warning mt-3">
-                <div class="card-body">
-                    <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-area" style="color: orange"></i> {{ __('main_page.overview_tickets_in_progress') }}</h5>
-                    <span class="h2 font-weight-bold mb-0" id="allOpenCard"></span>
-                </div>
-            </div>
+  <p class="fs-4 border-bottom text-center" id="header"></p>
+  <div class="col-3">
+    <select id="overviewDepartment" class="form-select">
+      <option value="All">{{ __('main_page.overview_all_departments') }}</option>
+      @foreach ($departmentList as $department)
+        <option value="{{ $department->department_name }}">{{ $department->department_name }}</option>
+      @endforeach
+    </select>
+  </div>
+  <div class="row mt-2">
+    <div class="col col-lg-3 mt-3">
+      <div class="card border-primary mt-3">
+        <div class="card-body">
+          <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-line" style="color: blue"></i> {{ __('main_page.overview_tickets_total') }}</h5>
+          <span class="h2 font-weight-bold mb-0" id="allCard"></span>
         </div>
-        <div class="col col-lg-9">
-            <canvas id="graphCanvas" height="120"></canvas>
-            <div id="loadingSpinner" class="text-center">
-                <img src="{{ asset('public/img/loading.gif')}}"/>
-            </div>
+      </div>
+      <div class="card border-warning mt-3">
+        <div class="card-body">
+          <h5 class="card-title text-uppercase text-muted mb-0"><i class="fa-solid fa-chart-area" style="color: orange"></i> {{ __('main_page.overview_tickets_in_progress') }}</h5>
+          <span class="h2 font-weight-bold mb-0" id="allOpenCard"></span>
         </div>
+      </div>
     </div>
+    <div class="col col-lg-9">
+      <canvas id="graphCanvas" height="120"></canvas>
+      <div id="loadingSpinner" class="text-center">
+        <img src="{{ asset('public/img/loading.gif')}}"/>
+      </div>
+    </div>
+  </div>
 
-    <script>
+  <script>
     $(document).ready(function () {
         showChart('{{ $defaultDepartment}}');
         $('#header').text('{{ __("main_page.overview_heading", ["department" => $defaultDepartment]) }}');
@@ -116,5 +113,5 @@
             }
         });
     }
-    </script>
+  </script>
 @endsection

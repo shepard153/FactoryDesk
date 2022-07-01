@@ -265,7 +265,7 @@ $('#menuToggler').on({
     mouseenter: function(){
         $('#sidebar').addClass('d-flex');
         $('#sidebar').toggle(500);
-        $('#navArrow').removeClass('fa-angle-right').addClass('fa-angle-left');
+        $('#menuToggler').toggle(500);
     },
 });
 
@@ -273,7 +273,7 @@ $('#sidebar').on({
     mouseleave: function(){
         $('#sidebar').removeClass('d-flex');
         $('#sidebar').toggle(500);
-        $('#navArrow').removeClass('fa-angle-left').addClass('fa-angle-right');
+        $('#menuToggler').toggle(500);
     }
 });
 
