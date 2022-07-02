@@ -4,10 +4,10 @@
     <meta charset="UTF-8" lang="pl">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=11" />
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('public/img/favicon-32x32.png') }}">
-    <link rel="stylesheet" href="{{ asset('public/css/bootstrap.min.css') }}">
-    <script src="{{ asset('public/js/bootstrap.min.js') }}"></script>
-    <script nomodule>window.MSInputMethodContext && document.documentMode && document.write('<link rel="stylesheet" href="{{ asset('public/css/bootstrap-ie11.min.css') }}"><script src="{{ asset('public/js/element-qsa-scope@1.js') }}"><\/script>');</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script nomodule>window.MSInputMethodContext && document.documentMode && document.write('<link rel="stylesheet" href="{{ asset('css/bootstrap-ie11.min.css') }}"><script src="{{ asset('js/element-qsa-scope@1.js') }}"><\/script>');</script>
     <title>RIP IE</title>
     <style>
       .bd-placeholder-img {
@@ -65,12 +65,12 @@
   </head>
   <body class="text-center bg-dark">
     <div class="col">
-        <img class="mb-4" src="{{ asset('public/img/ie.png') }}" alt="" width="200" height="250">
+        <img class="mb-4" src="{{ asset('img/ie.png') }}" alt="" width="200" height="250">
         <h3 style="color:white;">{{ __('error_pages.ie_error') }}</h3><br/>
-        <a href="https://www.mozilla.org/firefox/new/"><img class="mb-4" src="{{ asset('public/img/firefox.png') }}" alt="" width="260" height="100"></a>
-        <a href="https://www.opera.com/download"><img class="mb-4" src="{{ asset('public/img/opera.png') }}" alt="" width="280" height="100" style="margin: 0vw 3vw 0vw 3vw;"></a>
-        <a href="https://www.google.com/chrome/"><img class="mb-4" src="{{ asset('public/img/chrome.png') }}" alt="" width="300" height="100"></a>
-        <a href="microsoft-edge:{{ url('login') }}"><img class="mb-4" src="{{ asset('public/img/edge.png') }}" alt="" width="320" height="110"></a>
+        <a href="https://www.mozilla.org/firefox/new/"><img class="mb-4" src="{{ asset('img/firefox.png') }}" alt="" width="260" height="100"></a>
+        <a href="https://www.opera.com/download"><img class="mb-4" src="{{ asset('img/opera.png') }}" alt="" width="280" height="100" style="margin: 0vw 3vw 0vw 3vw;"></a>
+        <a href="https://www.google.com/chrome/"><img class="mb-4" src="{{ asset('img/chrome.png') }}" alt="" width="300" height="100"></a>
+        <a href="microsoft-edge:{{ url('login') }}"><img class="mb-4" src="{{ asset('img/edge.png') }}" alt="" width="320" height="110"></a>
     </div>
   </body>
 </html>

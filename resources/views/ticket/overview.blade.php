@@ -35,7 +35,7 @@
     <div class="col col-lg-9">
       <canvas id="graphCanvas" height="120"></canvas>
       <div id="loadingSpinner" class="text-center">
-        <img src="{{ asset('public/img/loading.gif')}}"/>
+        <img src="{{ asset('img/loading.gif')}}"/>
       </div>
     </div>
   </div>

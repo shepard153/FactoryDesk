@@ -4,10 +4,10 @@
     <meta charset="UTF-8" lang="pl">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=11" />
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('public/img/favicon-32x32.png') }}" />
-    <link rel="stylesheet" href="{{ asset('public/css/bootstrap.min.css') }}"/>
-    <script src="{{ asset('public/js/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('public/js/bootstrap.min.js') }}"></script>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}" />
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
+    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <title>{{ __('login.title') }}</title>
     <style>
       .bd-placeholder-img {
@@ -67,7 +67,7 @@
     <main class="form-signin">
       <form action="{{ route('loginAction') }}" method="post">
         <figure class="figure" style="margin-left: -7vw">
-          <img class="mb-4" src="{{ asset('public/img/rugdesk-logo.png') }}" alt="" width="560" height="120">
+          <img class="mb-4" src="{{ asset('img/rugdesk-logo.png') }}" alt="" width="560" height="120">
           <figcaption class="figure-caption text-middle" style="margin-top: -2.5vw">RUG TICKETING SYSTEM</figcaption>
         </figure>
         <h1 class="h3 mb-3 fw-normal">{{ __('login.title') }}</h1>

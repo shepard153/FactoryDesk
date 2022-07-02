@@ -206,16 +206,16 @@
                                 @switch ($attachmentsDisplay[$attachment->file_name])
                                     @case ('image')
                                         <div class="col-2 text-center">
-                                            <a href="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" data-lightbox="image" data-title="{{ $attachment->file_name }}">
-                                                <img src="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" class="img-fluid" style="min-width: 100%; min-height: 100%; width: auto; height: auto;"/>
+                                            <a href="{{ url('storage/'.$attachment->file_path.$attachment->file_name) }}" data-lightbox="image" data-title="{{ $attachment->file_name }}">
+                                                <img src="{{ url('storage/'.$attachment->file_path.$attachment->file_name) }}" class="img-fluid" style="min-width: 100%; min-height: 100%; width: auto; height: auto;"/>
                                             </a>
                                         </div>
                                         @break
                                     @case ('download')
                                         <div class="col-2 text-center">
-                                        <img src="{{ asset('public/img/download-icon.png') }}" class="img-fluid" style="max-width: 50%; max-height: 50%; width: auto; height: auto;"/>
+                                        <img src="{{ asset('img/download-icon.png') }}" class="img-fluid" style="max-width: 50%; max-height: 50%; width: auto; height: auto;"/>
                                             <label for="download" class="form-label">{{ $attachment->file_name }}</label><br/>
-                                            <a href="{{ url('public/storage/'.$attachment->file_path.$attachment->file_name) }}" download="{{ $attachment->file_name }}">
+                                            <a href="{{ url('storage/'.$attachment->file_path.$attachment->file_name) }}" download="{{ $attachment->file_name }}">
                                                 <button class="btn btn-primary" name="download"><i class="fa fa-download"></i> {{ __('dashboard_tickets.download_attachment') }}</button>
                                             </a>
                                         </div>
@@ -443,7 +443,7 @@
             parallelUploads: 3,
             maxFiles: 3,
             maxFilesize: 5,
-            dictDefaultMessage: '<img src="{{ asset('public/img/upload-icon.png') }}" class="img-fluid" style="max-width:25%"/><br/> {{ __("dropzone.drop_here") }}',
+            dictDefaultMessage: '<img src="{{ asset('img/upload-icon.png') }}" class="img-fluid" style="max-width:25%"/><br/> {{ __("dropzone.drop_here") }}',
             dictFileTooBig: "{{ __('dropzone.file_too_big') }}",
             dictInvalidFileType: "{{ __('dropzone.invalid_file_type') }}",
             dictCancelUpload: "{{ __('dropzone.cancel_upload') }}",

@@ -3,22 +3,18 @@
     <meta charset="UTF-8" lang="pl"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('public/img/favicon-32x32.png') }}">
-    <link rel="stylesheet" href="{{ asset('public/css/bootstrap.min.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('public/fontawesome6/css/all.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/css/dropzone.min.css') }}" type="text/css" />
-    <script src="{{ asset('public/js/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('public/js/dropzone.min.js') }}"></script>
-    <script src="{{ asset('public/js/chart.min.js') }}"></script>
-    <script nomodule>window.MSInputMethodContext && document.documentMode && document.write('<link rel="stylesheet" href="{{ asset('public/css/bootstrap-ie11.min.css') }}"><script src="{{ asset('public/js/element-qsa-scope@1.js') }}"><\/script>');</script>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('fontawesome6/css/all.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dropzone.min.css') }}" type="text/css" />
+    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('js/dropzone.min.js') }}"></script>
+    <script src="{{ asset('js/chart.min.js') }}"></script>
+    <script nomodule>window.MSInputMethodContext && document.documentMode && document.write('<link rel="stylesheet" href="{{ asset('css/bootstrap-ie11.min.css') }}"><script src="{{ asset('js/element-qsa-scope@1.js') }}"><\/script>');</script>
     <style type="text/css">
       _:-ms-fullscreen, :root .col { flex: 1 0 auto; } /* Poprawka dla IE11. Bez tego, przeglądarka ustawia domyślną szerokość pól na 1% */
       @media all and (-ms-high-contrast:none){
         *::-ms-backdrop, .ie11-margin { margin-left: 1vw;}
-      }
-      @media only screen and (max-width: 991px){
-        #rugLogo {display: none}
-        #navbarNav {text-align: right}
       }
       select::-ms-expand {
         display: none;
@@ -61,7 +57,6 @@
     @section('navbar')
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-          <img id="carrierLogo" class="img-fluid mx-3" src="{{ asset('public/img/carrier-logo.png') }}" width="130px"/>
           <button id="navbarToggler" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -78,7 +73,6 @@
               </li>
             </ul>
           </div>
-          <img id="rugLogo" class="img-fluid mx-3" src="{{ asset('public/img/rugdesk-logo.png') }}" width="170px"/>
         </div>
       </nav>
       @show
@@ -86,8 +80,7 @@
         @yield('content')
         <footer id="footer" class="row border-top">
           <div class="col" style="margin: 5px 0px 0px 0px; justify-content: center;">
-            <img src="{{ asset('public/img/favicon-32x32.png') }}" style="margin: 0px 5px -10px 5px;">
-            <span class="text-muted">&copy; 2022 RUG ICT</span>
+            <span class="text-muted">&copy; 2022 Kamil Kośmider</span>
           </div>
           <div class="col">
             <ul class="nav justify-content-end">
@@ -98,7 +91,7 @@
         </footer>
       </div>
     </body>
-    <script src="{{ asset('public/js/bootstrap.bundle.min.js') }}" async="async"></script>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}" async="async"></script>
     <script>
     $(document).ready(function() {
         setInterval(function() {

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>RUGDesk - 404</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{ asset('public/css/error-500-style.css') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('public/img/favicon-32x32.png') }}">
+    <link rel="stylesheet" href="{{ asset('css/error-500-style.css') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">
     <style type="text/css">
       .blink {
         animation: blink 1s step-start 0s infinite;

@@ -3,17 +3,17 @@
     <meta charset="UTF-8" lang="pl">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=11" />
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('public/img/favicon-32x32.png') }}">
-    <link rel="stylesheet" href="{{ asset('public/css/bootstrap.min.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('public/css/sidebars.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('public/css/lightbox.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('public/fontawesome6/css/all.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/css/dropzone.min.css') }}"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/sidebars.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/lightbox.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('fontawesome6/css/all.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dropzone.min.css') }}"/>
     <title>{{ __('dashboard_main.title') }}</title>
-    <script src="{{ asset('public/js/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('public/js/lightbox.js') }}"></script>
-    <script src="{{ asset('public/js/dropzone.min.js') }}"></script>
-    <script src="{{ asset('public/js/chart.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('js/lightbox.js') }}"></script>
+    <script src="{{ asset('js/dropzone.min.js') }}"></script>
+    <script src="{{ asset('js/chart.min.js') }}"></script>
     <style>
       img {
         margin-top: 0.9vw;
@@ -142,7 +142,7 @@
       <hr>
       <div class="dropdown">
         <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="{{ asset('public/img/agent.png') }}" alt="" class="rounded-circle me-2" style="width: 48px; height: 48px; margin-top: 0.1vw">
+          <img src="{{ asset('img/agent.png') }}" alt="" class="rounded-circle me-2" style="width: 48px; height: 48px; margin-top: 0.1vw">
           @php
             $username = wordwrap(auth()->user()->name, 20, "<br />\n");
             echo "<strong>$username</strong>"
@@ -231,8 +231,7 @@
         @yield('content')
         <footer id="footer" class="row border-top">
           <div class="col" style="justify-content: center;">
-            <img src="{{ asset('public/img/favicon-32x32.png') }}" style="margin: 0px 5px -2px 5px; height: 32px; width: 32px">
-            <span class="text-muted">&copy; 2022 RUG ICT</span>
+            <span class="text-muted">&copy; 2022 Kamil Kośmider</span>
           </div>
           <div class="col">
             <ul class="nav justify-content-end">
@@ -245,7 +244,7 @@
     </div>
   </main>
 </body>
-<script src="{{ asset('public/js/bootstrap.bundle.min.js') }}" async="async"></script>
+<script src="{{ asset('js/bootstrap.bundle.min.js') }}" async="async"></script>
 <script>
 $(document).ready(function() {
     setInterval(function() {

@@ -172,7 +172,7 @@
         parallelUploads: 3,
         maxFiles: 3,
         maxFilesize: 5,
-        dictDefaultMessage: '<img src="{{ asset('public/img/upload-icon.png') }}" class="img-fluid" style="max-width:25%"/><br/> {{ __("dropzone.drop_here") }}',
+        dictDefaultMessage: '<img src="{{ asset('img/upload-icon.png') }}" class="img-fluid" style="max-width:25%"/><br/> {{ __("dropzone.drop_here") }}',
         dictFileTooBig: "{{ __('dropzone.file_too_big') }}",
         dictInvalidFileType: "{{ __('dropzone.invalid_file_type') }}",
         dictCancelUpload: "{{ __('dropzone.cancel_upload') }}",

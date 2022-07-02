@@ -67,7 +67,7 @@ class DashboardController extends Controller
             $allOpen = Ticket::where('department', $department)->where('ticket_status', 1)->count();
 
             $topProblem = Ticket::select('problem')->where("department", '=', "$department")
-                ->selectRaw('count (*) as occurence')
+                ->selectRaw('COUNT(*) as occurence')
                 ->groupBy('problem')
                 ->orderBy('occurence', 'desc')
                 ->limit(1)
@@ -75,7 +75,7 @@ class DashboardController extends Controller
 
             $mostProblematic = Ticket::select('zone')
                 ->where("department", '=', "$department")
-                ->selectRaw('count (*) AS problematic')
+                ->selectRaw('COUNT(*) AS problematic')
                 ->groupBy('zone')
                 ->orderBy('problematic', 'desc')
                 ->limit(1)
@@ -100,9 +100,9 @@ class DashboardController extends Controller
             ->limit($limit)
             ->get();;
 
-            $topProblem = Ticket::select('problem')->selectRaw('count (*) as occurence')->groupBy('problem')->orderBy('occurence', 'desc')->limit(1)->get();
+            $topProblem = Ticket::select('problem')->selectRaw('COUNT(*) as occurence')->groupBy('problem')->orderBy('occurence', 'desc')->limit(1)->get();
 
-            $mostProblematic = Ticket::select('zone')->selectRaw('count (*) AS problematic')->groupBy('zone')->orderBy('problematic', 'desc')->limit(1)->get();
+            $mostProblematic = Ticket::select('zone')->selectRaw('COUNT(*) AS problematic')->groupBy('zone')->orderBy('problematic', 'desc')->limit(1)->get();
 
             $all = Ticket::count();
             $allNew = Ticket::where('ticket_status', 0)->count();
