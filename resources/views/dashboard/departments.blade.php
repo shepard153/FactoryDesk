@@ -25,7 +25,7 @@
         </thead>
         @foreach($departments as $department)
           <tr>
-            <td style="background-image: url({{ 'storage/'.$department->image_path }}); background-repeat:no-repeat;background-size:40px 47px; width:40px; height:40px;"></td>
+            <td style="background-image: url({{ 'public/storage/'.$department->image_path }}); background-repeat:no-repeat;background-size:40px 47px; width:40px; height:40px;"></td>
             <td style="width: 75%">{{ $department->department_name }}</td>
             <td>
               <a href="{{ url('department/'.$department->departmentID) }}" class="btn btn-success btn-sm">{{ __('dashboard_departments.operation_edit') }}</a>

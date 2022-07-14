@@ -20,7 +20,7 @@
           @if ($department->image_path == null)
             <div class="rounded alternate">{{ $department->department_name }}</div>
           @else
-            <img src="{{ url('storage/'.$department->image_path) }}" class='rounded' width='250' height='250' alt='{{ $department->department_name }}'>
+            <img src="{{ url('public/storage/'.$department->image_path) }}" class='rounded' width='250' height='250' alt='{{ $department->department_name }}'>
           @endif
         </a>
       </div>
