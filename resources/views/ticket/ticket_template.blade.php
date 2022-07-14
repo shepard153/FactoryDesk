@@ -3,13 +3,13 @@
     <meta charset="UTF-8" lang="pl"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('fontawesome6/css/all.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/dropzone.min.css') }}" type="text/css" />
-    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('js/dropzone.min.js') }}"></script>
-    <script src="{{ asset('js/chart.min.js') }}"></script>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('public/img/favicon-32x32.png') }}">
+    <link rel="stylesheet" href="{{ asset('public/css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('public/fontawesome6/css/all.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/css/dropzone.min.css') }}" type="text/css" />
+    <script src="{{ asset('public/js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('public/js/dropzone.min.js') }}"></script>
+    <script src="{{ asset('public/js/chart.min.js') }}"></script>
     <script nomodule>window.MSInputMethodContext && document.documentMode && document.write('<link rel="stylesheet" href="{{ asset('css/bootstrap-ie11.min.css') }}"><script src="{{ asset('js/element-qsa-scope@1.js') }}"><\/script>');</script>
     <style type="text/css">
       _:-ms-fullscreen, :root .col { flex: 1 0 auto; } /* Poprawka dla IE11. Bez tego, przeglądarka ustawia domyślną szerokość pól na 1% */
