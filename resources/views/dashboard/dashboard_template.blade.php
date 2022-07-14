@@ -61,7 +61,7 @@
 <body>
   @section('sidebar')
   <main>
-    <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 240px; display: none">
+    <div id="sidebar" class="flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 240px; display: none">
       <p class="d-flex align-items-center mb-md-0 ms-3 me-md-auto text-white text-decoration-none">
         <i class="fa-solid fa-signs-post fs-4"></i> &nbsp;
         <span class="fs-4">{{ __('dashboard_main.menu') }}</span>
@@ -166,10 +166,11 @@
       </div>
     </div>
     <div class="b-example-divider">
+      <button type="button" id="menuToggler" class="btn btn-dark" style="position: sticky"><i id="navArrow" class="fa-solid fa-angle-right"></i></button>
     </div>
     @show
     <div class="container-fluid" style="background:#F2F2F2; overflow: auto;">
-      <nav id="topNav" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <nav id="topNav" class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -246,29 +247,34 @@
 <script src="{{ asset('js/bootstrap.bundle.min.js') }}" async="async"></script>
 <script>
 $(document).ready(function() {
-    transformNavBars();
     setInterval(function() {
         var docHeight = $(window).height();
         var footerHeight = $('#footer').height();
         var footerTop = $('#footer').position().top + footerHeight;
-        var marginTop = (docHeight - footerTop - 1);
+        var marginTop = (docHeight - footerTop - 10);
 
         if (footerTop < docHeight)
             $('#footer').css('margin-top', marginTop + 'px');
         else
-            $('#footer').css('margin-top', '0');
+            $('#footer').css('margin-top', '-4');
     }, 200);
 });
 
-$(window).resize(function() {
-    transformNavBars();
+$('#menuToggler').on({
+    mouseenter: function(){
+        $('#sidebar').addClass('d-flex');
+        $('#sidebar').toggle(500);
+        $('#menuToggler').toggle(500);
+    },
 });
 
-function transformNavBars(){
-    if ($(this).width() < 1220)
+$('#sidebar').on({
+    mouseleave: function(){
         $('#sidebar').removeClass('d-flex');
-    else
-        $('#sidebar').addClass('d-flex');
-}
+        $('#sidebar').toggle(500);
+        $('#menuToggler').toggle(500);
+    }
+});
+
 </script>
 </html>
