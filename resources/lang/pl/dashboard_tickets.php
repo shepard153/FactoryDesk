@@ -50,7 +50,7 @@ return [
     'accept_ticket' => 'Zatwierdź zgłoszenie',
     'reject_ticket' => 'Odrzuć zgłoszenie',
     'take_ticket' => 'Podejmij zgłoszenie',
-    'save_button' => 'Save changes',
+    'save_button' => 'Zapisz zmiany',
     'close_ticket' => 'Zamknij zgłoszenie',
     'reopen_ticket' => 'Otwórz ponownie zgłoszenie',
     'modal_confirm' => 'Potwierdź',

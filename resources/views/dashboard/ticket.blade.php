@@ -159,9 +159,9 @@
                                 <input name="editTicket" class="btn btn-success" type="Submit" value="{{ __('dashboard_tickets.save_button') }}"/>
                                 <input type="button" class="btn btn-danger" id="close" data-bs-toggle="modal" data-bs-target="#modal" value="{{ __('dashboard_tickets.close_ticket') }}" data-id="closeTicket"/>
                                 <span class="btn-group" style="float: right">
-                                    <button name="timerAction" class="btn-sm btn-light-outline" style="margin-left:1%" type="button" value="5">+ 5 {{ __('dashboard_tickets.timer_minutes_button') }}</button>
-                                    <button name="timerAction" class="btn-sm btn-secondary" style="margin-left:1%" type="button" value="15">+ 15 {{ __('dashboard_tickets.timer_minutes_button') }}</button>
-                                    <button name="timerAction" class="btn-sm btn-dark" style="margin-left:1%" type="button" value="30">+ 30 {{ __('dashboard_tickets.timer_minutes_button') }}</button>
+                                    <button name="timerAction" class="btn btn-outline-primary" type="button" value="5">+ 5 {{ __('dashboard_tickets.timer_minutes_button') }}</button>
+                                    <button name="timerAction" class="btn btn-outline-primary mx-1" type="button" value="15">+ 15 {{ __('dashboard_tickets.timer_minutes_button') }}</button>
+                                    <button name="timerAction" class="btn btn-outline-primary" type="button" value="30">+ 30 {{ __('dashboard_tickets.timer_minutes_button') }}</button>
                                 </span>
                             @elseif ($date_now < $date_closed && $ticket->target_department == null)
                                 <input name="reopenTicket" id="reopenTicket" class="btn btn-primary" type="Submit" value="{{ __('dashboard_tickets.reopen_ticket') }}"/>
