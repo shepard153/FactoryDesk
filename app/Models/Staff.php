@@ -17,6 +17,8 @@ class Staff extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    protected $table = 'Staff';
+
     protected $primaryKey = 'staffID';
 
     /**
