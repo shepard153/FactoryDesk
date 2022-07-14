@@ -13,6 +13,7 @@
         <table class="table table-hover" id="newestTable">
             <thead>
                 <tr>
+                    <td>{{ __('dashboard_main.table_ID') }}</td>
                     <td>{{ __('dashboard_main.table_status') }}</td>
                     <td>{{ __('dashboard_main.table_zone') }}</td>
                     <td>{{ __('dashboard_main.table_position') }}</td>
@@ -31,6 +32,7 @@
                 @else
                   <tr class='clickable-row' data-href='ticket/{{ $newest->ticketID }}'>
                 @endif
+                  <td>{{ $newest->department_ticketID }}</td>
                   <td>
                     @if ($newest->ticket_status == '-1')
                         <span class='badge rounded-pill bg-primary'>{{ __('dashboard_main.status_pill_awaiting') }}</span>
@@ -149,7 +151,7 @@
                                     break;
                             }
 
-                            switch (String(value['ticket_status'])){
+                            switch (value['ticket_status']){
                                 case '-1':
                                     status = "<span class='badge rounded-pill bg-primary'>{{ __('dashboard_main.status_pill_awaiting') }}</span>";
                                     break;
@@ -161,12 +163,14 @@
                                     break;
                             }
 
+
                             date = new Date(value['date_created']);
                             date = date.getFullYear() + "-" + ('0' + (date.getMonth()+1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2) + " " +
                                     ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2);
 
                             $('#newestRows').append(row +
-                                '<td>' + status + '</td> \
+                                '<td>' + value['department_ticketID'] + '</td> \
+                                <td>' + status + '</td> \
                                 <td>' + value['zone'] + '</td> \
                                 <td>' + value['position'] + '</td> \
                                 <td>' + value['problem'] + '</td> \
