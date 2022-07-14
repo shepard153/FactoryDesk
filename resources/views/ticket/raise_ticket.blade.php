@@ -15,7 +15,7 @@
     @endphp
     @foreach ($departments as $department)
       @continue ($department->isHidden == 1)
-      <div class='col col-lg-3 mt-1 mx-2'>
+      <div class='col col-lg-3 mt-2 mx-2'>
         <a href="{{ url('ticket_step2/'.$department->department_name) }}" style="text-decoration:none">
           @if ($department->image_path == null)
             <div class="rounded alternate">{{ $department->department_name }}</div>

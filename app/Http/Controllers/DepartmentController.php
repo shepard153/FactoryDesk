@@ -122,7 +122,7 @@ class DepartmentController
             $file = $request->file('image');
             $fileName = str_replace(" ", "-", $request->department_name);
             $filePath = $file->storeAs('departments_img', "department-$fileName." . $file->getClientOriginalExtension());
-            $filePath = "departments_img/department-$fileName." . $file->getClientOriginalExtension();
+            $filePath = "department-$fileName." . $file->getClientOriginalExtension();
         }
         else{
             $filePath = null;
