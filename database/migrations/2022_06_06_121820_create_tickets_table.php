@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('Tickets', function (Blueprint $table) {
-            $table->integer('ticketID');
+            $table->increments('ticketID');
             $table->string('device_name', 100);
             $table->string('department', 100);
             $table->string('zone', 150);
@@ -33,6 +33,8 @@ return new class extends Migration
             $table->string('external_ticketID', 255)->nullable();
             $table->string('department_ticketID', 255)->nullable();
             $table->string('target_department', 255)->nullable();
+            $table->string('ticket_type', 50)->nullable();
+            $table->string('closing_notes', 250)->nullable();
             $table->timestamps();
         });
     }

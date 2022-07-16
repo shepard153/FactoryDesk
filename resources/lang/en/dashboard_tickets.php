@@ -66,6 +66,9 @@ return [
     'add_note_button' => 'Add note',
     'note' => 'Note added :created_at by :username',
     'edit_header' => 'Edited by :username on :date',
+    'ticket_type' => 'Ticket type',
+    'ticket_type_valid' => 'Valid',
+    'ticket_type_invalid' => 'Invalid',
 
     /**
      * Ticket action notifications

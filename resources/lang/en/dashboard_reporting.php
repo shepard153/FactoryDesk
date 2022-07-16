@@ -25,7 +25,9 @@ return [
     'col_owner' => 'Person responsible',
     'col_date_created' => 'Date created',
     'col_date_opened' => 'Date opened',
-    'col_date_closed' => 'Date closed',
+    'col_date_closed' => 'Data zamknięcia',
+    'col_ticket_type' => 'Ticket type',
+    'col_closing_notes' => 'Closing notes',
     'generate_report' => 'Generate report',
     'report_generated' => 'Report generated successfully',
 ];

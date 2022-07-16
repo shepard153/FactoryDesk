@@ -21,6 +21,8 @@ return new class extends Migration
             $table->boolean('isHidden');
             $table->string('acceptance_from', 255)->nullable();
             $table->string('teams_webhook')->nullable();
+            $table->string('discord_webhook')->nullable();
+            $table->string('department_email')->nullable();
         });
     }
 

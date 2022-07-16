@@ -24,6 +24,13 @@ class TicketAttachment extends Model
      */
     protected $primaryKey = 'attachmentID';
 
+    /**
+     * Indicates if the model's ID is auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = true;
+
     public $timestamps = null;
 
     /**

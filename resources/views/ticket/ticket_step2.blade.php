@@ -8,83 +8,87 @@
 @endsection
 
 @section('content')
-  <form class="row mt-2" id="form">
-    <div class="col-5 offset-md-1">
-      @csrf
-      <input type="hidden" name="department" id="department" value="{{ $department }}"/>
-      <div class="form-group">
-        <label class="form-label">{{ __('raise_ticket_form.device_name') }}</label>
-        <input type="text" name="device_name" value="{{ $domain }}" class="form-control" readonly>
-      </div>
-      <div class="form-group mt-3">
-        <label class="form-label">{{ __('raise_ticket_form.username') }}</label>
-        <input type="text" name="username" value="User" class="form-control" readonly>
-      </div>
-      <div class="form-group mt-3">
-        <label class="form-label">{{ __('raise_ticket_form.zone_label') }} <span style="color:red">*</span></label>
-        <select id="zoneSelect" name="zoneSelect" class="form-select form-select-lg mb-3" required>
-          <option value="">{{ __('raise_ticket_form.zone_select_default') }}</option>
-          @foreach ($zones as $zone)
-            <option value="{{ $zone->zone_name }}">{{ $zone->zone_name }}</option>
-          @endforeach
-        </select>
-      </div>
-      <div class="form-group mt-3">
-        <label class="form-label">{{ __('raise_ticket_form.position_label') }} <span style="color:red">*</span></label>
-        <select id="positionSelect" name="positionSelect" class="form-select form-select-lg mb-3" disabled required>
-          <option value="">{{ __('raise_ticket_form.position_select_default') }}</option>
-          <!-- Positions list loaded through ajax call based on selected zone -->
-        </select>
-      </div>
-      <div class="form-group mt-3">
-        <label class="form-label">{{ __('raise_ticket_form.problem_label') }} <span style="color:red">*</span></label>
-        <select id="problemSelect" name="problemSelect" class="form-select form-select-lg mb-3" disabled required>
-          <option value="">{{ __('raise_ticket_form.problem_select_default') }}</option>
-          <!-- Problems list loaded through ajax call based on selected position -->
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">{{ __('raise_ticket_form.message_box_label') }}</label><br/>
-        <textarea class="form-control" name="message" maxlength="500"></textarea>
-      </div>
-      <div class="form-group mt-3">
-        <label class="form-label">{{ __('dropzone.label') }}</label><br/>
-        <div class="dropzone" id="myDropzone">
-          <div class="data-dz-message"><span></span></div>
+  <form class="mt-2" id="form">
+    <div class="row justify-content-center">
+      <div class="col-xs-12 col-md-5">
+        @csrf
+        <input type="hidden" name="department" id="department" value="{{ $department }}"/>
+        <div class="form-group">
+          <label class="form-label">{{ __('raise_ticket_form.device_name') }}</label>
+          <input type="text" name="device_name" value="{{ $domain }}" class="form-control" readonly required>
+        </div>
+        <div class="form-group mt-3">
+          <label class="form-label">{{ __('raise_ticket_form.username') }}</label>
+          <input type="text" name="username" value="User" class="form-control" readonly required>
+        </div>
+        <div class="form-group mt-3">
+          <label class="form-label">{{ __('raise_ticket_form.zone_label') }} <span style="color:red">*</span></label>
+          <select id="zoneSelect" name="zoneSelect" class="form-select form-select-lg mb-3" required>
+            <option value="">{{ __('raise_ticket_form.zone_select_default') }}</option>
+            @foreach ($zones as $zone)
+              <option value="{{ $zone->zone_name }}">{{ $zone->zone_name }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="form-group mt-3">
+          <label class="form-label">{{ __('raise_ticket_form.position_label') }} <span style="color:red">*</span></label>
+          <select id="positionSelect" name="positionSelect" class="form-select form-select-lg mb-3" disabled required>
+            <option value="">{{ __('raise_ticket_form.position_select_default') }}</option>
+            <!-- Positions list loaded through ajax call based on selected zone -->
+          </select>
+        </div>
+        <div class="form-group mt-3">
+          <label class="form-label">{{ __('raise_ticket_form.problem_label') }} <span style="color:red">*</span></label>
+          <select id="problemSelect" name="problemSelect" class="form-select form-select-lg mb-3" disabled required>
+            <option value="">{{ __('raise_ticket_form.problem_select_default') }}</option>
+            <!-- Problems list loaded through ajax call based on selected position -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">{{ __('raise_ticket_form.message_box_label') }}</label><br/>
+          <textarea class="form-control" name="message" maxlength="500"></textarea>
+        </div>
+        <div class="form-group mt-3">
+          <label class="form-label">{{ __('dropzone.label') }}</label><br/>
+          <div class="dropzone" id="myDropzone">
+            <div class="data-dz-message"><span></span></div>
+          </div>
         </div>
       </div>
-      <div class="form-group mt-3">
-        <button id="submit" name="submit" class="btn btn-lg btn-primary" type="button" disabled>{{ __('raise_ticket_form.submit_form') }}</button>
+      <div class="col-xs-12 col-md-5 ie11-margin">
+        <div class="form-group">
+          <label class="form-label">{{ __('raise_ticket_form.priority_label') }}</label>
+          <select id="prioritySelect" name="prioritySelect" class="form-select form-select-lg mb-3">
+            <option value="0">{{ __('raise_ticket_form.priority_low') }}</option>
+            <option value="2" default selected>{{ __('raise_ticket_form.priority_medium') }}</option>
+            <option value="4">{{ __('raise_ticket_form.priority_high') }}</option>
+          </select>
+        </div>
+        <div id="info" class="form-group alert alert-info text-center">
+          <table class="table">
+            <thead>
+              <td>{{ __('raise_ticket_form.priority') }}</td>
+              <td>{{ __('raise_ticket_form.priorities_desc') }}</td>
+            </thead>
+            <tr>
+              <td>{{ __('raise_ticket_form.priority_low') }}</td>
+              <td>{{ __('raise_ticket_form.priority_low_desc') }}</td>
+            </tr>
+            <tr>
+              <td>{{ __('raise_ticket_form.priority_medium') }}</td>
+              <td>{{ __('raise_ticket_form.priority_medium_desc') }}</td>
+            </tr>
+            <tr>
+              <td>{{ __('raise_ticket_form.priority_high') }}</td>
+              <td>{{ __('raise_ticket_form.priority_high_desc') }}</td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
-    <div class="col-5 ie11-margin">
-      <div class="form-group">
-        <label class="form-label">{{ __('raise_ticket_form.priority_label') }}</label>
-        <select id="prioritySelect" name="prioritySelect" class="form-select form-select-lg mb-3">
-          <option value="0">{{ __('raise_ticket_form.priority_low') }}</option>
-          <option value="2" default selected>{{ __('raise_ticket_form.priority_medium') }}</option>
-          <option value="4">{{ __('raise_ticket_form.priority_high') }}</option>
-        </select>
-      </div>
-      <div id="info" class="form-group alert alert-info text-center">
-        <table class="table">
-          <thead>
-            <td>{{ __('raise_ticket_form.priority') }}</td>
-            <td>{{ __('raise_ticket_form.priorities_desc') }}</td>
-          </thead>
-          <tr>
-            <td>{{ __('raise_ticket_form.priority_low') }}</td>
-            <td>{{ __('raise_ticket_form.priority_low_desc') }}</td>
-          </tr>
-          <tr>
-            <td>{{ __('raise_ticket_form.priority_medium') }}</td>
-            <td>{{ __('raise_ticket_form.priority_medium_desc') }}</td>
-          </tr>
-          <tr>
-            <td>{{ __('raise_ticket_form.priority_high') }}</td>
-            <td>{{ __('raise_ticket_form.priority_high_desc') }}</td>
-          </tr>
-        </table>
+    <div class="row justify-content-center mt-2">
+      <div class="col-1">
+        <button id="submit" name="submit" class="btn btn-lg btn-primary" type="button" disabled>{{ __('raise_ticket_form.submit_form') }}</button>
       </div>
     </div>
   </form>

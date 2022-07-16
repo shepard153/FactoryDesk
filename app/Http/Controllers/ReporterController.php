@@ -42,7 +42,8 @@ class ReporterController extends Controller
 
         $items = Ticket::selectRaw(implode(',', $columns))
             ->where('department', auth()->user()->department)
-            ->whereBetween('date_created', [$request->startDate, $request->endDate])
+            ->whereDate('date_created', $request->startDate)
+            ->whereDate('date_closed', $request->endDate)
             ->get()
             ->toArray();
 
@@ -71,6 +72,12 @@ class ReporterController extends Controller
         $csv->setDelimiter(";");
         $csv->insertOne($columns);
         foreach ($items as $item){
+            if ($item['ticket_type'] == 'valid'){
+                $item['ticket_type'] = __('dashboard_tickets.ticket_type_valid');
+            }
+            else{
+                $item['ticket_type'] = __('dashboard_tickets.ticket_type_invalid');
+            }
             $csv->insertOne($item);
         }
 
@@ -101,6 +108,7 @@ class ReporterController extends Controller
         $response->setCallback($content_callback);
         echo "\xEF\xBB\xBF";
         $response->send();
+
         exit;
     }
 

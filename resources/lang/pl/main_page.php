@@ -12,6 +12,8 @@ return [
      * Overview page
      */
     'overview_heading' => 'Statystyki dla działu :department',
+    'overview_heading_all' => 'Statystyki dla wszystkich działów',
+    'overview_select_department' => 'Wybierz dział do statystyk',
     'overview_all_departments' => 'Wszystkie działy',
     'overview_tickets_total' => 'Zgłoszeń łącznie',
     'overview_tickets_in_progress' => 'W realizacji',

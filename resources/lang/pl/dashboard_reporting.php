@@ -26,6 +26,8 @@ return [
     'col_date_created' => 'Data utworzenia',
     'col_date_opened' => 'Data podjęcia',
     'col_date_closed' => 'Data zamknięcia',
+    'col_ticket_type' => 'Typ zgłoszenia',
+    'col_closing_notes' => 'Notatki końcowe',
     'generate_report' => 'Generuj raport',
     'report_generated' => 'Raport został wygenerowany.',
 ];

@@ -8,7 +8,7 @@
 @endsection
 
 @section('content')
-  <p class="fs-4 border-bottom text-center mt-3">{{ __('raise_ticket_form.select_department') }}</p>
+  <p class="fs-4 mt-3 border-bottom text-center">{{ __('raise_ticket_form.select_department') }}</p>
   <div class="row justify-content-md-center mt-1">
     @php
       $i = 1
@@ -20,7 +20,7 @@
           @if ($department->image_path == null)
             <div class="rounded alternate">{{ $department->department_name }}</div>
           @else
-            <img src="{{ url('public/img/'.$department->image_path) }}" class='rounded' width='250' height='250' alt='{{ $department->department_name }}'>
+            <img src="{{ url('storage/'.$department->image_path) }}" class='rounded' width='250' height='250' alt='{{ $department->department_name }}'>
           @endif
         </a>
       </div>

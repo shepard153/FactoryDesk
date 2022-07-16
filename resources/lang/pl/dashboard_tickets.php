@@ -50,7 +50,7 @@ return [
     'accept_ticket' => 'Zatwierdź zgłoszenie',
     'reject_ticket' => 'Odrzuć zgłoszenie',
     'take_ticket' => 'Podejmij zgłoszenie',
-    'save_button' => 'Save changes',
+    'save_button' => 'Zapisz zmiany',
     'close_ticket' => 'Zamknij zgłoszenie',
     'reopen_ticket' => 'Otwórz ponownie zgłoszenie',
     'modal_confirm' => 'Potwierdź',
@@ -66,6 +66,9 @@ return [
     'add_note_button' => 'Dodaj notatkę',
     'note' => 'Notatka utworzona :created_at przez :username',
     'edit_header' => 'Edytowane przez :username dnia :date',
+    'ticket_type' => 'Typ zgłoszenia',
+    'ticket_type_valid' => 'Zasadne',
+    'ticket_type_invalid' => 'Niezasadne',
 
     /**
      * Ticket action notifications

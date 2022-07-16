@@ -115,6 +115,16 @@
                     <label class="form-label">{{ __('dashboard_reporting.col_date_closed') }}</label>
                 </div>
             </div>
+            <div class="row" style="margin-top:1vw;">
+                <div class="col-2">
+                    <input type="checkbox" name="isType" value="ticket_type" class="form-check-input" checked>
+                    <label class="form-label">{{ __('dashboard_reporting.col_ticket_type') }}</label>
+                </div>
+                <div class="col-2">
+                    <input type="checkbox" name="isNotes" value="closing_notes" class="form-check-input" checked>
+                    <label class="form-label">{{ __('dashboard_reporting.col_closing_notes') }}</label>
+                </div>
+            </div>
 
             <div class="row" style="margin-top:1vw;">
                 <div class="col">

@@ -12,9 +12,13 @@
     <script src="{{ asset('js/chart.min.js') }}"></script>
     <script nomodule>window.MSInputMethodContext && document.documentMode && document.write('<link rel="stylesheet" href="{{ asset('css/bootstrap-ie11.min.css') }}"><script src="{{ asset('js/element-qsa-scope@1.js') }}"><\/script>');</script>
     <style type="text/css">
-      _:-ms-fullscreen, :root .col { flex: 1 0 auto; } /* Poprawka dla IE11. Bez tego, przeglądarka ustawia domyślną szerokość pól na 1% */
+      _:-ms-fullscreen, :root .col { flex: 1 0 auto; } /* IE11 workaround. Without this, browser sets input fields width to 1% */
       @media all and (-ms-high-contrast:none){
         *::-ms-backdrop, .ie11-margin { margin-left: 1vw;}
+      }
+      @media only screen and (max-width: 991px){
+        #rugLogo {display: none}
+        #navbarNav {text-align: right}
       }
       select::-ms-expand {
         display: none;
@@ -84,8 +88,8 @@
           </div>
           <div class="col">
             <ul class="nav justify-content-end">
-              <li class="nav-item"><a class="nav-link px-2 text-muted" href="{{ url('lang/pl') }}">{{ __('main_page.language_polish') }}</a></li>
-              <li class="nav-item"><a class="nav-link px-2 text-muted" href="{{ url('lang/en') }}">{{ __('main_page.language_english') }}</a></li>
+              <li class="nav-item"><a class="nav-link px-2 text-muted" href="{{ url('lang/pl') }}">Polski</a></li>
+              <li class="nav-item"><a class="nav-link px-2 text-muted" href="{{ url('lang/en') }}">English</a></li>
             </ul>
           </div>
         </footer>

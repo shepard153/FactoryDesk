@@ -131,8 +131,6 @@ class StaffController
     public function modifySelfStaff(Request $request)
     {
         $this->member = Staff::find(auth()->user()->staffID);
-        $this->member->email = $request->email;
-        $request->validate(['email' => 'email|max:255']);
 
         if ($request->password == null){
             $this->member->save();
@@ -184,16 +182,16 @@ class StaffController
      * @param Staff $staff
      * @param Department $departments
      * @param int $staffID
-     * @return view
+     * @return Illuminate\Http\Response
      */
     public function editMember(Staff $staff, Department $departments, $staffID)
     {
-        $staff = $staff::find($staffID);
+        $this->member = $staff::find($staffID);
         $departments = $departments::all();
 
         return view('dashboard/edit_member', [
             'pageTitle' => $this->pageTitle,
-            'member' => $staff,
+            'member' => $this->member,
             'departments' => $departments]);
     }
 

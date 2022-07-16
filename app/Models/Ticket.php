@@ -21,6 +21,13 @@ class Ticket extends Model
      */
     protected $primaryKey = 'ticketID';
 
+    /**
+     * Indicates if the model's ID is auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = true;
+
     const CREATED_AT = 'date_created';
     const UPDATED_AT = 'date_modified';
 
@@ -41,7 +48,9 @@ class Ticket extends Model
         'time_spent',
         'external_ticketID',
         'department_ticketID',
-        'target_department'
+        'target_department',
+        'ticket_type',
+        'closing_notes',
     ];
 
     /**

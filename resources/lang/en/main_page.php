@@ -12,6 +12,8 @@ return [
      * Overview page
      */
     'overview_heading' => 'Statistics for department: :department',
+    'overview_heading_all' => 'Statistics for all departments',
+    'overview_select_department' => 'Select department to display',
     'overview_all_departments' => 'All departments',
     'overview_tickets_total' => 'Tickets total',
     'overview_tickets_in_progress' => 'In progress',

@@ -67,8 +67,7 @@
     <main class="form-signin">
       <form action="{{ route('loginAction') }}" method="post">
         <figure class="figure" style="margin-left: -7vw">
-          <img class="mb-4" src="{{ asset('img/rugdesk-logo.png') }}" alt="" width="560" height="120">
-          <figcaption class="figure-caption text-middle" style="margin-top: -2.5vw">RUG TICKETING SYSTEM</figcaption>
+          <img class="mb-2" src="{{ asset('img/rugdesk-logo.png') }}" alt="" width="560" height="120">
         </figure>
         <h1 class="h3 mb-3 fw-normal">{{ __('login.title') }}</h1>
         @csrf
@@ -83,8 +82,9 @@
           @if ($errors->has('error'))
               <div class="alert alert-danger">{{ $errors->first('error') }}</div>
           @endif
-        <button class="w-100 btn btn-lg btn-primary" type="submit" name="submit">{{ __('login.signin') }}</button>
+        <button class="w-100 btn btn-lg btn-primary mb-2" type="submit" name="submit">{{ __('login.signin') }}</button>
       </form>
+      <a class="text-muted" href="{{ url('/')}}">Powrot do strony głównej</a>
     </main>
   </body>
 </html>

@@ -90,7 +90,7 @@
         <div class="col col-lg-9">
             <canvas id="graphCanvas" height="auto"></canvas>
             <div id="loadingSpinner" class="text-center">
-                <img src="{{ asset('img/loading.gif')}}"/>
+                <img src="{{ asset('public/img/loading.gif')}}"/>
             </div>
         </div>
     </div>

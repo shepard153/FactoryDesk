@@ -22,6 +22,13 @@ class Zone extends Model
     protected $primaryKey = 'zoneID';
 
     /**
+     * Indicates if the model's ID is auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = true;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>

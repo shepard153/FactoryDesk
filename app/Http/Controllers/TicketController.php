@@ -41,11 +41,6 @@ class TicketController extends Controller
     {
 		$domain = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
-        if (strpos($domain, ".carcgl.com"))
-        {
-            $domain = str_replace(".carcgl.com", "", $domain);
-        }
-
         $department = $request->department;
 
         $zones = Zone::all();
@@ -167,6 +162,7 @@ class TicketController extends Controller
     /**
      * List of tickets owned by currently logged in staff member (both opened and closed) with some additional stats information.
      *
+     * @param string $status
      * @return view
      */
     public function memberTickets($status = 'taken')
@@ -198,6 +194,7 @@ class TicketController extends Controller
      * in $arrows array. Default ones are from font awesome package.
      *
      * @param Request $request
+     * @param string $status
      * @return view
      */
     public function ticketList(Request $request, $status = 'active')
@@ -222,6 +219,7 @@ class TicketController extends Controller
 
         if ($request->sort != null){
             $request->order = $request->order == 'desc' ? 'asc': 'desc';
+
             if (auth()->user()->department == 'All' && $status == 'active'){
                 $tickets = Ticket::where(function($query) {
                     return $query
@@ -363,6 +361,8 @@ class TicketController extends Controller
         else if ($request->closeTicket || $request->rejectTicket){
             $ticket->ticket_status = 2;
             $ticket->date_closed = new \DateTime('NOW');
+            $ticket->ticket_type = $request->closeTicket ? $request->ticketType : 'invalid';
+            $ticket->closing_notes = $request->closingNotes;
 
             $ticket->owner = $request->rejectTicket ? auth()->user()->name : $ticket->owner;
 
@@ -377,6 +377,8 @@ class TicketController extends Controller
             $ticket->ticket_status = 2;
             $ticket->date_closed = new \DateTime('NOW');
             $ticket->owner = auth()->user()->name;
+            $ticket->ticket_type = 'valid';
+            $ticket->closing_notes = $request->closingNotes;
 
             $newTicket->department = $ticket->target_department;
             $newTicket->target_department = null;
@@ -457,7 +459,7 @@ class TicketController extends Controller
     }
 
     /**
-     * Part of modify ticket action. All changes are sent to database and are available in ticket details view.
+     * Part of modify ticket action. All changes are sent to database and are listed in ticket details view.
      *
      * @param Request $request
      * @param int $id

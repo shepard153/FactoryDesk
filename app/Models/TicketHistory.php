@@ -23,16 +23,12 @@ class TicketHistory extends Model
      */
     protected $primaryKey = 'editID';
 
-    public $timestamps = null;
-
     /**
-     * The attributes that are mass assignable.
+     * Indicates if the model's ID is auto-incrementing.
      *
-     * @var array<int, string>
-      */
-      protected $fillable = [
-        'ticketID',
-        'username',
-        'contents',
-    ];
+     * @var bool
+     */
+    public $incrementing = true;
+
+    public $timestamps = null;
 }
