@@ -12,4 +12,9 @@ Simple ticketing system designed for manufacturing environments where production
 1. Download/clone repository
 2. Run composer update
 3. Setup your .env file with your database configuration
-4. Run php artisan migrate command
+4. Run following commands:
+<pre>
+  php artisan migrate
+  php artisan storage:link
+  php artisan serve
+</pre>
