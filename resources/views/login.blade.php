@@ -84,7 +84,7 @@
           @endif
         <button class="w-100 btn btn-lg btn-primary mb-2" type="submit" name="submit">{{ __('login.signin') }}</button>
       </form>
-      <a class="text-muted" href="{{ url('/')}}">Powrot do strony głównej</a>
+      <a class="text-muted" href="{{ url('/')}}">{{ __('login.return_main') }}</a>
     </main>
   </body>
 </html>

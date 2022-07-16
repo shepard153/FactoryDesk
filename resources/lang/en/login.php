@@ -6,4 +6,5 @@ return [
     'password_input' => 'Password',
     'signin' => 'Sign In',
     'invalid_credentials' => 'Invalid login or password',
+    'return_main' => 'Return to main page',
 ];

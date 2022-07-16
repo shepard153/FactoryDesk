@@ -23,13 +23,13 @@
     <table class="table table-hover" id="newestTable">
       <thead>
         <tr>
-          <td>ID</td>
-          <td>Status</td>
-          <td>Obszar</td>
-          <td>Stanowisko</td>
-          <td>Problem</td>
-          <td>Urządzenie</td>
-          <td>Data zgłoszenia</td>
+          <td>{{ __('dashboard_main.table_ID') }}</td>
+          <td>{{ __('dashboard_main.table_status') }}</td>
+          <td>{{ __('dashboard_main.table_zone') }}</td>
+          <td>{{ __('dashboard_main.table_position') }}</td>
+          <td>{{ __('dashboard_main.table_problem') }}</td>
+          <td>{{ __('dashboard_main.table_device') }}</td>
+          <td>{{ __('dashboard_main.table_date') }}</td>
         </tr>
       </thead>
       <tbody id="newestRows">
@@ -161,13 +161,13 @@
                         }
 
                         switch (value['ticket_status']){
-                            case '-1':
+                            case -1:
                                 status = "<span class='badge rounded-pill bg-primary'>{{ __('dashboard_main.status_pill_awaiting') }}</span>";
                                 break;
-                            case '0':
+                            case 0:
                                 status = "<span class='badge rounded-pill bg-success'>{{ __('dashboard_main.status_pill_new') }}</span>";
                                 break;
-                            case '1':
+                            case 1:
                                 status = "<span class='badge rounded-pill bg-warning'>{{ __('dashboard_main.status_pill_in_progress') }}</span>";
                                 break;
                         }
