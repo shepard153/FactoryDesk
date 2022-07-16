@@ -21,6 +21,13 @@ class Note extends Model
      */
     protected $primaryKey = 'noteID';
 
+    /**
+     * Indicates if the model's ID is auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = true;
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = null;
 

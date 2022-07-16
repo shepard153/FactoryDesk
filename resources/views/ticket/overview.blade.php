@@ -3,19 +3,39 @@
 @section('title', 'RUGDesk')
 
 @section('navbar')
-    @parent
+  @parent
 
 @endsection
 
 @section('content')
   <p class="fs-4 border-bottom text-center" id="header"></p>
   <div class="col-3">
+    <label class="form-label">{{ __('main_page.overview_select_department') }}</label>
     <select id="overviewDepartment" class="form-select">
       <option value="All">{{ __('main_page.overview_all_departments') }}</option>
       @foreach ($departmentList as $department)
         <option value="{{ $department->department_name }}">{{ $department->department_name }}</option>
       @endforeach
     </select>
+  </div>
+  <div class="col col-lg-12">
+    <p class="fs-3 border-bottom" style="text-align: center;">{{ __('dashboard_main.newest_tickets') }}</p>
+    <table class="table table-hover" id="newestTable">
+      <thead>
+        <tr>
+          <td>ID</td>
+          <td>Status</td>
+          <td>Obszar</td>
+          <td>Stanowisko</td>
+          <td>Problem</td>
+          <td>Urządzenie</td>
+          <td>Data zgłoszenia</td>
+        </tr>
+      </thead>
+      <tbody id="newestRows">
+        <p class="fs-2 text-center" id="nothingNewMessage" style="padding: 0vw 0px 1vw 0px; display: none">{{ __('dashboard_main.table_no_new_tickets') }}</p>
+      </tbody>
+    </table>
   </div>
   <div class="row mt-2">
     <div class="col col-lg-3 mt-3">
@@ -35,7 +55,7 @@
     <div class="col col-lg-9">
       <canvas id="graphCanvas" height="120"></canvas>
       <div id="loadingSpinner" class="text-center">
-        <img src="{{ asset('img/loading.gif')}}"/>
+        <img src="{{ asset('public/img/loading.gif')}}"/>
       </div>
     </div>
   </div>
@@ -43,12 +63,24 @@
   <script>
     $(document).ready(function () {
         showChart('{{ $defaultDepartment}}');
-        $('#header').text('{{ __("main_page.overview_heading", ["department" => $defaultDepartment]) }}');
+        if ('{{ $defaultDepartment}}' == 'All'){
+            $('#header').text('{{ __("main_page.overview_heading_all") }}');
+        }
+        else{
+            $('#header').text('{{ __("main_page.overview_heading", ["department" => $defaultDepartment]) }}');
+        }
+
+        setInterval(function () {showChart($('#overviewDepartment').val());}, 30000);
     });
 
     $('#overviewDepartment').on('change', function() {
         department = $(this).val();
-        $('#header').text('{{ __("main_page.overview_heading", ["department" => '']) }}' + department);
+        if (department == 'All'){
+            $('#header').text('{{ __("main_page.overview_heading_all") }}');
+        }
+        else{
+            $('#header').text('{{ __("main_page.overview_heading", ["department" => '']) }}' + department);
+        }
         showChart(department);
     })
 
@@ -61,10 +93,6 @@
             type: "GET",
             url: "overview/chartData/" + department,
             dataType: 'json',
-            beforeSend: function() {
-                $("#graphCanvas").hide();
-                $("#loadingSpinner").show();
-            },
             success: function(data){
                 $("#loadingSpinner").hide();
                 $("#graphCanvas").show();
@@ -110,6 +138,56 @@
                         },
                     }
                 });
+
+                if (data['newest'].length === 0) {
+                    $('#nothingNewMessage').css('display', 'block');
+                    $('#newestTable').hide();
+                }
+                else{
+                    $('#nothingNewMessage').hide();
+                    $('#newestTable').css('display', 'table');
+                    $('#newestRows').empty();
+                    $.each(data['newest'], function(key, value) {
+                        switch (value['priority']) {
+                            case '4':
+                                row = "<tr class='clickable-row' data-href='ticket/" + value['ticketID'] + "' style='background-color: #ff7f7f'>";
+                                break;
+                            case '0':
+                                row = "<tr class='clickable-row' data-href='ticket/" + value['ticketID'] + "' style='background-color: #d4ebf2'>";
+                                break;
+                            default:
+                                row = "<tr class='clickable-row' data-href='ticket/" + value['ticketID'] + "'>";
+                                break;
+                        }
+
+                        switch (value['ticket_status']){
+                            case '-1':
+                                status = "<span class='badge rounded-pill bg-primary'>{{ __('dashboard_main.status_pill_awaiting') }}</span>";
+                                break;
+                            case '0':
+                                status = "<span class='badge rounded-pill bg-success'>{{ __('dashboard_main.status_pill_new') }}</span>";
+                                break;
+                            case '1':
+                                status = "<span class='badge rounded-pill bg-warning'>{{ __('dashboard_main.status_pill_in_progress') }}</span>";
+                                break;
+                        }
+
+                        date = new Date(value['date_created']);
+                        date = date.getFullYear() + "-" + ('0' + (date.getMonth()+1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2) + " " +
+                                ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2);
+
+                        $('#newestRows').append(row +
+                            '<td>' + value['department_ticketID'] + '</td> \
+                            <td>' + status + '</td> \
+                            <td>' + value['zone'] + '</td> \
+                            <td>' + value['position'] + '</td> \
+                            <td>' + value['problem'] + '</td> \
+                            <td>' + value['device_name'] + '</td> \
+                            <td>' + date  + '</td> \
+                            </tr>'
+                        );
+                    });
+                }
             }
         });
     }

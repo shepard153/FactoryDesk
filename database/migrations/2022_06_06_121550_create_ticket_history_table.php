@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('ticketID');
             $table->string('username', 255);
             $table->string('contents', 255);
-            $table->dateTime('date_modified')->useCurrent();
+            $table->dateTime('date_modified');
         });
     }
 

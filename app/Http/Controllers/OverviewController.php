@@ -42,6 +42,15 @@ class OverviewController extends Controller
                 $all = Ticket::where('department', $department)->count();
                 $allNew = Ticket::where('department', $department)->where('ticket_status', 0)->count();
                 $allOpen = Ticket::where('department', $department)->where('ticket_status', 1)->count();
+                $newest = Ticket::where("department", '=', "$department")
+                    ->where(function ($query){
+                        $query->where('ticket_status', '!=', 2)
+                            ->orWhere('ticket_status', '=', 0)
+                            ->orWhere('ticket_status', '=', 1);
+                    })
+                    ->orderBy('date_created', 'desc')
+                    ->limit(7)
+                    ->get();
             }
         }
         else{
@@ -57,6 +66,14 @@ class OverviewController extends Controller
                 $all = Ticket::all()->count();
                 $allNew = Ticket::where('ticket_status', 0)->count();
                 $allOpen = Ticket::where('ticket_status', 1)->count();
+                $newest = Ticket::where(function ($query){
+                    $query->where('ticket_status', '!=', 2)
+                        ->orWhere('ticket_status', '=', 0)
+                        ->orWhere('ticket_status', '=', 1);
+                    })
+                    ->orderBy('date_created', 'desc')
+                    ->limit(7)
+                    ->get();
             }
         }
 
@@ -68,6 +85,7 @@ class OverviewController extends Controller
             'all' => $all,
             'allOpen' => $allOpen,
             'allNew' => $allNew,
+            'newest' => $newest,
         ]);
     }
 }

@@ -61,7 +61,7 @@
 <body>
   @section('sidebar')
   <main>
-    <div id="sidebar" class="flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 240px; display: none">
+    <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 240px; display: none">
       <p class="d-flex align-items-center mb-md-0 ms-3 me-md-auto text-white text-decoration-none">
         <i class="fa-solid fa-signs-post fs-4"></i> &nbsp;
         <span class="fs-4">{{ __('dashboard_main.menu') }}</span>
@@ -166,7 +166,6 @@
       </div>
     </div>
     <div class="b-example-divider">
-      <button type="button" id="menuToggler" class="btn btn-dark" style="position: sticky"><i id="navArrow" class="fa-solid fa-angle-right"></i></button>
     </div>
     @show
     <div class="container-fluid" style="background:#F2F2F2; overflow: auto;">
@@ -235,8 +234,8 @@
           </div>
           <div class="col">
             <ul class="nav justify-content-end">
-              <li class="nav-item"><a class="nav-link px-2 text-muted" href="{{ url('lang/pl') }}">{{ __('main_page.language_polish') }}</a></li>
-              <li class="nav-item"><a class="nav-link px-2 text-muted" href="{{ url('lang/en') }}">{{ __('main_page.language_english') }}</a></li>
+              <li class="nav-item"><a class="nav-link px-2 text-muted" href="{{ url('lang/pl') }}">Polski</a></li>
+              <li class="nav-item"><a class="nav-link px-2 text-muted" href="{{ url('lang/en') }}">English</a></li>
             </ul>
           </div>
         </footer>
@@ -247,34 +246,32 @@
 <script src="{{ asset('js/bootstrap.bundle.min.js') }}" async="async"></script>
 <script>
 $(document).ready(function() {
+    sidebarToggler();
+
     setInterval(function() {
         var docHeight = $(window).height();
-        var footerHeight = $('#footer').height();
+        var footerHeight = $('#footer').outerHeight();
         var footerTop = $('#footer').position().top + footerHeight;
         var marginTop = (docHeight - footerTop - 10);
 
         if (footerTop < docHeight)
             $('#footer').css('margin-top', marginTop + 'px');
         else
-            $('#footer').css('margin-top', '-4');
+            $('#footer').css('margin-top', '-1');
     }, 200);
 });
 
-$('#menuToggler').on({
-    mouseenter: function(){
-        $('#sidebar').addClass('d-flex');
-        $('#sidebar').toggle(500);
-        $('#menuToggler').toggle(500);
-    },
+$(window).resize(function() {
+    sidebarToggler();
 });
 
-$('#sidebar').on({
-    mouseleave: function(){
-        $('#sidebar').removeClass('d-flex');
-        $('#sidebar').toggle(500);
-        $('#menuToggler').toggle(500);
+function sidebarToggler() {
+    if ($(window).width() < 1220 ) {
+        $('#sidebar').removeClass("d-flex");
     }
-});
-
+    else {
+        $('#sidebar').addClass("d-flex");
+    }
+}
 </script>
 </html>
