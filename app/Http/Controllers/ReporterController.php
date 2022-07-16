@@ -36,7 +36,7 @@ class ReporterController extends Controller
 
         foreach ($request->request as $k => $v){
             if (str_contains($k, 'is')){
-                $columns [] = "$v";
+                $columns [] = "\"$v\"";
             }
         }
 
@@ -70,6 +70,8 @@ class ReporterController extends Controller
     {
         $csv = Writer::createFromFileObject(new \SplTempFileObject());
         $csv->setDelimiter(";");
+
+        $columns = preg_replace('/(^[\"\']|[\"\']$)/', "", $columns );
         $csv->insertOne($columns);
         foreach ($items as $item){
             if ($item['ticket_type'] == 'valid'){
