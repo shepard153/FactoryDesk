@@ -35,7 +35,6 @@ return new class extends Migration
             $table->string('target_department', 255)->nullable();
             $table->string('ticket_type', 50)->nullable();
             $table->string('closing_notes', 250)->nullable();
-            $table->timestamps();
         });
     }
 

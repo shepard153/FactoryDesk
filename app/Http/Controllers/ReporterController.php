@@ -7,7 +7,7 @@ use League\Csv\Writer;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Codedge\Fpdf\Fpdf\Fpdf;
-
+use Carbon\Carbon;
 use App\Models\Ticket;
 
 class ReporterController extends Controller
@@ -36,14 +36,19 @@ class ReporterController extends Controller
 
         foreach ($request->request as $k => $v){
             if (str_contains($k, 'is')){
-                $columns [] = "\"$v\"";
+                if (config('database.default') == 'pgsql'){
+                    $columns [] = "\"$v\"";
+                }
+                else{
+                    $columns [] = "$v";
+                }
             }
         }
 
         $items = Ticket::selectRaw(implode(',', $columns))
             ->where('department', auth()->user()->department)
-            ->whereDate('date_created', $request->startDate)
-            ->whereDate('date_closed', $request->endDate)
+            ->whereDate('date_created', '>=', Carbon::create($request->startDate)->toDateString())
+            ->whereDate('date_created', '<=', Carbon::create($request->startDate)->addDay()->toDateString())
             ->get()
             ->toArray();
 
@@ -102,7 +107,7 @@ class ReporterController extends Controller
 
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            "rugdeskreport_$date.csv"
+            "factorydesk_$date.csv"
         );
 
         $response->headers->set('Content-Disposition', $disposition);
