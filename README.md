@@ -32,3 +32,6 @@ Workers can also: <br/>
   php artisan migrate
   php artisan serve
 </pre>
+
+## Demo
+https://factorydesk.herokuapp.com/
