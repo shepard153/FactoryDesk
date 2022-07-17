@@ -3,8 +3,11 @@
 
 ## About
 Simple ticketing system designed for manufacturing environments where production workers need to contact specific department but they don't have AD/email accounts.
-Ticket request form consists of three dependant select fields where production workers picks options in following order: <br/>
-Manufacturing zone (from which worker raises an issue), position (place where worker performs his duties) and problem.
+Ticket request form consists of three dependant select fields where production workers can: <br/>
+-> pick select options in following order: Manufacturing zone (from which worker raises an issue), position (place where worker performs his duties) and problem <br/>
+-> add short message (250 characters) to describe their problem <br/>
+-> attach files <br/>
+-> select priority <br/>
 
 ## Prequisites
 - PHP 8.1+
