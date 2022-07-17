@@ -3,7 +3,7 @@
 
 ## About
 Simple ticketing system designed for manufacturing environments where production workers need to contact specific department but they don't have AD/email accounts.
-Ticket request form consists of three dependant select fields where production workers picks options in following order:
+Ticket request form consists of three dependant select fields where production workers picks options in following order: <br/>
 Manufacturing zone (from which worker raises an issue), position (place where worker performs his duties) and problem.
 
 ## Prequisites
