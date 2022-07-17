@@ -10,19 +10,18 @@
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <title>{{ __('login.title') }}</title>
     <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
+      @media (max-width: 768px) {
+        #bigLogo{
+          display: none;
+        }
       }
 
       @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
+        #smallLogo{
+          display: none;
         }
       }
+
       html,body {
         height: 100%;
       }
@@ -50,12 +49,6 @@
         z-index: 2;
       }
 
-      .form-signin input[type="email"] {
-        margin-bottom: -1px;
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
-      }
-
       .form-signin input[type="password"] {
         margin-bottom: 10px;
         border-top-left-radius: 0;
@@ -63,12 +56,13 @@
       }
     </style>
   </head>
-  <body class="text-center">
+  <body class="container text-center">
+    <div class="row" id="bigLogo">
+      <img class="mb-2" src="{{ asset('img/factorydesk-logo.png') }}" alt="FactoryDesk Logo">
+    </div>
     <main class="form-signin">
+      <img class="img-fluid mb-2" id="smallLogo" src="{{ asset('img/factorydesk-logo.png') }}" alt="FactoryDesk Logo">
       <form action="{{ route('loginAction') }}" method="post">
-        <figure class="figure" style="margin-left: -7vw">
-          <img class="mb-2" src="{{ asset('img/rugdesk-logo.png') }}" alt="" width="560" height="120">
-        </figure>
         <h1 class="h3 mb-3 fw-normal">{{ __('login.title') }}</h1>
         @csrf
         <div class="form-floating">
@@ -85,6 +79,10 @@
         <button class="w-100 btn btn-lg btn-primary mb-2" type="submit" name="submit">{{ __('login.signin') }}</button>
       </form>
       <a class="text-muted" href="{{ url('/')}}">{{ __('login.return_main') }}</a>
+      <ul class="nav justify-content-evenly border-top mt-3">
+        <li class="nav-item"><a class="nav-link ps-2 text-muted" href="{{ url('lang/pl') }}">Polski</a></li>
+        <li class="nav-item"><a class="nav-link px-2 text-muted" href="{{ url('lang/en') }}">English</a></li>
+      </ul>
     </main>
   </body>
 </html>

@@ -39,6 +39,17 @@
           display: none;
         }
       }
+
+      @media only screen and (max-width: 992px) {
+        #bigLogo {
+          display: none;
+        }
+      }
+      @media only screen and (min-width: 992px) {
+        #smallLogo {
+          display: none;
+        }
+      }
       .dropzone {
         position: relative;
         border: 2px solid #ccc;
@@ -142,7 +153,7 @@
       <hr>
       <div class="dropdown">
         <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="{{ asset('img/agent.png') }}" alt="" class="rounded-circle me-2" style="width: 48px; height: 48px; margin-top: 0.1vw">
+          <img src="{{ asset('img/favicon-32x32.png') }}" alt="Profile icon" class="rounded-circle me-2 my-auto" style="width: 48px; height: 48px;">
           @php
             $username = wordwrap(auth()->user()->name, 20, "<br />\n");
             echo "<strong>$username</strong>"
@@ -174,6 +185,7 @@
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
+          <img id="smallLogo" class="float-start my-auto" src="{{ asset('img/factorydesk-logo.png') }}" alt="FactoryDesk Logo" style="width: 250px; height: 50px"/>
           <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
             <ul class="navbar-nav" style="font-size: 18px">
               <li class="nav-item">
@@ -226,7 +238,14 @@
         </div>
       </nav>
       <div class="col">
-        <p class="fs-2 border-bottom" style="background:white; margin: 0 -0.6vw 1vw -0.6vw; padding: 0.5vw 4vw 0.6vw 0vw; text-align: right">{{ $pageTitle }}</p>
+        <div class="row border-bottom px-3" style="background:white; margin: 0 -0.6vw 1vw -0.6vw;">
+          <div class="col my-auto">
+            <img id="bigLogo" class="float-start my-auto" src="{{ asset('img/factorydesk-logo.png') }}" alt="FactoryDesk Logo" style="width: 45%; height:auto;"/>
+          </div>
+          <div class="col">
+            <p class="fs-2 pt-2 text-end">{{ $pageTitle }}</p>
+          </div>
+        </div>
         @yield('content')
         <footer id="footer" class="row border-top">
           <div class="col" style="justify-content: center;">
