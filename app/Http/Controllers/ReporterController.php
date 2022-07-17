@@ -82,6 +82,9 @@ class ReporterController extends Controller
             if ($item['ticket_type'] == 'valid'){
                 $item['ticket_type'] = __('dashboard_tickets.ticket_type_valid');
             }
+            else if ($item['date_closed'] == null){
+                $item['ticket_type'] = '';
+            }
             else{
                 $item['ticket_type'] = __('dashboard_tickets.ticket_type_invalid');
             }
@@ -120,7 +123,7 @@ class ReporterController extends Controller
     }
 
     /**
-     * Export report data to PDF file. Not working as of 21.06.2022.
+     * Export data to PDF file. Not working as of 21.06.2022.
      * Exported data is too wide even for horizontal layout.
      *
      * @param array $columns
