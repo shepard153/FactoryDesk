@@ -2,7 +2,7 @@
 
 
 ## About
-Simple ticketing system designed for manufacturing environments where production workers need to contact specific department but they don't have email access.
+Simple ticketing system designed for manufacturing environments where production workers need to contact specific department but they don't have AD/email accounts.
 
 ## Prequisites
 - PHP 8.1+
