@@ -1,6 +1,6 @@
 <HTML>
   <head>
-    <meta charset="UTF-8" lang="pl"/>
+    <meta charset="UTF-8" lang="{{ app()->currentLocale() }}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">
@@ -55,7 +55,7 @@
         border-style: solid;
       }
     </style>
-    <title>RUGDesk</title>
+    <title>{{ config('app.name') }}</title>
   </head>
   <body>
     @section('navbar')
@@ -79,7 +79,6 @@
           </div>
         </div>
       </nav>
-      @show
       <div class="container">
         @yield('content')
         <footer id="footer" class="row border-top">
@@ -94,7 +93,7 @@
           </div>
         </footer>
       </div>
-    </body>
+  </body>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}" async="async"></script>
     <script>
     $(document).ready(function() {

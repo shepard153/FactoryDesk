@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="{{ app()->currentLocale() }}">
   <head>
     <meta charset="UTF-8">
-    <title>RUGDesk - 404</title>
+    <title>{{ config('app.name') }} - 404</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ asset('css/error-500-style.css') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">

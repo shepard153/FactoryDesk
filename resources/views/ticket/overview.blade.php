@@ -1,7 +1,5 @@
 ﻿@extends('ticket/ticket_template')
 
-@section('title', 'RUGDesk')
-
 @section('navbar')
   @parent
 

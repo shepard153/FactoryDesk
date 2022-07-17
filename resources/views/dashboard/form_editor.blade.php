@@ -1,7 +1,5 @@
 @extends('dashboard/dashboard_template')
 
-@section('title', 'RUGDesk')
-
 @section('sidebar')
   @parent
 

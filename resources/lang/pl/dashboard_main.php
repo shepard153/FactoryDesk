@@ -4,7 +4,7 @@ return [
     /**
      * Dashboard  template/sidebar
      */
-    'title' => 'RUGDesk - Dashboard',
+    'title' => config('app.name').' - Dashboard',
     'menu' => 'Menu',
     'dashboard_link' => 'Dashboard',
     'tickets_awaiting_link' => 'Do zatwierdzenia',
