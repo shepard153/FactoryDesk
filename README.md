@@ -4,7 +4,9 @@
 ## About
 Simple ticketing system designed for manufacturing environments where production workers need to contact specific department but they don't have AD/email accounts.
 Ticket request form consists of three dependant select fields where production workers can pick select options in following order: <br/>
-Manufacturing zone (from which worker raises an issue), position (place where worker performs his duties) and problem. Workers can also: <br/>
+Manufacturing zone (from which worker raises an issue), position (place where worker performs his duties) and problem.
+<br/><br/>
+Workers can also: <br/>
 -> add short message (250 characters) to describe their problem <br/>
 -> attach files <br/>
 -> select priority <br/>
