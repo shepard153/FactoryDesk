@@ -16,7 +16,7 @@ return [
     'save_changes' => 'Save changes',
     'is_admin_yes' => 'Yes',
     'is_admin_no' => 'No',
-    'operations' => 'Operations',
+    'operations' => 'Actions',
     'operation_edit' => 'Edit',
     'operation_delete' => 'Delete',
     'remove_user' => 'Remove user account',

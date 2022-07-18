@@ -56,7 +56,7 @@
       }
     </style>
   </head>
-  <body class="container text-center">
+  <body class="container text-center text-warning bg-dark">
     <div class="row" id="bigLogo">
       <img class="mb-2" src="{{ asset('img/factorydesk-logo.png') }}" alt="FactoryDesk Logo">
     </div>
@@ -67,21 +67,21 @@
         @csrf
         <div class="form-floating">
           <input type="text" class="form-control" id="floatingInput" name="login" placeholder="Login" required/>
-          <label for="floatingInput">{{ __('login.login_input') }}</label>
+          <label for="floatingInput" class="text-dark">{{ __('login.login_input') }}</label>
         </div>
         <div class="form-floating">
           <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="{{ __('login.password_input') }}" required/>
-          <label for="floatingPassword">{{ __('login.password_input') }}</label>
+          <label for="floatingPassword" class="text-dark">{{ __('login.password_input') }}</label>
         </div>
           @if ($errors->has('error'))
               <div class="alert alert-danger">{{ $errors->first('error') }}</div>
           @endif
-        <button class="w-100 btn btn-lg btn-primary mb-2" type="submit" name="submit">{{ __('login.signin') }}</button>
+        <button class="w-100 btn btn-lg btn-warning mb-2" type="submit" name="submit">{{ __('login.signin') }}</button>
       </form>
-      <a class="text-muted" href="{{ url('/')}}">{{ __('login.return_main') }}</a>
-      <ul class="nav justify-content-evenly border-top mt-3">
-        <li class="nav-item"><a class="nav-link ps-2 text-muted" href="{{ url('lang/pl') }}">Polski</a></li>
-        <li class="nav-item"><a class="nav-link px-2 text-muted" href="{{ url('lang/en') }}">English</a></li>
+      <a class="link-light" href="{{ url('/')}}">{{ __('login.return_main') }}</a>
+      <ul class="nav justify-content-evenly border-top border-secondary mt-3">
+        <li class="nav-item"><a class="nav-link ps-2 text-warning" href="{{ url('lang/pl') }}">Polski</a></li>
+        <li class="nav-item"><a class="nav-link px-2 text-warning" href="{{ url('lang/en') }}">English</a></li>
       </ul>
     </main>
   </body>

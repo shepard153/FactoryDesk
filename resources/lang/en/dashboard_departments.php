@@ -6,7 +6,7 @@ return [
     'edit_department' => 'Edit department',
     'manage_departments' => 'Manage departments',
     'department_name' => 'Department name',
-    'operations' => 'Operations',
+    'operations' => 'Actions',
     'operation_edit' => 'Edit',
     'operation_delete' => 'Delete',
     'remove_department' => 'Remove department',

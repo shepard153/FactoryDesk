@@ -72,11 +72,8 @@
 <body>
   @section('sidebar')
   <main>
-    <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 240px; display: none">
-      <p class="d-flex align-items-center mb-md-0 ms-3 me-md-auto text-white text-decoration-none">
-        <i class="fa-solid fa-signs-post fs-4"></i> &nbsp;
-        <span class="fs-4">{{ __('dashboard_main.menu') }}</span>
-      </p>
+    <div id="sidebar" class="d-flex flex-column flex-shrink-0 p-2 text-white bg-dark" style="width: 240px; display: none">
+      <img id="bigLogo" class="float-start" src="{{ asset('img/factorydesk-logo.png') }}" alt="FactoryDesk Logo" style="width: 100%; height:auto;"/>
       <hr>
       <ul class="nav nav-pills flex-column mb-auto">
         <li>
@@ -180,13 +177,13 @@
     </div>
     @show
     <div class="container-fluid" style="background:#F2F2F2; overflow: auto;">
-      <nav id="topNav" class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <nav id="topNav" class="navbar navbar-expand-lg navbar-dark bg-dark mb-2">
         <div class="container-fluid">
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <img id="smallLogo" class="float-start my-auto" src="{{ asset('img/factorydesk-logo.png') }}" alt="FactoryDesk Logo" style="width: 250px; height: 50px"/>
-          <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+          <div class="collapse navbar-collapse justify-content-start" id="navbarNav">
             <ul class="navbar-nav" style="font-size: 18px">
               <li class="nav-item">
                 <a class="nav-link {{ \Route::currentRouteName() == 'dashboard' ? 'active' : '' }}" aria-current="page" href="{{ url('dashboard') }}">{{ __('dashboard_main.dashboard_link') }}</a>
@@ -239,9 +236,6 @@
       </nav>
       <div class="col">
         <div class="row border-bottom px-3" style="background:white; margin: 0 -0.6vw 1vw -0.6vw;">
-          <div class="col my-auto">
-            <img id="bigLogo" class="float-start my-auto" src="{{ asset('img/factorydesk-logo.png') }}" alt="FactoryDesk Logo" style="width: 45%; height:auto;"/>
-          </div>
           <div class="col">
             <p class="fs-2 pt-2 text-end">{{ $pageTitle }}</p>
           </div>

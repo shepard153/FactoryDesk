@@ -8,7 +8,7 @@ return [
     'manage_zones' => 'Manage zones',
     'create_zone' => 'Create zone',
     'zone_name' => 'Zone name',
-    'operations' => 'Operations',
+    'operations' => 'Actions',
     'edit' => 'Edit',
     'delete' => 'Delete',
     'cancel' => 'Cancel',

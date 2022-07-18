@@ -32,15 +32,7 @@ class ProblemController extends Controller
     {
         $request->validate(['problem_name' => 'required|unique:Problems']);
 
-        $positions = [];
-
-        foreach($request->request->all() as $key => $value){
-            if ($key != "_token" && $key != "problem_name" && $key != "lp" && $key != "departments_list" && $key != "confirmCreate"){
-                $positions[] = str_replace('_', ' ', $key);
-            }
-        }
-
-        $positions = implode(', ', $positions);
+        $positions = implode(', ', $request->positions);
 
         Problem::create([
             'problem_name' => $request->problem_name,
@@ -66,15 +58,7 @@ class ProblemController extends Controller
 
         $problem->isDirty('problem_name') == true ? $request->validate(['problem_name' => 'required|unique:Problems']) : null;
 
-        foreach($request->request->all() as $key => $value){
-            if ($key != "_token" && $key != "problem_name" && $key != "lp" && $key != "departments_list" && $key != "confirmEdit"){
-                $positions[] = str_replace('_', ' ', $key);
-            }
-        }
-
-        $positions = implode(', ', $positions);
-
-        $problem->positions_list = $positions;
+        $problem->positions_list = implode(', ', $request->positions);
         $problem->departments_list = $request->departments_list;
 
         $problem->save();

@@ -147,6 +147,22 @@
   </div>
     <script>
         /**
+         * Validate if one of required checkboxes is selected.
+         */
+        function checkboxesRequired(name) {
+            if (name == 'zones'){
+                $cbx_group = $("input:checkbox[name='zones[]']");
+            }
+            else{
+                $cbx_group = $("input:checkbox[name='positions[]']");
+            }
+            $cbx_group.prop('required', true);
+            if($cbx_group.is(":checked")){
+                $cbx_group.prop('required', false);
+            }
+        }
+
+        /**
          * Delete buttons trigger function.
          */
         $("[name=delete]").click(function() {
@@ -207,9 +223,9 @@
                         success: function(zones){
                             $.each(zones, function(key, value) {
                                 if (~zoneList.indexOf(value['zone_name']))
-                                    input = '<input type="checkbox" class="form-check-input" name="' + value['zone_name'] + '" checked>';
+                                    input = '<input type="checkbox" class="form-check-input" value="' + value['zone_name'] + '" class="form-check-input" name="zones[]" onChange="checkboxesRequired(\'zones\')" checked>';
                                 else
-                                    input = '<input type="checkbox" class="form-check-input" name="' + value['zone_name'] + '">';
+                                    input = '<input type="checkbox" class="form-check-input" value="' + value['zone_name'] + '" class="form-check-input" name="zones[]" onChange="checkboxesRequired(\'zones\')">';
                                 $('#text').append('<tr> \
                                     <td> \
                                         <h5>' + input + ' \
@@ -244,9 +260,9 @@
                         success: function(positions){
                             $.each(positions, function(key, value) {
                                 if (~positionList.indexOf(value['position_name']))
-                                    input = '<input type="checkbox" class="form-check-input" name="' + value['position_name'] + '" checked>';
+                                    input = '<input type="checkbox" class="form-check-input" value="' + value['position_name'] + '" class="form-check-input" name="positions[]" onChange="checkboxesRequired(\'positions\')" checked>';
                                 else
-                                    input = '<input type="checkbox" class="form-check-input" name="' + value['position_name'] + '">';
+                                    input = '<input type="checkbox" class="form-check-input" value="' + value['position_name'] + '" class="form-check-input" name="positions[]" onChange="checkboxesRequired(\'positions\')">';
                                 $('#text').append('\
                                     <div class="form-group"> \
                                         <p>' + input + ' \
@@ -347,7 +363,7 @@
                 dataType: 'json',
                 success: function(zones){
                     $.each(zones, function(key, value) {
-                        input = '<input type="checkbox" id="' + value['zone_name'] + '" class="form-check-input" name="' + value['zone_name'] + '">';
+                        input = '<input type="checkbox" value="' + value['zone_name'] + '" class="form-check-input" name="zones[]" onChange="checkboxesRequired(\'zones\')" required>';
                         $('#text').append('<tr> \
                             <td> \
                                 <h4>' + input + ' \
@@ -382,7 +398,7 @@
                 dataType: 'json',
                 success: function(positions){
                     $.each(positions, function(key, value) {
-                        input = '<input type="checkbox" id="' + value['position_name'] + '" class="form-check-input" name="' + value['position_name'] + '">';
+                        input = '<input type="checkbox" value="' + value['position_name'] + '" class="form-check-input" name="positions[]" onChange="checkboxesRequired(\'positions\')" required>';
                         $('#text').append('\
                             <div class="form-group"> \
                                 <h5>' + input + ' \

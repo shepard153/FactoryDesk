@@ -36,15 +36,7 @@ class PositionController extends Controller
     {
         $request->validate(['position_name' => 'required|unique:Positions']);
 
-        $zones = [];
-
-        foreach($request->request->all() as $key => $value){
-            if ($key != "_token" && $key != "position_name" && $key != "confirmCreate"){
-                $zones[] = str_replace('_', ' ', $key);
-            }
-        }
-
-        $zones = implode(', ', $zones);
+        $zones = implode(', ', $request->zones);
 
         Position::create([
             'position_name' => $request->position_name,
@@ -66,15 +58,7 @@ class PositionController extends Controller
         $position->position_name = $request->position_name;
         $position->isDirty('position_name') == true ? $request->validate(['position_name' => 'required|unique:Positions']) : null;
 
-        foreach($request->request->all() as $key => $value){
-            if ($key != "_token" && $key != "position_name" && $key != "confirmEdit"){
-                $zones[] = str_replace('_', ' ', $key);
-            }
-        }
-
-        $zones = implode(', ', $zones);
-
-        $position->zones_list = $zones;
+        $position->zones_list = implode(', ', $request->zones);
 
         $position->save();
 
