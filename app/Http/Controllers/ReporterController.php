@@ -45,12 +45,21 @@ class ReporterController extends Controller
             }
         }
 
-        $items = Ticket::selectRaw(implode(',', $columns))
+        if (auth()->user()->department == 'All'){
+            $items = Ticket::selectRaw(implode(',', $columns))
+            ->whereDate('date_created', '>=', Carbon::create($request->startDate)->toDateString())
+            ->whereDate('date_created', '<=', Carbon::create($request->startDate)->addDay()->toDateString())
+            ->get()
+            ->toArray();
+        }
+        else{
+            $items = Ticket::selectRaw(implode(',', $columns))
             ->where('department', auth()->user()->department)
             ->whereDate('date_created', '>=', Carbon::create($request->startDate)->toDateString())
             ->whereDate('date_created', '<=', Carbon::create($request->startDate)->addDay()->toDateString())
             ->get()
             ->toArray();
+        }
 
         switch ($request->fileFormat){
             case 'csv':
@@ -65,7 +74,8 @@ class ReporterController extends Controller
     }
 
     /**
-     * Export report data to CSV format.
+     * Export report data to CSV format. Remove quotation marks from column names, translate ticket type
+     * and name file with current date.
      *
      * @param array $columns
      * @param array $items
@@ -75,19 +85,24 @@ class ReporterController extends Controller
     {
         $csv = Writer::createFromFileObject(new \SplTempFileObject());
         $csv->setDelimiter(";");
-
-        $columns = preg_replace('/(^[\"\']|[\"\']$)/', "", $columns );
+        $columns = preg_replace('/(^[\"\']|[\"\']$)/', "", $columns);
         $csv->insertOne($columns);
+
         foreach ($items as $item){
             if ($item['ticket_type'] == 'valid'){
                 $item['ticket_type'] = __('dashboard_tickets.ticket_type_valid');
             }
-            else if ($item['date_closed'] == null){
+            else if ($item['ticket_type'] == null){
                 $item['ticket_type'] = '';
             }
             else{
                 $item['ticket_type'] = __('dashboard_tickets.ticket_type_invalid');
             }
+
+            if ($item['date_created']){
+                $item['date_created'] = Carbon::create($item['date_created'])->toDateTimeString();
+            }
+
             $csv->insertOne($item);
         }
 
@@ -101,8 +116,7 @@ class ReporterController extends Controller
             }
         };
 
-        $date = new \DateTime('now');
-        $date = $date->format('YmdHi');
+        $date = Carbon::create('now')->format('YmdHi');
 
         $response = new StreamedResponse();
         $response->headers->set('Content-Encoding', 'none');
@@ -110,7 +124,7 @@ class ReporterController extends Controller
 
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            "factorydesk_$date.csv"
+            config('app.name')."_$date.csv"
         );
 
         $response->headers->set('Content-Disposition', $disposition);

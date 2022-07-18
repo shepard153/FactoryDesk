@@ -35,7 +35,6 @@ class Zone extends Model
      */
     protected $fillable = [
         'zone_name',
-        'department_list',
     ];
 
     public $timestamps = null;

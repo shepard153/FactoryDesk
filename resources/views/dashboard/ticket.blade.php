@@ -39,23 +39,29 @@
         <form method="post" action="{{ url('modifyTicketAction/'.$ticket->ticketID) }}">
           @csrf
           <div class="row" style="margin-top:1vw;">
-            <div class="col">
+            <div class="col-sm-4 col-md-3">
               <span class="fs-5">{{ __('dashboard_tickets.table_date_created') }} {{ $ticket->date_created }}</span>
-              <span class="fs-5" style="margin-left: 2vw">{{ __('dashboard_tickets.date_taken') }}
+              </div>
+            <div class="col-sm-4 col-md-3">
+              <span class="fs-5">{{ __('dashboard_tickets.date_taken') }}
                 @if ($ticket->date_opened == null)
                   --------
                 @else
                   {{ $ticket->date_opened }}
                 @endif
               </span>
-              <span class="fs-5" style="margin-left: 2vw">{{ __('dashboard_tickets.table_date_closed') }}
+            </div>
+            <div class="col-sm-4 col-md-3">
+              <span class="fs-5">{{ __('dashboard_tickets.table_date_closed') }}
                 @if ($ticket->date_closed == null)
                   --------
                 @else
                   {{ $ticket->date_closed }}
                 @endif
               </span>
-              <span class="fs-5" style="margin-left: 4.3vw;">{{ __('dashboard_tickets.table_status') }}
+            </div>
+            <div class="col-sm-4 col-md-3">
+              <span class="fs-5">{{ __('dashboard_tickets.table_status') }}
                 @if ($ticket->ticket_status == -1)
                   <span class="badge rounded-pill bg-primary">{{ __('dashboard_tickets.filter_awaiting') }}</span>
                 @elseif($ticket->ticket_status == 0)
@@ -71,25 +77,25 @@
             </div>
           </div>
           <div class="row" style="margin-top:1vw;">
-            <div class="col">
+            <div class="col-sm-4 col-md-3">
               <label class="form-label">{{ __('dashboard_tickets.table_device') }}</label>
               <input type="text" class="form-control" value="{{ $ticket->device_name }}" disabled/>
             </div>
-            <div class="col">
+            <div class="col-sm-4 col-md-3">
               <label class="form-label">{{ __('dashboard_tickets.raised_by') }}</label>
               <input type="text" class="form-control" value="{{ $ticket->username }}" disabled/>
             </div>
-            <div class="col">
+            <div class="col-sm-4 col-md-3">
               <label class="form-label">{{ __('dashboard_tickets.table_zone') }}</label>
               <input type="text" class="form-control" value="{{ $ticket->zone }}" disabled/>
             </div>
-            <div class="col">
+            <div class="col-sm-4 col-md-3">
               <label class="form-label">{{ __('dashboard_tickets.table_position') }}</label>
               <input type="text" class="form-control" value="{{ $ticket->position }}" disabled/>
             </div>
           </div>
           <div class="row" style="margin-top:1vw;">
-            <div class="col">
+            <div class="col-sm-4 col-md-4">
               <label class="form-label">{{ __('dashboard_tickets.department') }}</label>
               <select id="departmentSelect" name="departmentSelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                 @foreach ($departments as $department)
@@ -97,7 +103,7 @@
                 @endforeach
               </select>
             </div>
-            <div class="col">
+            <div class="col-sm-4 col-md-4">
               <label class="form-label">{{ __('dashboard_tickets.table_problem') }}</label>
               <select id="problemSelect" name="problemSelect" class="form-select" required {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                 @foreach ($problems as $problem)
@@ -105,7 +111,7 @@
                 @endforeach
               </select>
             </div>
-            <div class="col">
+            <div class="col-sm-4 col-md-4">
               <label class="form-label">{{ __('dashboard_tickets.priority') }}</label>
               <select id="prioritySelect" name="prioritySelect" class="form-select" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                 <option value="0">{{ __('dashboard_tickets.priority_low') }}</option>
@@ -114,10 +120,23 @@
               </select>
             </div>
           </div>
-          <div class="row" style="margin-top:1vw;">
+          <div class="row mt-3">
             @if ($ticket->ticket_status != 0 && $ticket->ticket_status != -1)
               <hr>
-              <div class="col-4">
+              <div class="col-sm-4 col-md-4">
+                <label class="form-label">{{ __('dashboard_tickets.time_spent_on') }}</label>
+                <input type="text" id="time_spent" class="form-control" value="{{ date('H:i', strtotime($ticket->time_spent)) }}" disabled/>
+              </div>
+              <div class="col-sm-4 col-md-4 align-self-end">
+                @if ($ticket->ticket_status == 1)
+                  <span class="btn-group mt-2">
+                    <button name="timerAction" type="button" class="btn btn-outline-primary mx-1" value="5">+ 5 {{ __('dashboard_tickets.timer_minutes_button') }}</button>
+                    <button name="timerAction" type="button" class="btn btn-outline-secondary" value="15">+ 15 {{ __('dashboard_tickets.timer_minutes_button') }}</button>
+                    <button name="timerAction" type="button" class="btn btn-outline-dark ms-1" value="30">+ 30 {{ __('dashboard_tickets.timer_minutes_button') }}</button>
+                  </span>
+                @endif
+              </div>
+              <div class="col-sm-4 col-md-4">
                 <label class="form-label">{{ __('dashboard_tickets.table_owner') }}</label>
                 <select id="ownerSelect" name="ownerSelect" class="form-select" required {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
                   @foreach ($staffMembers as $member)
@@ -126,20 +145,6 @@
                     @endif
                   @endforeach
                 </select>
-              </div>
-              <div class="col-4">
-                <label class="form-label">{{ __('dashboard_tickets.external_ticket') }}</label>
-                @if ($ticket->external_ticketID != null)
-                  <input type="checkbox" id="isExternal" class="form-check-input" checked {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
-                  <input type="text" id="external_ticketID" name="external_ticketID" class="form-control" value="{{ $ticket->external_ticketID }}"/>
-                @else
-                  <input type="checkbox" id="isExternal" class="form-check-input" {{ $ticket->ticket_status == '2' ? 'disabled' : null }}>
-                  <input type="text" id="external_ticketID" name="external_ticketID" class="form-control" value="" disabled/>
-                @endif
-              </div>
-              <div class="col-4">
-                <label class="form-label">{{ __('dashboard_tickets.time_spent_on') }}</label>
-                <input type="text" id="time_spent" class="form-control" value="{{ date('H:i', strtotime($ticket->time_spent)) }}" disabled/>
               </div>
             @endif
           </div>
@@ -154,13 +159,8 @@
               @elseif ($ticket->ticket_status == 0)
                 <input name="takeTicket" class="btn btn-warning" type="Submit" value="{{ __('dashboard_tickets.take_ticket') }}"/>
               @elseif ($ticket->ticket_status == 1)
-                <input name="editTicket" class="btn btn-success" type="Submit" value="{{ __('dashboard_tickets.save_button') }}"/>
+                <input name="editTicket" class="btn btn-success me-1" type="Submit" value="{{ __('dashboard_tickets.save_button') }}"/>
                 <input type="button" class="btn btn-danger" id="close" data-bs-toggle="modal" data-bs-target="#modal" value="{{ __('dashboard_tickets.close_ticket') }}" data-id="closeTicket"/>
-                <span class="btn-group" style="float: right">
-                  <button name="timerAction" type="button" class="btn btn-outline-primary mx-1" value="5">+ 5 {{ __('dashboard_tickets.timer_minutes_button') }}</button>
-                  <button name="timerAction" type="button" class="btn btn-outline-secondary" value="15">+ 15 {{ __('dashboard_tickets.timer_minutes_button') }}</button>
-                  <button name="timerAction" type="button" class="btn btn-outline-dark ms-1" value="30">+ 30 {{ __('dashboard_tickets.timer_minutes_button') }}</button>
-                </span>
               @elseif ($date_now < $date_closed && $ticket->target_department == null)
                 <input name="reopenTicket" id="reopenTicket" class="btn btn-primary" type="Submit" value="{{ __('dashboard_tickets.reopen_ticket') }}"/>
               @endif
@@ -357,19 +357,6 @@
         else{
             $('#ownerSelect').val($('<div />').html('{{ $ticket->owner }}').text());
         }
-
-        /**
-         * External ticket input field toggler.
-         */
-        $('#isExternal').click(function() {
-            if ($('#isExternal').is(':checked')){
-                $('#external_ticketID').removeAttr('disabled', 'disabled');
-            }
-            else if (!$('#isExternal').is(':checked')){
-                $('#external_ticketID').prop('disabled', 'disabled');
-
-            }
-        });
 
         /**
          * Modal window for different ticket actions.

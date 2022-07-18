@@ -75,16 +75,12 @@
           <input type="checkbox" name="isProblem" value="problem" class="form-check-input" checked>
           <label class="form-label">{{ __('dashboard_reporting.col_problem') }}</label>
         </div>
-        <div class="col">
-          <input type="checkbox" name="isExternal" value="external_ticketID" class="form-check-input" checked>
-          <label class="form-label">{{ __('dashboard_reporting.col_external') }}</label>
-        </div>
-      </div>
-      <div class="row" style="margin-top:1vw;">
         <div class="col-2">
           <input type="checkbox" name="isPriority" value="priority" class="form-check-input" checked>
           <label class="form-label">{{ __('dashboard_reporting.col_priority') }}</label>
         </div>
+      </div>
+      <div class="row" style="margin-top:1vw;">
         <div class="col-2">
           <input type="checkbox" name="isTime" value="time_spent" class="form-check-input" checked>
           <label class="form-label">{{ __('dashboard_reporting.col_service_time') }}</label>

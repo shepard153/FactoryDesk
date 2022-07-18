@@ -46,7 +46,6 @@ class Ticket extends Model
         'priority',
         'username',
         'time_spent',
-        'external_ticketID',
         'department_ticketID',
         'target_department',
         'ticket_type',

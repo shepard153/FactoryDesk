@@ -22,7 +22,7 @@
     @endif
     <form class="row" method="post" action="{{ route('setSettings') }}">
       @csrf
-      <div class="col-4">
+      <div class="col-sm-4 col-md-4">
         <p class="fs-4 border-bottom" style="padding: 0vw 0vw 0.6vw 0vw;">{{ __('dashboard_settings.dashboard') }}</p>
         <div class="mb-3">
           <label for="dashboard_refreshTime" class="form-label">{{ __('dashboard_settings.dashboard_refresh_time') }}</label>
@@ -37,7 +37,7 @@
           <input type="text" class="form-control" name="dashboard_chartDaySpan" value="{{ $settings['dashboard_chartDaySpan'] }}">
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-sm-4 col-md-4">
         <p class="fs-4 border-bottom" style="padding: 0vw 0vw 0.6vw 0vw;">{{ __('dashboard_settings.tickets') }}</p>
         <div class="mb-3">
           <label for="tickets_pagination" class="form-label">{{ __('dashboard_settings.pagination_items') }}</label>

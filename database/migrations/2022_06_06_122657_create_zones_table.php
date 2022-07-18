@@ -17,6 +17,15 @@ return new class extends Migration
             $table->increments('zoneID');
             $table->string('zone_name', 100);
         });
+
+        DB::table('Zones')->insert([
+            ['zone_name' => 'Production line 1'],
+            ['zone_name' => 'Production line 2'],
+            ['zone_name' => 'Production line 3'],
+            ['zone_name' => 'Production line 4'],
+            ['zone_name' => 'Laboratory'],
+            ['zone_name' => '3D Measurements'],
+        ]);
     }
 
     /**

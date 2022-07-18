@@ -24,6 +24,13 @@ return new class extends Migration
             $table->string('discord_webhook')->nullable();
             $table->string('department_email')->nullable();
         });
+
+        DB::table('Departments')->insert([
+            ['department_name' => 'IT', 'image_path' => 'img/it.jpg', 'department_prefix' => 'I', 'isHidden' => false],
+            ['department_name' => 'Quality', 'image_path' => 'img/quality.jpg', 'department_prefix' => 'Q', 'isHidden' => false],
+            ['department_name' => 'Maintenance', 'image_path' => 'img/maintenance.jpg', 'department_prefix' => 'M', 'isHidden' => false],
+            ['department_name' => 'Warehouse', 'image_path' => 'img/warehouse.jpg', 'department_prefix' => 'W', 'isHidden' => false],
+        ]);
     }
 
     /**

@@ -19,10 +19,10 @@ return [
     'table_position' => 'Position',
     'table_problem' => 'Problem',
     'table_device' => 'Device',
-    'table_date_created' => 'Date created',
-    'table_date_modified' => 'Date modified',
-    'table_date_closed' => 'Date closed',
-    'table_owner' => 'Person responsible',
+    'table_date_created' => 'Created',
+    'table_date_modified' => 'Modified',
+    'table_date_closed' => 'Closed',
+    'table_owner' => 'Assigned to',
     'table_nothing_found' => 'No tickets found',
 
     /**
@@ -36,7 +36,7 @@ return [
     'navtab_ticket' => 'Ticket',
     'navtab_add_note' => 'Add note',
     'navtab_ticket_history' => 'Ticket history',
-    'date_taken' => 'Date taken',
+    'date_taken' => 'Taken',
     'pill_closed_permamently' => 'Closed permamently',
     'raised_by' => 'Raised by',
     'department' => 'Department',
@@ -44,7 +44,6 @@ return [
     'priority_low' => 'Notification',
     'priority_medium' => 'Standard',
     'priority_high' => 'Critical',
-    'external_ticket' => 'External ticket ID',
     'time_spent_on' => 'Time spent on resolving',
     'timer_minutes_button' => 'minutes',
     'accept_ticket' => 'Accept ticket',
@@ -93,7 +92,6 @@ return [
     'problem_changed' => 'Problem changed from :original to :new',
     'priority_changed' => 'Priority changed from :original to :new',
     'owner_changed' => 'Person responsible changed from :original to :new',
-    'external_ticket_set' => 'Ticket has been set as external with ID: :externalID',
 
     /**
      * My tickets

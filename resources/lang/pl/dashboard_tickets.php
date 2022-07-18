@@ -19,9 +19,9 @@ return [
     'table_position' => 'Stanowisko',
     'table_problem' => 'Problem',
     'table_device' => 'Urządzenie',
-    'table_date_created' => 'Data zgłoszenia',
-    'table_date_modified' => 'Data modyfikacji',
-    'table_date_closed' => 'Data zamknięcia',
+    'table_date_created' => 'Utworzono',
+    'table_date_modified' => 'Zmodyfikowano',
+    'table_date_closed' => 'Zamknięto',
     'table_owner' => 'Osoba odpowiedzialna',
     'table_nothing_found' => 'Nie znaleziono zgłoszeń.',
 
@@ -36,7 +36,7 @@ return [
     'navtab_ticket' => 'Zgłoszenie',
     'navtab_add_note' => 'Dodaj notatkę',
     'navtab_ticket_history' => 'Historia zgłoszenia',
-    'date_taken' => 'Data podjęcia',
+    'date_taken' => 'Podjęto',
     'pill_closed_permamently' => 'Zamknięte premanentnie',
     'raised_by' => 'Zgłaszający',
     'department' => 'Dział',
@@ -44,7 +44,6 @@ return [
     'priority_low' => 'Powiadomienie',
     'priority_medium' => 'Standardowy',
     'priority_high' => 'Krytyczny',
-    'external_ticket' => 'Zgłoszenie zewnętrzne',
     'time_spent_on' => 'Czas obsługi zlecenia',
     'timer_minutes_button' => 'minut',
     'accept_ticket' => 'Zatwierdź zgłoszenie',
@@ -93,7 +92,6 @@ return [
     'problem_changed' => 'Zmieniono problem z :original na :new',
     'priority_changed' => 'Zmieniono priorytet z :original na :new',
     'owner_changed' => 'Zmieniono osobę odpowiedzialną z :original na :new',
-    'external_ticket_set' => 'Zgłoszenie zostało ustawione jako zewnętrzne z ID: :externalID',
 
     /**
      * My tickets

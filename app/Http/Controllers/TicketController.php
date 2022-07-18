@@ -419,7 +419,6 @@ class TicketController extends Controller
             $ticket->problem = $request->problemSelect;
             $ticket->priority = $request->prioritySelect;
             $ticket->owner = $request->ownerSelect;
-            $ticket->external_ticketID = $request->external_ticketID;
 
             $this->addToHistory($request, $id, $ticket);
 
@@ -498,9 +497,6 @@ class TicketController extends Controller
             $ticket->isDirty('owner') == true ? array_push($dirtyArray, __('dashboard_tickets.owner_changed', [
                 'original' => $ticket->getOriginal('owner'),
                 'new' => $request->ownerSelect
-                ])) : null;
-            $ticket->isDirty('external_ticketID') == true ? array_push($dirtyArray, __('dashboard_tickets.external_ticket_set', [
-                'externalID' => $request->external_ticketID
                 ])) : null;
 
             foreach ($dirtyArray as $edit){
