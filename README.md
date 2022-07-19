@@ -11,6 +11,8 @@ Workers can also: <br/>
 -> attach files <br/>
 -> select priority <br/>
 
+Check documentation folder for more info.
+
 ## Prequisites
 - PHP 8.1+
 - Composer
