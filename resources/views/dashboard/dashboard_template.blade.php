@@ -41,7 +41,7 @@
       }
 
       @media only screen and (max-width: 992px) {
-        #bigLogo {
+        #bigLogo, #mediumLogo {
           display: none;
         }
       }
@@ -184,7 +184,7 @@
           </button>
           <img id="smallLogo" class="float-start my-auto" src="{{ asset('img/factorydesk-logo.png') }}" alt="FactoryDesk Logo" style="width: 250px; height: 50px"/>
           <div class="collapse navbar-collapse justify-content-start" id="navbarNav">
-            <ul class="navbar-nav" style="font-size: 18px">
+            <ul class="navbar-nav" style="font-size: 18px; margin-left: -12px">
               <li class="nav-item">
                 <a class="nav-link {{ \Route::currentRouteName() == 'dashboard' ? 'active' : '' }}" aria-current="page" href="{{ url('dashboard') }}">{{ __('dashboard_main.dashboard_link') }}</a>
               </li>
@@ -219,6 +219,9 @@
                   <a class="nav-link {{ \Route::currentRouteName() == 'settings' ? 'active' : '' }}" aria-current="page" href="{{ url('settings') }}">{{ __('dashboard_main.settings_link') }}</a>
                 </li>
               @endif
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="{{ url('/') }}">{{ __('dashboard_main.raise_issue_link') }}</a>
+              </li>
               <li class="nav-item dropdown">
                 <a class="nav-link {{ \Route::currentRouteName() == 'profile' ? 'active' : '' }} dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">{{ $username }}</a>
                 <ul class="dropdown-menu bg-dark">
@@ -232,6 +235,7 @@
               </li>
             </ul>
           </div>
+          <img id="mediumLogo" class="my-auto float-end" src="{{ asset('img/factorydesk-logo.png') }}" alt="FactoryDesk Logo" style="width: 11%; height: 30px; margin-right: -12px"/>
         </div>
       </nav>
       <div class="col">
