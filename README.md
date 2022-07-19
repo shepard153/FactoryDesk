@@ -37,7 +37,7 @@ Check documentation folder for more info.
 
 ## Demo
 Note: Heroku weirdly loads font sometimes so if dashboard seems off to you just reload page.
-https://factorydesk.herokuapp.com/
+https://factorydesk.herokuapp.com/ <br/>
 Test account credentials
 <pre>
 Login: test
