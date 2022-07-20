@@ -20,7 +20,7 @@ Check documentation folder for more info.
 ## Installation
 1. Download/clone repository
 2. Run composer update
-3. Setup your .env file with your database configuration, eg.:
+3. Set up your .env file with your database configuration, eg.:
 <pre>
   DB_CONNECTION=mysql        // your DB driver (pgsql for Postgres, sqlsrv for SQL Server)
   DB_HOST=127.0.0.1
