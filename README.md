@@ -14,7 +14,7 @@ Workers can also: <br/>
 Check documentation folder for more info.
 
 ## Prequisites
-- PHP 8.1+
+- PHP 8.0+
 - Composer
 
 ## Installation
